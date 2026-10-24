@@ -81,6 +81,7 @@ export default defineSchema({
     acknowledgedAt: v.optional(v.number()),
     resolvedAt: v.optional(v.number()),
     lastReportedAt: v.number(),
+    reroutedCount: v.optional(v.number()), // blockages: tasks rerouted when it was applied
   })
     .index("by_status", ["status"])
     .index("by_zone_category", ["zoneId", "category"])

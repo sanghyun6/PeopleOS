@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { Doc, Id } from "../_generated/dataModel";
 import { buildGraph, type Route } from "./graph";
-import { planReroute, rankCandidates } from "./dispatch";
+import { countRerouted, planReroute, rankCandidates } from "./dispatch";
 import { blockZone, incidentAt, seededEdges, seededStaff, staffId, zoneId } from "./demoVenue.fixture";
 
 const openGraph = () => buildGraph(seededEdges());
@@ -194,5 +194,35 @@ describe("planReroute", () => {
       graph: blockedGraph(),
     });
     expect(decisions.map((d) => d.kind)).toEqual(["reassign", "keep"]);
+  });
+});
+
+describe("countRerouted (blockage applied automatically)", () => {
+  const table142 = incidentAt("table:142", { category: "power" });
+  const priyaRoute = () => rank(table142)[0].route;
+  const open = () => [{ assignment: assignmentFor(table142, staffId("priya"), priyaRoute()), incident: table142 }];
+  const plan = (graph: ReturnType<typeof openGraph>, workloads = new Map([[staffId("priya"), 1]])) =>
+    planReroute({ open: open(), staff: seededStaff(), workloads, declinedBy: new Map(), graph });
+
+  test("blocking Broadway #1 reassigns Priya's task: 1 rerouted, 1 reassigned", () => {
+    expect(countRerouted(plan(blockedGraph()))).toEqual({ rerouted: 1, reassigned: 1 });
+  });
+
+  test("a new route for the same assignee counts as rerouted, not reassigned", () => {
+    const busyJordan = new Map([[staffId("priya"), 1], [staffId("jordan"), 2]]);
+    expect(countRerouted(plan(blockedGraph(), busyJordan))).toEqual({ rerouted: 1, reassigned: 0 });
+  });
+
+  test("an unreachable task counts as rerouted (it was escalated)", () => {
+    expect(countRerouted(plan(buildGraph(seededEdges(blockZone("atrium-west")))))).toEqual({ rerouted: 1, reassigned: 0 });
+  });
+
+  test("an unchanged graph reroutes nothing", () => {
+    expect(countRerouted(plan(openGraph()))).toEqual({ rerouted: 0, reassigned: 0 });
+  });
+
+  test("undo: reopening the edges restores the original route", () => {
+    const [decision] = plan(openGraph());
+    expect(decision).toMatchObject({ kind: "keep", routeChanged: false });
   });
 });

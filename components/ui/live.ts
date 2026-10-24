@@ -9,6 +9,6 @@ export const LIVE = {
   assignments: !forceMock,
   /** incidents.stats */
   stats: !forceMock,
-  /** blockages.confirm */
+  /** blockages.listApplied / undo */
   blockages: !forceMock,
 };

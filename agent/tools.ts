@@ -46,7 +46,7 @@ export const TOOLS: ToolDefinition[] = [
   {
     name: "report_blockage",
     description:
-      "Report a blocked hallway, doorway, stairway, or path after the caller confirmed the location once. An operator confirms it before staff routes change.",
+      "Report a blocked hallway, doorway, stairway, or path after the caller confirmed the location once. It applies immediately: staff routes change right away.",
     parameters: {
       type: "object",
       properties: {

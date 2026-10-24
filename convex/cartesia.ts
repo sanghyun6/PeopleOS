@@ -138,7 +138,7 @@ export const createIncident = toolHandler("create_incident", async (ctx, { args,
   return fromOutcome(outcome);
 });
 
-/** report_blockage -> incident in pending_review until an operator confirms. */
+/** report_blockage -> edges closed and open tasks rerouted right away. */
 export const reportBlockage = toolHandler("report_blockage", async (ctx, { args, callId }): Promise<ToolResult> => {
   const outcome: ReportOutcome = await ctx.runAction(internal.incidents.createFromReport, {
     location: args.location,
@@ -148,12 +148,7 @@ export const reportBlockage = toolHandler("report_blockage", async (ctx, { args,
     source: "voice",
     callId,
   });
-  if (outcome.outcome !== "created") return fromOutcome(outcome);
-  return {
-    ...fromOutcome(outcome),
-    outcome: "pending_review",
-    message: `Blockage at ${args.location} reported. An operator will confirm it, then staff will be routed around it.`,
-  };
+  return fromOutcome(outcome);
 });
 
 const MEDICAL = /hurt|injur|bleed|faint|unconscious|breath|chest|seizure|allerg|sick|medical|ambulance/i;

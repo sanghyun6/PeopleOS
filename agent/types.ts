@@ -39,6 +39,6 @@ export type ToolCall<N extends ToolName = ToolName> = {
 export type ToolResult = {
   ok: boolean;
   message: string;
-  outcome?: "created" | "duplicate" | "escalated" | "unknown_location" | "pending_review";
+  outcome?: "created" | "duplicate" | "escalated" | "unknown_location";
   incidentId?: string;
 };

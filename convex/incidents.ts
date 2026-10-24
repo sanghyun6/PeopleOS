@@ -14,6 +14,7 @@ import { incidentCategory, incidentSource, priority, type IncidentStatus } from 
 import { detectEmergency } from "./lib/emergency";
 import { resolveLocation } from "./locations";
 import { dedupCandidate, findDedupCandidates, judgeDuplicate, type DedupCandidate } from "./dedup";
+import { applyBlockage } from "./blockages";
 import { cancelOpenAssignments, dispatchToBest } from "./dispatch";
 
 const ACTIVE_STATUSES: IncidentStatus[] = ["open", "assigned", "acknowledged", "escalated", "pending_review"];
@@ -128,8 +129,8 @@ export const recordDuplicate = internalMutation({
 });
 
 /**
- * Step 2b: a new incident. Blockages wait for an operator (pending_review); emergencies
- * go straight to a human (escalated); everything else is auto-dispatched.
+ * Step 2b: a new incident. Blockages apply immediately (edges closed, tasks rerouted);
+ * emergencies go straight to a human (escalated); everything else is auto-dispatched.
  */
 export const insertReport = internalMutation({
   args: { ...reportArgs, locationId: v.id("locations"), emergency: v.array(v.string()) },
@@ -138,7 +139,7 @@ export const insertReport = internalMutation({
     const location = await ctx.db.get("locations", args.locationId);
     if (!location) throw new Error(`Location not found: ${args.locationId}`);
     const isEmergency = args.emergency.length > 0;
-    const status: IncidentStatus = isEmergency ? "escalated" : args.category === "blockage" ? "pending_review" : "open";
+    const status: IncidentStatus = isEmergency ? "escalated" : "open"; // blockages stay open until applied below
     const now = Date.now();
     const incidentId = await ctx.db.insert("incidents", {
       category: args.category,
@@ -164,15 +165,18 @@ export const insertReport = internalMutation({
         message: "A human operator has been alerted. Help is coming; if anyone's life is in danger, call 911 now.",
       };
     }
-    if (status === "pending_review") {
+    const incident = (await ctx.db.get("incidents", incidentId))!;
+    if (args.category === "blockage") {
+      const { rerouted } = await applyBlockage(ctx, incident);
       return {
         incidentId,
         outcome: "created",
-        message: `Blockage at ${location.label} reported. An operator will confirm it, then staff will be routed around it.`,
+        message: `Blockage at ${location.label} is logged and applied. ${
+          rerouted ? `${rerouted} task${rerouted === 1 ? " is" : "s are"} being routed around it now.` : "Staff are being routed around it now."
+        }`,
       };
     }
 
-    const incident = (await ctx.db.get("incidents", incidentId))!;
     const assignmentId = await dispatchToBest(ctx, incident);
     if (!assignmentId) {
       return {
@@ -265,7 +269,7 @@ const average = (xs: number[]) => (xs.length ? Math.round(xs.reduce((s, x) => s 
 
 /**
  * Dashboard numbers: open count, avg time-to-acknowledge, avg time-to-resolve.
- * Blockages are excluded from the averages: an operator confirms them, no staff is sent.
+ * Blockages are excluded from the averages: no staff is sent.
  */
 export const stats = query({
   args: {},
