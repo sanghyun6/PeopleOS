@@ -1,7 +1,7 @@
 // Contract between the Cartesia voice agent and our Convex HTTP actions.
 import type { IncidentCategory, Priority } from "../convex/lib/validators";
 
-export type ToolName = "create_incident" | "report_blockage" | "escalate_to_human";
+export type ToolName = "create_incident" | "report_blockage" | "escalate_to_human" | "get_directions";
 
 export type CreateIncidentArgs = {
   location: string; // must come from the fixed vocabulary, confirmed once with the caller
@@ -21,10 +21,16 @@ export type EscalateToHumanArgs = {
   description?: string;
 };
 
+export type GetDirectionsArgs = {
+  from: string; // where the caller is, from the location vocabulary
+  to: string; // where they want to go, from the location vocabulary
+};
+
 export type ToolArgs = {
   create_incident: CreateIncidentArgs;
   report_blockage: ReportBlockageArgs;
   escalate_to_human: EscalateToHumanArgs;
+  get_directions: GetDirectionsArgs;
 };
 
 /** Normalized tool call after parsing Cartesia's webhook body. */
@@ -39,6 +45,6 @@ export type ToolCall<N extends ToolName = ToolName> = {
 export type ToolResult = {
   ok: boolean;
   message: string;
-  outcome?: "created" | "duplicate" | "escalated" | "unknown_location" | "pending_review";
+  outcome?: "created" | "duplicate" | "escalated" | "unknown_location" | "pending_review" | "directions" | "no_route";
   incidentId?: string;
 };

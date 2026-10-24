@@ -74,6 +74,10 @@ export function parseToolCall<N extends ToolName>(tool: N, body: unknown): ToolC
       location: requiredString(body, "location"),
       description: requiredString(body, "description"),
     }),
+    get_directions: () => ({
+      from: requiredString(body, "from"),
+      to: requiredString(body, "to"),
+    }),
     escalate_to_human: () => ({
       reason: requiredString(body, "reason"),
       location: optionalString(body, "location"),
@@ -197,4 +201,10 @@ export const escalateToHuman = toolHandler("escalate_to_human", async (ctx, { ar
     message:
       "A human operator has been alerted. Tell the caller help is coming, and to call 911 now if anyone's life is in danger.",
   };
+});
+
+/** get_directions -> locations.directions (read-only; no incident is created). */
+export const getDirections = toolHandler("get_directions", async (ctx, { args }): Promise<ToolResult> => {
+  const result = await ctx.runQuery(internal.locations.directions, args);
+  return { ok: result.outcome !== "unknown_location", outcome: result.outcome, message: result.message };
 });

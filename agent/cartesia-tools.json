@@ -107,6 +107,46 @@
   },
   {
     "type": "webhook",
+    "name": "get_directions",
+    "description": "Walking directions between two places in the venue. Only for navigation questions (how do I get from here to there). Never use it to report a problem. Returns a message to read to the caller in your own words.",
+    "pre_tool_speech": "auto",
+    "execution_mode": "immediate",
+    "response_timeout_secs": 15,
+    "api_schema": {
+      "url": "https://resolute-horse-290.convex.site/cartesia/get_directions",
+      "method": "POST",
+      "request_body_schema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Where the caller is now. Exactly one location label from the location list in your instructions, e.g. \"Table 142\", \"Cartesia booth\", \"Fountain\"."
+          },
+          "to": {
+            "type": "string",
+            "description": "Where the caller wants to go. Exactly one location label from the location list in your instructions, e.g. \"Table 142\", \"Cartesia booth\", \"Fountain\"."
+          },
+          "call_id": {
+            "type": "string",
+            "dynamic_variable": "system__conversation_id"
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
+      },
+      "authentication": {
+        "mode": "bearer",
+        "token": {
+          "type": "secret",
+          "secret_value": "<CARTESIA_TOOL_SECRET>"
+        }
+      }
+    }
+  },
+  {
+    "type": "webhook",
     "name": "escalate_to_human",
     "description": "Immediately hand off to a human operator. Use for any injury, medical, fire, smoke, or safety report (no location confirmation needed), when the caller asks for a person, or when the location cannot be pinned down.",
     "pre_tool_speech": "auto",

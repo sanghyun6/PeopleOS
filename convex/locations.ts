@@ -2,6 +2,7 @@
 import { v } from "convex/values";
 import { internalQuery, query, type QueryCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
+import { directionsBetween, directionsMessage } from "./lib/directions";
 import { locationKind, type LocationKind } from "./lib/validators";
 
 // When several entries match equally, the most specific place wins.
@@ -89,5 +90,40 @@ export const list = query({
   handler: async (ctx, { kind }) => {
     const all = await ctx.db.query("locations").take(1000);
     return kind ? all.filter((l) => l.kind === kind) : all;
+  },
+});
+
+export type DirectionsOutcome =
+  | { outcome: "directions" | "no_route"; message: string }
+  | { outcome: "unknown_location"; message: string };
+
+/** Spoken walking directions between two caller-said places (blocked edges are avoided). */
+export const directions = internalQuery({
+  args: { from: v.string(), to: v.string() },
+  handler: async (ctx, { from, to }): Promise<DirectionsOutcome> => {
+    const [start, end] = [await resolveLocation(ctx, from), await resolveLocation(ctx, to)];
+    if (!start || !end) {
+      const missing = [!start && `"${from}"`, !end && `"${to}"`].filter(Boolean).join(" and ");
+      return {
+        outcome: "unknown_location",
+        message: `I could not match ${missing} to a place in the venue. Ask the caller for the nearest table number or booth and try once more.`,
+      };
+    }
+    const zones = await ctx.db.query("zones").collect();
+    const edges = await ctx.db.query("edges").collect();
+    const route = directionsBetween(
+      start.zoneId,
+      end.zoneId,
+      edges,
+      [],
+      new Map(zones.map((z) => [z._id as string, z.name])),
+    );
+    if (!route) {
+      return {
+        outcome: "no_route",
+        message: `Paths between ${start.label} and ${end.label} are blocked right now. Tell the caller to ask the nearest staff member.`,
+      };
+    }
+    return { outcome: "directions", message: directionsMessage(start.label, end.label, route) };
   },
 });

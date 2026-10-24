@@ -14,7 +14,7 @@ npx tsx agent/export.ts            # default site: https://resolute-horse-290.co
 
 1. Pick a shared secret and set it on Convex: `npx convex env set CARTESIA_TOOL_SECRET <secret>`.
    If it is unset, the webhooks accept any request.
-2. Register the three webhook tools (Playground "Tools", or the API with
+2. Register the four webhook tools (Playground "Tools", or the API with
    `Authorization: Bearer $CARTESIA_API_KEY` and a `Cartesia-Version` header),
    replacing `<CARTESIA_TOOL_SECRET>` with the secret. Attach their ids in `config.tools`.
 3. Paste `system-prompt.md` into the agent's instructions. Model: a Claude model from

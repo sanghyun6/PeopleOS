@@ -57,6 +57,19 @@ export const TOOLS: ToolDefinition[] = [
     },
   },
   {
+    name: "get_directions",
+    description:
+      "Walking directions between two places in the venue. Only for navigation questions (how do I get from here to there). Never use it to report a problem. Returns a message to read to the caller in your own words.",
+    parameters: {
+      type: "object",
+      properties: {
+        from: { type: "string", description: `Where the caller is now. ${LOCATION_DESCRIPTION}` },
+        to: { type: "string", description: `Where the caller wants to go. ${LOCATION_DESCRIPTION}` },
+      },
+      required: ["from", "to"],
+    },
+  },
+  {
     name: "escalate_to_human",
     description:
       "Immediately hand off to a human operator. Use for any injury, medical, fire, smoke, or safety report (no location confirmation needed), when the caller asks for a person, or when the location cannot be pinned down.",
