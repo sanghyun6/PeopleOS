@@ -1,22 +1,18 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useQuery } from "convex/react";
 import { useState } from "react";
-import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useActiveIncidents, useGraph, useStaffList } from "@/components/ui/hooks";
 import { IncidentDetail } from "./IncidentDetail";
 import { IncidentList } from "./IncidentList";
 import { MetricsBar } from "./MetricsBar";
 import { StaffPanel } from "./StaffPanel";
-
-// three.js needs the browser.
-const VenueScene = dynamic(() => import("@/components/venue/VenueScene"), { ssr: false });
+import { VenueMap } from "./VenueMap";
 
 export default function OpsPage() {
-  const graph = useQuery(api.zones.graph);
-  const staff = useQuery(api.staff.list);
-  const incidents = useQuery(api.incidents.listActive);
+  const graph = useGraph();
+  const staff = useStaffList();
+  const incidents = useActiveIncidents();
   const [selectedId, setSelectedId] = useState<Id<"incidents"> | null>(null);
 
   return (
@@ -24,12 +20,12 @@ export default function OpsPage() {
       <MetricsBar zoneCount={graph?.zones.length} edgeCount={graph?.edges.length} />
       <div className="flex min-h-0 flex-1">
         <div className="relative flex-1">
-          <VenueScene />
+          <VenueMap incidents={incidents} staff={staff} selectedId={selectedId} onSelect={setSelectedId} />
         </div>
         <aside className="flex w-96 flex-col gap-4 overflow-y-auto border-l border-neutral-800 p-4">
-          <IncidentList incidents={incidents} selectedId={selectedId} onSelect={setSelectedId} />
-          <IncidentDetail incidentId={selectedId} />
-          <StaffPanel staff={staff} zones={graph?.zones} />
+          <IncidentList incidents={incidents} selectedId={selectedId} onSelect={setSelectedId} zones={graph?.zones} />
+          <IncidentDetail incidentId={selectedId} staff={staff} graph={graph} />
+          <StaffPanel staff={staff} zones={graph?.zones} incidents={incidents} />
         </aside>
       </div>
     </div>
