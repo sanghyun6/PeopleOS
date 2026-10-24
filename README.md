@@ -13,9 +13,10 @@ Built at Cal Hacks 13.0 (Palace of Fine Arts, SF).
 | Next.js + Tailwind + Convex + React Three Fiber scaffold | done |
 | Convex schema (`zones`, `edges`, `locations`, `staff`, `incidents`, `assignments`) | done |
 | Seed from `data/palace-venue.json`: 18 zones, 27 edges, 406 locations, 8 staff | done |
-| Cartesia HTTP actions, dispatch, Dijkstra, staff actions, dedup, blockages | signatures only (`todo()`) |
-| `/ops` 3D view | floor outline + live zone/staff counts |
-| `/staff/[id]` | staff header only |
+| Cartesia HTTP actions, dispatch, Dijkstra, staff actions, dedup, blockages, stats | done (curl smoke-tested end to end) |
+| `/ops` 3D view | live markers, staff dots, assignment routes, incident list, metrics |
+| `/staff/[id]` | accept / decline / complete, sound + vibration |
+| Claude dedup judgment | needs `ANTHROPIC_API_KEY` on the Convex deployment; without it, same table/booth = same problem |
 
 ## Setup
 
@@ -27,7 +28,10 @@ npm run dev             # http://localhost:3000/ops
 ```
 
 `npm run reseed` wipes every table (including incidents) and seeds again.
-`npm run typecheck` checks both the Next app and `convex/`.
+`npm run typecheck` checks both the Next app and `convex/`. `npm test` runs the vitest unit tests.
+
+Convex deployment env vars (`npx convex env set`): `CARTESIA_TOOL_SECRET` (Bearer token
+Cartesia tools send), `ANTHROPIC_API_KEY` (dedup judgment).
 
 Env vars live in `.env.local` (never committed): `CONVEX_DEPLOYMENT`,
 `NEXT_PUBLIC_CONVEX_URL`, `NEXT_PUBLIC_CONVEX_SITE_URL`, and later

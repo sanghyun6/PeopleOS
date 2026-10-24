@@ -1,21 +1,93 @@
 // Fixed location vocabulary (tables 1-304, sponsor booths, amenities, rooms, areas).
 import { v } from "convex/values";
-import { internalQuery, query } from "./_generated/server";
-import { locationKind } from "./lib/validators";
-import { todo } from "./lib/todo";
+import { internalQuery, query, type QueryCtx } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
+import { locationKind, type LocationKind } from "./lib/validators";
+
+// When several entries match equally, the most specific place wins.
+const KIND_RANK: Record<LocationKind, number> = {
+  table: 0,
+  booth: 1,
+  amenity: 2,
+  room: 3,
+  entrance: 4,
+  area: 5,
+  zone: 6,
+};
+
+const normalize = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[‘’]/g, "'")
+    .replace(/\b(the|near|by|at|next to|in front of)\b/g, " ")
+    .replace(/[.,!?]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+/** Pick one match: unique, or all in the same zone (then the most specific one). */
+function pickOne(matches: Doc<"locations">[]): Doc<"locations"> | null {
+  if (matches.length === 0) return null;
+  const zones = new Set(matches.map((m) => m.zoneId));
+  if (zones.size > 1) return null; // ambiguous: e.g. "atrium" spans two zones
+  return [...matches].sort((a, b) => KIND_RANK[a.kind] - KIND_RANK[b.kind])[0];
+}
 
 /**
- * Resolve what the caller said ("table 142", "the Cartesia booth", "near the fountain")
- * to exactly one location. Order: exact key -> table number -> alias -> search index.
+ * Resolve what the caller said ("Table 142", "the Cartesia booth", "zone:box-office")
+ * to exactly one location. Order: exact key -> table number -> label -> alias -> search.
  * Returns null when ambiguous or unknown so the agent asks again.
  */
+export async function resolveLocation(ctx: QueryCtx, text: string): Promise<Doc<"locations"> | null> {
+  const raw = text.trim();
+  if (!raw) return null;
+  const byKey = (key: string) =>
+    ctx.db
+      .query("locations")
+      .withIndex("by_key", (q) => q.eq("key", key))
+      .unique();
+
+  // 1. Location keys such as "table:142", "booth:11", "zone:box-office".
+  if (/^[a-z]+:[a-z0-9-]+$/i.test(raw)) {
+    const hit = await byKey(raw.toLowerCase());
+    if (hit) return hit;
+  }
+
+  // 2. Table numbers: "Table 142", "table number 142", "t-142", "#142".
+  const table = raw.match(/\b(?:table|t)\s*(?:number|no\.?|#|-)?\s*(\d{1,3})\b/i) ?? raw.match(/^#?(\d{1,3})$/);
+  if (table) {
+    const hit = await byKey(`table:${Number(table[1])}`);
+    if (hit) return hit;
+  }
+
+  // 3/4. Exact label, then exact alias (~400 rows, small enough to scan).
+  const wanted = normalize(raw);
+  const all = await ctx.db.query("locations").take(1000);
+  const byLabel = pickOne(all.filter((l) => normalize(l.label) === wanted));
+  if (byLabel) return byLabel;
+  const byAlias = pickOne(all.filter((l) => l.aliases.some((a) => normalize(a) === wanted)));
+  if (byAlias) return byAlias;
+  const booth = pickOne(all.filter((l) => l.kind === "booth" && normalize(l.label).replace(/ booth.*$/, "") === wanted.replace(/ booth$/, "")));
+  if (booth) return booth;
+
+  // 5. Full-text search as a last resort; only trust it when the top hit is unambiguous.
+  const hits = await ctx.db
+    .query("locations")
+    .withSearchIndex("search_text", (q) => q.search("searchText", wanted))
+    .take(3);
+  if (hits.length === 0) return null;
+  return hits.length === 1 || hits[0].zoneId === hits[1].zoneId ? hits[0] : null;
+}
+
 export const resolve = internalQuery({
   args: { text: v.string() },
-  handler: async () => todo("locations.resolve"),
+  handler: async (ctx, { text }) => resolveLocation(ctx, text),
 });
 
 /** Vocabulary listing, e.g. for the agent prompt or an ops search box. */
 export const list = query({
   args: { kind: v.optional(locationKind) },
-  handler: async () => todo("locations.list"),
+  handler: async (ctx, { kind }) => {
+    const all = await ctx.db.query("locations").take(1000);
+    return kind ? all.filter((l) => l.kind === kind) : all;
+  },
 });

@@ -101,5 +101,6 @@ export default defineSchema({
     completedAt: v.optional(v.number()),
   })
     .index("by_incident", ["incidentId"])
+    .index("by_status", ["status"])
     .index("by_staff_status", ["staffId", "status"]),
 });

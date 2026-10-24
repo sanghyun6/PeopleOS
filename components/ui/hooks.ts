@@ -43,6 +43,12 @@ export function useStats(): Stats | undefined {
   return LIVE.stats ? live : mockStats;
 }
 
+/** Offered + accepted assignments with routes (3D route lines). Mock mode draws none. */
+export function useActiveAssignments(): Doc<"assignments">[] | undefined {
+  const live = useQuery(api.assignments.listActive, LIVE.assignments ? {} : "skip");
+  return LIVE.assignments ? live : [];
+}
+
 export type AssignmentActions = {
   accept: (id: Id<"assignments">) => Promise<void>;
   decline: (id: Id<"assignments">) => Promise<void>;

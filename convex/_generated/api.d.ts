@@ -15,6 +15,8 @@ import type * as dedup from "../dedup.js";
 import type * as dispatch from "../dispatch.js";
 import type * as http from "../http.js";
 import type * as incidents from "../incidents.js";
+import type * as lib_dedup from "../lib/dedup.js";
+import type * as lib_dispatch from "../lib/dispatch.js";
 import type * as lib_emergency from "../lib/emergency.js";
 import type * as lib_graph from "../lib/graph.js";
 import type * as lib_todo from "../lib/todo.js";
@@ -40,6 +42,8 @@ declare const fullApi: ApiFromModules<{
   dispatch: typeof dispatch;
   http: typeof http;
   incidents: typeof incidents;
+  "lib/dedup": typeof lib_dedup;
+  "lib/dispatch": typeof lib_dispatch;
   "lib/emergency": typeof lib_emergency;
   "lib/graph": typeof lib_graph;
   "lib/todo": typeof lib_todo;

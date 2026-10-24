@@ -130,7 +130,7 @@ const fromOutcome = (outcome: ReportOutcome): ToolResult => ({
 
 /** create_incident -> incidents.createFromReport (emergency rule, dedup, dispatch). */
 export const createIncident = toolHandler("create_incident", async (ctx, { args, callId }): Promise<ToolResult> => {
-  const outcome: ReportOutcome = await ctx.runMutation(internal.incidents.createFromReport, {
+  const outcome: ReportOutcome = await ctx.runAction(internal.incidents.createFromReport, {
     ...args,
     source: "voice",
     callId,
@@ -140,7 +140,7 @@ export const createIncident = toolHandler("create_incident", async (ctx, { args,
 
 /** report_blockage -> incident in pending_review until an operator confirms. */
 export const reportBlockage = toolHandler("report_blockage", async (ctx, { args, callId }): Promise<ToolResult> => {
-  const outcome: ReportOutcome = await ctx.runMutation(internal.incidents.createFromReport, {
+  const outcome: ReportOutcome = await ctx.runAction(internal.incidents.createFromReport, {
     location: args.location,
     category: "blockage",
     description: args.description,
@@ -175,13 +175,13 @@ export const escalateToHuman = toolHandler("escalate_to_human", async (ctx, { ar
     callId,
   };
 
-  let outcome: ReportOutcome = await ctx.runMutation(internal.incidents.createFromReport, {
+  let outcome: ReportOutcome = await ctx.runAction(internal.incidents.createFromReport, {
     ...report,
     location: args.location ?? ESCALATION_FALLBACK_LOCATION,
   });
   // Never drop an escalation because the location did not resolve.
   if (outcome.outcome === "unknown_location") {
-    outcome = await ctx.runMutation(internal.incidents.createFromReport, {
+    outcome = await ctx.runAction(internal.incidents.createFromReport, {
       ...report,
       location: ESCALATION_FALLBACK_LOCATION,
       description: `[location unclear: "${args.location}"] ${report.description}`,

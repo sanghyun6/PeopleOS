@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { staffStatus } from "./lib/validators";
-import { todo } from "./lib/todo";
+import { syncStaffStatus } from "./dispatch";
 
 export const list = query({
   args: {},
@@ -17,12 +17,20 @@ export const get = query({
 export const setStatus = mutation({
   args: { staffId: v.id("staff"), status: staffStatus },
   returns: v.null(),
-  handler: async () => todo("staff.setStatus"),
+  handler: async (ctx, { staffId, status }) => {
+    await ctx.db.patch("staff", staffId, { status });
+    // "available" while holding an accepted task is really "busy".
+    if (status === "available") await syncStaffStatus(ctx, staffId);
+    return null;
+  },
 });
 
 /** Update a staff member's zone (e.g. after completing a task at the incident location). */
 export const moveTo = mutation({
   args: { staffId: v.id("staff"), zoneId: v.id("zones") },
   returns: v.null(),
-  handler: async () => todo("staff.moveTo"),
+  handler: async (ctx, { staffId, zoneId }) => {
+    await ctx.db.patch("staff", staffId, { zoneId });
+    return null;
+  },
 });
