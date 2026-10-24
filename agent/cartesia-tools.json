@@ -1,0 +1,151 @@
+[
+  {
+    "type": "webhook",
+    "name": "create_incident",
+    "description": "Log a venue problem (power, wifi, lights, furniture, supplies, cleaning, lost and found) after the caller confirmed the location once. Never use for injuries, medical issues, fire, smoke, or safety threats: use escalate_to_human. Never use for blocked paths: use report_blockage.",
+    "pre_tool_speech": "auto",
+    "execution_mode": "immediate",
+    "response_timeout_secs": 15,
+    "api_schema": {
+      "url": "https://resolute-horse-290.convex.site/cartesia/create_incident",
+      "method": "POST",
+      "request_body_schema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Exactly one location label from the location list in your instructions, e.g. \"Table 142\", \"Cartesia booth\", \"Fountain\"."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "power",
+              "network",
+              "lighting",
+              "furniture",
+              "supplies",
+              "cleaning",
+              "lost_found",
+              "other"
+            ],
+            "description": "Problem category."
+          },
+          "description": {
+            "type": "string",
+            "description": "One sentence in the caller's words."
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "description": "How urgent for the hackers affected."
+          },
+          "call_id": {
+            "type": "string",
+            "dynamic_variable": "system__conversation_id"
+          }
+        },
+        "required": [
+          "location",
+          "category",
+          "description",
+          "priority"
+        ]
+      },
+      "authentication": {
+        "mode": "bearer",
+        "token": {
+          "type": "secret",
+          "secret_value": "<CARTESIA_TOOL_SECRET>"
+        }
+      }
+    }
+  },
+  {
+    "type": "webhook",
+    "name": "report_blockage",
+    "description": "Report a blocked hallway, doorway, stairway, or path after the caller confirmed the location once. An operator confirms it before staff routes change.",
+    "pre_tool_speech": "auto",
+    "execution_mode": "immediate",
+    "response_timeout_secs": 15,
+    "api_schema": {
+      "url": "https://resolute-horse-290.convex.site/cartesia/report_blockage",
+      "method": "POST",
+      "request_body_schema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Exactly one location label from the location list in your instructions, e.g. \"Table 142\", \"Cartesia booth\", \"Fountain\"."
+          },
+          "description": {
+            "type": "string",
+            "description": "What is blocking it, in the caller's words."
+          },
+          "call_id": {
+            "type": "string",
+            "dynamic_variable": "system__conversation_id"
+          }
+        },
+        "required": [
+          "location",
+          "description"
+        ]
+      },
+      "authentication": {
+        "mode": "bearer",
+        "token": {
+          "type": "secret",
+          "secret_value": "<CARTESIA_TOOL_SECRET>"
+        }
+      }
+    }
+  },
+  {
+    "type": "webhook",
+    "name": "escalate_to_human",
+    "description": "Immediately hand off to a human operator. Use for any injury, medical, fire, smoke, or safety report (no location confirmation needed), when the caller asks for a person, or when the location cannot be pinned down.",
+    "pre_tool_speech": "auto",
+    "execution_mode": "immediate",
+    "response_timeout_secs": 15,
+    "api_schema": {
+      "url": "https://resolute-horse-290.convex.site/cartesia/escalate_to_human",
+      "method": "POST",
+      "request_body_schema": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Why this needs a human, e.g. \"someone fainted\", \"caller asked for a person\"."
+          },
+          "location": {
+            "type": "string",
+            "description": "Exactly one location label from the location list in your instructions, e.g. \"Table 142\", \"Cartesia booth\", \"Fountain\". Omit if unknown."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the caller said, in their words."
+          },
+          "call_id": {
+            "type": "string",
+            "dynamic_variable": "system__conversation_id"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "authentication": {
+        "mode": "bearer",
+        "token": {
+          "type": "secret",
+          "secret_value": "<CARTESIA_TOOL_SECRET>"
+        }
+      }
+    }
+  }
+]
