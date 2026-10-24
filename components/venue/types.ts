@@ -36,3 +36,27 @@ export type RouteLineProps = {
   segments: { path: { x: number; z: number }[]; fromLevel: "main" | "mezz"; toLevel: "main" | "mezz" }[];
   color?: string;
 };
+
+/** Which floor(s) the scene shows. "all" draws both; the others hide the other level's objects. */
+export type LevelView = "all" | "main" | "mezz";
+
+export const isLevelVisible = (view: LevelView, level: "main" | "mezz") => view === "all" || view === level;
+
+export const ROLE_HEX: Record<Doc<"staff">["role"], string> = {
+  network: "#38bdf8",
+  facilities: "#fb923c",
+  supplies: "#a78bfa",
+  guest_services: "#f472b6",
+  ops_lead: "#f8fafc",
+};
+
+export type VenueSceneProps = {
+  incidents?: Doc<"incidents">[];
+  staff?: StaffDotProps[];
+  /** One entry per drawn route (e.g. one per active assignment). */
+  routes?: RouteLineProps[];
+  selectedId?: Id<"incidents"> | null;
+  onSelect?: (id: Id<"incidents">) => void;
+  initialLevel?: LevelView;
+  children?: React.ReactNode;
+};
