@@ -8,6 +8,8 @@ npx tsx agent/export.ts            # default site: https://resolute-horse-290.co
 ```
 
 - `system-prompt.md`: agent instructions (Playground "Instructions" / `config.instructions`).
+- `event-facts.md`: hand-edited event facts (Sleeping Area, ...). Edit this, then re-run the export.
+- `venue-guide.md`: generated from the venue data + event facts; appended to the system prompt as "# Venue guide".
 - `cartesia-tools.json`: one `POST https://api.cartesia.ai/v1/agents/tools` body per tool.
 
 ## Setup

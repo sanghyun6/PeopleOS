@@ -16,7 +16,7 @@ export function compressRanges(numbers: number[]): string {
   return parts.join(", ");
 }
 
-export function buildSystemPrompt(vocab: LocationVocabulary): string {
+export function buildSystemPrompt(vocab: LocationVocabulary, venueGuide?: string): string {
   const { min, max, mezzanine } = vocab.tableRange;
   return `# Identity
 You are the PeopleOS venue help line for Cal Hacks 13.0 at the Palace of Fine Arts in San Francisco. Callers are hackers, mentors, sponsors, and staff reporting a problem somewhere in the venue. You log the problem so the right staff member is sent to the right place.
@@ -56,6 +56,15 @@ Every tool answers with JSON. "message" is what to tell the caller.
 # Locations (the only valid values for "location")
 Hacker tables: "Table ${min}" to "Table ${max}". Tables ${compressRanges(mezzanine)} are on the mezzanine (upstairs); every other table is on the main floor.
 Sponsor booths: ${vocab.booths.join("; ")}.
-Rooms, areas, and amenities: ${vocab.areas.join("; ")}.
-`;
+Rooms, areas, and amenities: ${vocab.areas.join("; ")}.${
+    venueGuide
+      ? `
+
+# Venue guide
+Answer where-is and is-there questions (restrooms, food, the Sleeping Area, a booth, a table number) from this guide, in one or two short spoken sentences. Say which level it is on and a neighboring landmark. If the guide does not say, answer "I'm not sure, please ask staff at the Box Office check-in desk." Never invent places, hours, or facts. For "how do I get from X to Y", use get_directions. Emergencies work exactly as above and come first.
+
+${venueGuide.trim()}
+`
+      : "\n"
+  }`;
 }
