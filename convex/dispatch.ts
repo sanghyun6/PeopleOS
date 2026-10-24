@@ -4,7 +4,7 @@ import { v } from "convex/values";
 import { internalMutation, type MutationCtx } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import { buildGraph, type Graph } from "./lib/graph";
-import { planReroute, rankCandidates, type OpenAssignment } from "./lib/dispatch";
+import { countRerouted, planReroute, rankCandidates, type OpenAssignment } from "./lib/dispatch";
 
 export { rankCandidates, type Candidate } from "./lib/dispatch";
 
@@ -107,11 +107,12 @@ export async function dispatchToBest(
 }
 
 /**
- * After the graph changes (blockage confirmed/cleared): re-rank every open
+ * After the graph changes (blockage applied/undone): re-rank every open
  * assignment, store recomputed routes, and reassign when someone else is now
- * strictly better. Returns how many incidents changed assignee.
+ * strictly better. Returns how many tasks were rerouted (new route, assignee, or
+ * escalated) and how many of those changed assignee.
  */
-export async function rerouteAll(ctx: MutationCtx, reason: string): Promise<number> {
+export async function rerouteAll(ctx: MutationCtx, reason: string): Promise<{ rerouted: number; reassigned: number }> {
   const [staff, graph, openRows] = await Promise.all([
     ctx.db.query("staff").take(MAX_ROWS),
     loadGraph(ctx),
@@ -128,7 +129,6 @@ export async function rerouteAll(ctx: MutationCtx, reason: string): Promise<numb
   }
 
   const decisions = planReroute({ open, staff, workloads: countWorkloads(openRows), declinedBy, graph });
-  let reassigned = 0;
   const now = Date.now();
   for (const d of decisions) {
     const old = open.find((o) => o.assignment._id === d.assignmentId)!.assignment;
@@ -145,7 +145,6 @@ export async function rerouteAll(ctx: MutationCtx, reason: string): Promise<numb
       });
       await ctx.db.patch("incidents", d.incidentId, { status: "assigned", assigneeId: d.to.staff._id });
       await syncStaffStatus(ctx, d.from);
-      reassigned++;
     } else {
       await ctx.db.patch("assignments", d.assignmentId, { status: "cancelled", respondedAt: old.respondedAt ?? now });
       await ctx.db.patch("incidents", d.incidentId, {
@@ -156,7 +155,7 @@ export async function rerouteAll(ctx: MutationCtx, reason: string): Promise<numb
       await syncStaffStatus(ctx, old.staffId);
     }
   }
-  return reassigned;
+  return countRerouted(decisions);
 }
 
 /** Offer the incident to the best candidate. Escalates when nobody is eligible. */
@@ -174,5 +173,5 @@ export const dispatchIncident = internalMutation({
 export const rerouteOpenAssignments = internalMutation({
   args: { reason: v.string() },
   returns: v.number(),
-  handler: async (ctx, { reason }): Promise<number> => rerouteAll(ctx, reason),
+  handler: async (ctx, { reason }): Promise<number> => (await rerouteAll(ctx, reason)).reassigned,
 });

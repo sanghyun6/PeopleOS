@@ -1,6 +1,6 @@
 // Mock data so screens render before the backend bodies exist. Shapes match convex/schema.ts.
 import type { Doc } from "@/convex/_generated/dataModel";
-import type { AssignmentView } from "@/app/staff/[id]/AssignmentCard";
+import type { AssignmentView } from "@/components/staff/AssignmentCard";
 
 const id = (s: string) => s as never;
 const now = Date.now();
@@ -55,10 +55,10 @@ export const mockIncidents: Doc<"incidents">[] = [
     category: "blockage",
     priority: "high",
     description: "Hallway near Gate 3/4 is blocked by a pallet.",
-    status: "pending_review",
+    status: "acknowledged",
     zoneId: gate,
     at: { x: 0, z: -20 },
-    transcript: "Caller: The hallway by Gate 3 and 4 is totally blocked.\nAgent: I'll flag this to the operator to confirm.",
+    transcript: "Caller: The hallway by Gate 3 and 4 is totally blocked.\nAgent: Logged. Staff are being routed around it now.",
   }),
   incident(3, { category: "supplies", description: "No cups at the water station.", status: "assigned", assigneeId: id("s4"), zoneId: broadway }),
   incident(4, { category: "medical", priority: "critical", description: "Attendee feels faint near the mezzanine stairs.", status: "escalated", zoneId: mezz, level: "mezz", escalationReason: "medical keyword — human operator required" }),

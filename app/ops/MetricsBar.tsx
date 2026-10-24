@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { formatDuration } from "@/components/ui/format";
 import { useStats } from "@/components/ui/hooks";
 
@@ -13,7 +14,7 @@ function Card({ title, value, accent }: { title: string; value: string; accent?:
 }
 
 /** Top bar: open incidents, avg time-to-acknowledge (incidents.stats, step 7). */
-export function MetricsBar({ zoneCount, edgeCount }: { zoneCount?: number; edgeCount?: number }) {
+export function MetricsBar({ zoneCount, edgeCount, children }: { zoneCount?: number; edgeCount?: number; children?: ReactNode }) {
   const stats = useStats();
   return (
     <header className="flex flex-wrap items-center gap-4 border-b border-neutral-800 px-4 py-2 text-sm">
@@ -22,6 +23,7 @@ export function MetricsBar({ zoneCount, edgeCount }: { zoneCount?: number; edgeC
         <div className="text-xs text-neutral-500">
           {zoneCount ?? "…"} zones · {edgeCount ?? "…"} edges
         </div>
+        {children}
       </div>
       <div className="ml-auto flex gap-2">
         <Card title="Open" value={stats ? String(stats.open) : "…"} />

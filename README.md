@@ -14,6 +14,8 @@ Built at Cal Hacks 13.0 (Palace of Fine Arts, SF).
 | Convex schema (`zones`, `edges`, `locations`, `staff`, `incidents`, `assignments`) | done |
 | Seed from `data/palace-venue.json`: 18 zones, 27 edges, 406 locations, 8 staff | done |
 | Cartesia HTTP actions, dispatch, Dijkstra, staff actions, dedup, blockages, stats | done (curl smoke-tested end to end) |
+| `/` | "Who are you?" picker (staff or operator), remembered in localStorage. Demo-level gate only: the operator passcode (`NEXT_PUBLIC_OPS_PASSCODE`, default `calhacks`) ships in the client bundle, so this is not real auth. |
+| `/demo` | one screen: `/ops` on the left, two staff phones (Priya, Jordan) on the right, all live |
 | `/ops` 3D view | live markers, staff dots, assignment routes, incident list, metrics |
 | `/staff/[id]` | accept / decline / complete, sound + vibration |
 | Claude dedup judgment | needs `ANTHROPIC_API_KEY` on the Convex deployment; without it, same table/booth = same problem |
@@ -49,13 +51,14 @@ convex/            backend
   incidents.ts     report pipeline, live lists, stats
   dispatch.ts      role -> availability -> workload -> path distance
   assignments.ts   accept / decline / complete
-  blockages.ts     operator-confirmed blockages -> reroute
+  blockages.ts     auto-applied blockages (+ undo) -> reroute
   dedup.ts         same zone + category within 15 min -> Claude judges
   cartesia.ts      HTTP actions for agent tools (routed in http.ts)
 agent/             Cartesia Managed Agent: tool schemas, types, prompt, vocabulary
 components/venue/  R3F scene, floor, markers, staff dots, route lines
-app/ops            ops dashboard
-app/staff          staff phone pages
+app/ops            ops dashboard (+ blockage banner with Undo)
+app/demo           split screen: ops + two staff phones
+app/staff          staff phone pages (UI in components/staff)
 data/              venue map data
 ```
 

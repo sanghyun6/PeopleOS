@@ -54,11 +54,19 @@ export type RerouteDecision =
   /** Nobody eligible can reach the incident any more: escalate to a human. */
   | { kind: "unreachable"; assignmentId: Id<"assignments">; incidentId: Id<"incidents"> };
 
+/** How many tasks a reroute pass touched: new route, new assignee, or escalated as unreachable. */
+export function countRerouted(decisions: RerouteDecision[]): { rerouted: number; reassigned: number } {
+  return {
+    rerouted: decisions.filter((d) => d.kind !== "keep" || d.routeChanged).length,
+    reassigned: decisions.filter((d) => d.kind === "reassign").length,
+  };
+}
+
 const sameRoute = (a: Route, b: Route) =>
   a.edgeIds.length === b.edgeIds.length && a.edgeIds.every((id, i) => id === b.edgeIds[i]);
 
 /**
- * After the graph changes (blockage confirmed/cleared): re-rank every open assignment
+ * After the graph changes (blockage applied/undone): re-rank every open assignment
  * on the new graph and reassign when another eligible staff member is now strictly better.
  *
  * The current assignee competes with their workload minus this task, so an unchanged
