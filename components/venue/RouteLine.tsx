@@ -5,13 +5,13 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef, type ComponentRef } from "react";
 import { Vector3 } from "three";
 import { MEZZ_HEIGHT } from "@/convex/lib/venueData";
-import type { RouteLineProps } from "./types";
+import { ACCENT_HEX, type RouteLineProps } from "./types";
 
 const LIFT = 0.6;
 const levelY = (level: "main" | "mezz") => (level === "mezz" ? MEZZ_HEIGHT : 0) + LIFT;
 
 /** drei <Line> through each edge path, rising to MEZZ_HEIGHT on stair edges (step 4/8). */
-export function RouteLine({ segments, color = "#38bdf8" }: RouteLineProps) {
+export function RouteLine({ segments, color = ACCENT_HEX }: RouteLineProps) {
   const dashed = useRef<ComponentRef<typeof Line>>(null);
 
   const points = useMemo(() => {
@@ -45,15 +45,17 @@ export function RouteLine({ segments, color = "#38bdf8" }: RouteLineProps) {
 
   return (
     <group>
-      <Line points={points} color={color} lineWidth={7} transparent opacity={0.25} depthWrite={false} />
-      <Line ref={dashed} points={points} color={color} lineWidth={3.5} dashed dashSize={2.5} gapSize={1.5} />
-      <mesh position={start}>
-        <sphereGeometry args={[0.7, 12, 8]} />
-        <meshBasicMaterial color={color} />
+      {/* soft halo, solid core, then a light dash marching toward the destination */}
+      <Line points={points} color={color} lineWidth={10} transparent opacity={0.14} depthWrite={false} />
+      <Line points={points} color={color} lineWidth={3} transparent opacity={0.9} />
+      <Line ref={dashed} points={points} color="#ffffff" lineWidth={1.5} dashed dashSize={1.2} gapSize={3} transparent opacity={0.7} />
+      <mesh position={start} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.9, 1.4, 24]} />
+        <meshBasicMaterial color={color} depthWrite={false} />
       </mesh>
-      <mesh position={end}>
-        <coneGeometry args={[1.2, 2.4, 16]} />
-        <meshBasicMaterial color={color} />
+      <mesh position={end} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.4, 24]} />
+        <meshBasicMaterial color={color} depthWrite={false} />
       </mesh>
     </group>
   );

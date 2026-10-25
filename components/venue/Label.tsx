@@ -14,7 +14,8 @@ function textTexture(text: string, { color, bg, bold }: LabelStyle) {
   if (hit) return hit;
 
   const px = 48;
-  const font = `${bold ? 600 : 500} ${px}px ui-sans-serif, system-ui, sans-serif`;
+  const family = getComputedStyle(document.body).fontFamily || "ui-sans-serif, system-ui, sans-serif";
+  const font = `${bold ? 600 : 500} ${px}px ${family}`;
   const ctx = document.createElement("canvas").getContext("2d")!;
   ctx.font = font;
   const padX = px * 0.35;
@@ -50,8 +51,8 @@ export function Label({
   position,
   text,
   size = 2,
-  color = "#e5e5e5",
-  bg = "rgba(0,0,0,0.55)",
+  color = "#e7ebf2",
+  bg = "rgba(13,17,23,0.82)",
   bold = false,
   onTop = false,
 }: {

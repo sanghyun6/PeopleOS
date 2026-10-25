@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Label } from "./Label";
 import { toWorld } from "./coords";
 import { ROLE_HEX, type StaffDotProps } from "./types";
+import { useNearZoom } from "./zoom";
 
 /** Small stable offset so staff sharing a zone center don't stack on one point. */
 function jitter(id: string): [number, number] {
@@ -20,6 +21,9 @@ export function StaffDot({ staff, zone }: StaffDotProps) {
   const [x, y, z] = toWorld({ x: zone.center.x + dx, z: zone.center.z + dz }, zone.level, 1.1);
   const color = ROLE_HEX[staff.role];
   const off = staff.status === "off_duty";
+  const near = useNearZoom();
+  // Far away, only name the staff who are on a task (they are the ones the routes start from).
+  const showName = near || staff.status === "busy";
 
   return (
     <group position={[x, y, z]}>
@@ -33,7 +37,9 @@ export function StaffDot({ staff, zone }: StaffDotProps) {
           <meshBasicMaterial color={color} depthWrite={false} />
         </mesh>
       )}
-      <Label position={[0, 2.4, 0]} text={staff.name} size={1.8} color={color} bg="rgba(0,0,0,0.65)" onTop />
+      {showName && !off && (
+        <Label position={[0, 2.4, 0]} text={near ? staff.name : staff.name.split(" ")[0]} size={1.6} color={color} onTop />
+      )}
     </group>
   );
 }

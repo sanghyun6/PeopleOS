@@ -1,25 +1,27 @@
 "use client";
 
 import { Line } from "@react-three/drei";
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { MEZZ_HEIGHT, venue, type PlacedRect, type Segment, type VenueLevel, type XZ } from "@/convex/lib/venueData";
 import { Label } from "./Label";
 import { isLevelVisible, type LevelView } from "./types";
+import { useCloseZoom, useNearZoom } from "./zoom";
 
 const FLOOR_THICKNESS = 0.4;
 const ROOM_HEIGHT = 0.5;
 const TABLE_HEIGHT = 0.8;
 const WALL_HEIGHT = 2.6;
 
+// Muted, close in value so rooms read as zones without competing with incident markers.
 const ROOM_COLOR: Record<string, string> = {
-  service: "#2a2f3a",
-  green: "#2f4a3c",
-  room: "#34415a",
-  catering: "#52402e",
-  restroom: "#2d4a52",
-  theater: "#41335c",
-  stair: "#5c5530",
+  service: "#1d2430",
+  green: "#21302b",
+  room: "#232c3b",
+  catering: "#2f2a24",
+  restroom: "#1f2d33",
+  theater: "#2a2538",
+  stair: "#363223",
 };
 
 const levelY = (level: VenueLevel) => (level === "mezz" ? MEZZ_HEIGHT : 0);
@@ -112,20 +114,23 @@ export function VenueFloor() {
     () => [...venue.outline, venue.outline[0]].map((p) => new THREE.Vector3(p.x, 0.15, p.z)),
     [],
   );
+  const near = useNearZoom();
   const { stage, mainWalls, entrances } = { stage: venue.geometry.stage, mainWalls: venue.geometry.mainWalls, entrances: venue.entrances };
 
   return (
     <group>
-      <Slab poly={venue.outline} y={-FLOOR_THICKNESS} depth={FLOOR_THICKNESS} color="#1f2530" />
-      <Line points={outlinePts} color="#94a3b8" lineWidth={2} />
-      <Slab poly={stage} y={0} depth={0.9} color="#4c3d6b" />
+      <Slab poly={venue.outline} y={-FLOOR_THICKNESS} depth={FLOOR_THICKNESS} color="#1d2531" />
+      <Line points={outlinePts} color="#5b6880" lineWidth={1.5} />
+      <Slab poly={stage} y={0} depth={0.9} color="#2e2840" />
       {mainWalls.map((w, i) => (
-        <SegmentBox key={i} seg={w} y={0} height={WALL_HEIGHT} thickness={0.35} color="#64748b" opacity={0.7} />
+        <SegmentBox key={i} seg={w} y={0} height={WALL_HEIGHT} thickness={0.35} color="#3b4555" opacity={0.6} />
       ))}
       {entrances.map((e) => (
         <group key={e.id}>
-          <SegmentBox seg={{ a: e.a, b: e.b }} y={0} height={0.5} thickness={0.8} color="#34d399" />
-          <Label position={[(e.a.x + e.b.x) / 2, 2.4, (e.a.z + e.b.z) / 2]} text={e.label} size={2} color="#6ee7b7" bg="rgba(2,44,34,0.8)" />
+          <SegmentBox seg={{ a: e.a, b: e.b }} y={0} height={0.4} thickness={0.8} color="#2f8f68" />
+          {near && (
+            <Label position={[(e.a.x + e.b.x) / 2, 2.2, (e.a.z + e.b.z) / 2]} text={e.label} size={1.4} color="#8be0bb" />
+          )}
         </group>
       ))}
     </group>
@@ -147,13 +152,13 @@ export function MezzanineDeck({ view = "all" }: { view?: LevelView }) {
 
   return (
     <group>
-      <Slab poly={hull} y={MEZZ_HEIGHT - FLOOR_THICKNESS} depth={FLOOR_THICKNESS} color="#2b3447" opacity={0.88} />
-      <Slab poly={venue.geometry.merchRoom} y={MEZZ_HEIGHT} depth={0.3} color="#3b4a66" />
+      <Slab poly={hull} y={MEZZ_HEIGHT - FLOOR_THICKNESS} depth={FLOOR_THICKNESS} color="#222b3a" opacity={0.85} />
+      <Slab poly={venue.geometry.merchRoom} y={MEZZ_HEIGHT} depth={0.3} color="#2c3649" />
       {venue.geometry.mezzWalls.map((w, i) => (
-        <SegmentBox key={i} seg={w} y={MEZZ_HEIGHT} height={WALL_HEIGHT} thickness={0.35} color="#94a3b8" opacity={0.55} />
+        <SegmentBox key={i} seg={w} y={MEZZ_HEIGHT} height={WALL_HEIGHT} thickness={0.35} color="#56627a" opacity={0.45} />
       ))}
       {venue.geometry.mezzDoors.map((d, i) => (
-        <SegmentBox key={`d${i}`} seg={d} y={MEZZ_HEIGHT} height={0.3} thickness={0.9} color="#fbbf24" />
+        <SegmentBox key={`d${i}`} seg={d} y={MEZZ_HEIGHT} height={0.3} thickness={0.9} color="#8a7a4c" />
       ))}
     </group>
   );
@@ -162,31 +167,33 @@ export function MezzanineDeck({ view = "all" }: { view?: LevelView }) {
 /** Room polygons (slightly extruded, colored by kind) with labels. */
 export function VenueRooms() {
   const rooms = venue.rooms;
+  const near = useNearZoom();
   return (
     <group>
       {rooms.map((r) => (
         <Slab key={r.id} poly={r.poly} y={0} depth={ROOM_HEIGHT} color={ROOM_COLOR[r.kind] ?? "#34415a"} />
       ))}
-      {rooms
+      {near &&
+        rooms
         .filter((r) => r.kind !== "service")
         .map((r) => {
           const c = centroid(r.poly);
           const label = r.label ?? r.id.replace(/-/g, " ");
           return (
-            <Label key={r.id} position={[c.x, ROOM_HEIGHT + 0.8, c.z]} text={label.replace(/\b\w/g, (m) => m.toUpperCase())} size={1.8} color="#a3a3a3" bg="transparent" />
+            <Label key={r.id} position={[c.x, ROOM_HEIGHT + 0.8, c.z]} text={label.replace(/\b\w/g, (m) => m.toUpperCase())} size={1.5} color="#8d97a8" bg="transparent" />
           );
         })}
     </group>
   );
 }
 
-/** Named areas (Atrium, Broadway #1...) as faint floor-level captions. */
+/** Named areas (Atrium, Broadway #1...) as faint floor-level captions; the only labels kept at far zoom. */
 export function AreaLabels({ view = "all" }: { view?: LevelView }) {
   if (!isLevelVisible(view, "main")) return null;
   return (
     <>
       {venue.labels.map((l) => (
-        <Label key={l.label} position={[l.at.x, 0.8, l.at.z]} text={l.label.toUpperCase()} size={3} color="#737373" bg="transparent" bold />
+        <Label key={l.label} position={[l.at.x, 0.8, l.at.z]} text={l.label} size={2.6} color="#5d6879" bg="transparent" bold />
       ))}
     </>
   );
@@ -206,11 +213,58 @@ export function HackerTables({ view = "all" }: { view?: LevelView }) {
   const showMezz = isLevelVisible(view, "mezz");
   return (
     <group>
-      <InstancedBoxes rects={main} y={0} height={TABLE_HEIGHT} color="#7c8aa0" visible={showMain} />
-      <InstancedBoxes rects={mezz} y={MEZZ_HEIGHT} height={TABLE_HEIGHT} color="#9aa8c0" visible={showMezz} />
-      <InstancedBoxes rects={g.checkinTables} y={0} height={TABLE_HEIGHT} color="#b45309" visible={showMain} />
-      <InstancedBoxes rects={g.serviceTables} y={0} height={TABLE_HEIGHT} color="#a16207" visible={showMain} />
-      <InstancedBoxes rects={g.printerTables} y={MEZZ_HEIGHT} height={TABLE_HEIGHT} color="#a16207" visible={showMezz} />
+      <InstancedBoxes rects={main} y={0} height={TABLE_HEIGHT} color="#5a667b" visible={showMain} />
+      <InstancedBoxes rects={mezz} y={MEZZ_HEIGHT} height={TABLE_HEIGHT} color="#6b7790" visible={showMezz} />
+      <InstancedBoxes rects={g.checkinTables} y={0} height={TABLE_HEIGHT} color="#6b5636" visible={showMain} />
+      <InstancedBoxes rects={g.serviceTables} y={0} height={TABLE_HEIGHT} color="#5f5034" visible={showMain} />
+      <InstancedBoxes rects={g.printerTables} y={MEZZ_HEIGHT} height={TABLE_HEIGHT} color="#5f5034" visible={showMezz} />
+    </group>
+  );
+}
+
+/** One sponsor booth; its name shows at close zoom or on hover. */
+function Booth({ name, at, level, tableCount }: { name: string; at: XZ; level: VenueLevel; tableCount: number }) {
+  const near = useCloseZoom();
+  const [hovered, setHovered] = useState(false);
+  const side = Math.min(7, Math.max(3, 2 + tableCount));
+  const y = levelY(level);
+  return (
+    <group>
+      <mesh
+        position={[at.x, y + 0.5, at.z]}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setHovered(true);
+        }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <boxGeometry args={[side, 1, side]} />
+        <meshStandardMaterial color={hovered ? "#5a6c9e" : "#38445f"} />
+      </mesh>
+      {(near || hovered) && <Label position={[at.x, y + 2.2, at.z]} text={name} size={hovered ? 2 : 1.4} color="#c3cff5" />}
+    </group>
+  );
+}
+
+/** Amenity (food, luggage...): small marker, label at close zoom or on hover. */
+function Amenity({ label, at, level }: { label: string; at: XZ; level: VenueLevel }) {
+  const near = useCloseZoom();
+  const [hovered, setHovered] = useState(false);
+  const y = levelY(level);
+  return (
+    <group>
+      <mesh
+        position={[at.x, y + 1.4, at.z]}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setHovered(true);
+        }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <octahedronGeometry args={[0.9]} />
+        <meshStandardMaterial color="#c9a45a" emissive="#c9a45a" emissiveIntensity={hovered ? 0.6 : 0.2} />
+      </mesh>
+      {(near || hovered) && <Label position={[at.x, y + 3.4, at.z]} text={label} size={hovered ? 2 : 1.5} color="#e6cf98" />}
     </group>
   );
 }
@@ -221,33 +275,14 @@ export function Booths({ view = "all" }: { view?: LevelView }) {
     <group>
       {venue.sponsors
         .filter((s) => isLevelVisible(view, s.level))
-        .map((s) => {
-          const side = Math.min(7, Math.max(3, 2 + s.tableCount));
-          const y = levelY(s.level);
-          return (
-            <group key={s.n}>
-              <mesh position={[s.at.x, y + 0.5, s.at.z]}>
-                <boxGeometry args={[side, 1, side]} />
-                <meshStandardMaterial color={s.level === "mezz" ? "#3b82f6" : "#2563eb"} transparent opacity={0.75} />
-              </mesh>
-              <Label position={[s.at.x, y + 2.2, s.at.z]} text={s.name} size={1.6} color="#bfdbfe" bg="rgba(23,37,84,0.7)" />
-            </group>
-          );
-        })}
+        .map((s) => (
+          <Booth key={s.n} name={s.name} at={s.at} level={s.level} tableCount={s.tableCount} />
+        ))}
       {venue.amenities
         .filter((a) => isLevelVisible(view, a.level))
-        .map((a) => {
-          const y = levelY(a.level);
-          return (
-            <group key={a.label}>
-              <mesh position={[a.at.x, y + 1.6, a.at.z]}>
-                <octahedronGeometry args={[1.1]} />
-                <meshStandardMaterial color="#fbbf24" emissive="#fbbf24" emissiveIntensity={0.4} />
-              </mesh>
-              <Label position={[a.at.x, y + 3.9, a.at.z]} text={a.label} size={2} color="#fcd34d" bg="rgba(69,26,3,0.8)" />
-            </group>
-          );
-        })}
+        .map((a) => (
+          <Amenity key={a.label} label={a.label} at={a.at} level={a.level} />
+        ))}
     </group>
   );
 }
