@@ -1,5 +1,5 @@
-// Pure helpers for the /onboard wizard: the editable draft, CSV staff parsing, zone
-// adjacency suggestions, fact parsing for the Bitdeer extraction, and draft -> Venue Pack.
+// Pure helpers for the /onboard wizard: the editable draft, automatic zone connections,
+// pasted staff lists, fact parsing for the Bitdeer extraction, and draft -> Venue Pack.
 import {
   LOCATION_KINDS,
   STAFF_ROLES,
@@ -21,32 +21,42 @@ export type DraftZone = { id: string; name: string; floor: string; x: number; z:
 export type DraftPlace = { id: string; name: string; kind: PlaceKind; floor: string; x: number; z: number; key?: string };
 export type DraftEdge = { from: string; to: string; kind: "walk" | "stairs" };
 export type DraftFact = { id: string; title: string; text: string; source?: string };
-export type DraftStaff = { name: string; role: StaffRoleName; startZone: string; status: "available" | "off_duty"; phone?: string };
+export type DraftStaff = { name: string; role: StaffRoleName; startZone: string; status: "available" | "off_duty" };
+
+/** Plain-language role names for the staff step. */
+export const ROLE_LABEL: Record<StaffRoleName, string> = {
+  facilities: "Facilities (power, tables, lights)",
+  network: "Network (wifi, ethernet)",
+  supplies: "Supplies (water, food)",
+  guest_services: "Guest services (lost & found)",
+  ops_lead: "Ops lead (emergencies, blocked paths)",
+};
 
 export type Draft = {
-  /** helpDesk: a draft place id, "zone:<zone id>", or "" for none. */
-  event: { name: string; venueName: string; city: string; timezone: string; helpDesk: string };
+  /** helpDesk: a draft place id, "zone:<zone id>", or "" for none. city/timezone only survive an import. */
+  event: { name: string; venueName: string; helpDesk: string; city?: string; timezone?: string };
   floors: { id: string; name: string; elevation: number }[];
   passcode: string;
   /** Plan size in meters; the uploaded image (kept in the browser only) is stretched to it. */
   plan: { widthM: number; heightM: number };
   zones: DraftZone[];
   places: DraftPlace[];
-  edges: DraftEdge[];
+  /** Stairs between floors and walkways between zones that do not touch. Touching zones connect automatically. */
+  extraEdges: DraftEdge[];
   facts: DraftFact[];
-  staffCsv: string;
+  staff: DraftStaff[];
 };
 
 export const EMPTY_DRAFT: Draft = {
-  event: { name: "", venueName: "", city: "", timezone: "America/Los_Angeles", helpDesk: "" },
+  event: { name: "", venueName: "", helpDesk: "" },
   floors: [{ id: "ground", name: "Ground floor", elevation: 0 }],
   passcode: "",
   plan: { widthM: 60, heightM: 40 },
   zones: [],
   places: [],
-  edges: [],
+  extraEdges: [],
   facts: [],
-  staffCsv: "",
+  staff: [],
 };
 
 /** Id not yet in `taken`: "lobby", "lobby-2", ... */
@@ -67,8 +77,14 @@ export function zoneForPlace(place: Pick<DraftPlace, "floor" | "x" | "z">, zones
   return [...sameFloor].sort((a, b) => Math.hypot(a.x - place.x, a.z - place.z) - Math.hypot(b.x - place.x, b.z - place.z))[0];
 }
 
+/** Every walking connection: the drawn extras plus one per pair of touching zones on a floor. */
+export const connections = (draft: Pick<Draft, "zones" | "extraEdges">): DraftEdge[] => [
+  ...draft.extraEdges,
+  ...suggestEdges(draft.zones, draft.extraEdges),
+];
+
 /** Walk edges between zones on the same floor whose rectangles touch or overlap (gap <= `gap` m). */
-export function suggestEdges(zones: DraftZone[], existing: DraftEdge[], gap = 1.5): DraftEdge[] {
+export function suggestEdges(zones: DraftZone[], existing: DraftEdge[], gap = 0.5): DraftEdge[] {
   const has = (a: string, b: string) => existing.some((e) => (e.from === a && e.to === b) || (e.from === b && e.to === a));
   const out: DraftEdge[] = [];
   for (let i = 0; i < zones.length; i++) {
@@ -126,10 +142,11 @@ function splitCsvLine(line: string): string[] {
 }
 
 /**
- * `name,role,start_zone[,status][,phone]` per line (header row optional). Zones match by id or
- * name. Returns the rows that parsed and one readable error per bad line.
+ * Pasted list, one person per line: `name, role, zone` (a header row and extra columns are
+ * ignored; "off" in a 4th column marks off duty). Zones match by name or id.
+ * Returns the rows that parsed and one readable error per bad line.
  */
-export function parseStaffCsv(text: string, zones: Pick<DraftZone, "id" | "name">[]): { staff: DraftStaff[]; errors: string[] } {
+export function parseStaffList(text: string, zones: Pick<DraftZone, "id" | "name">[]): { staff: DraftStaff[]; errors: string[] } {
   const staff: DraftStaff[] = [];
   const errors: string[] = [];
   const zoneFor = (s: string) => {
@@ -141,15 +158,15 @@ export function parseStaffCsv(text: string, zones: Pick<DraftZone, "id" | "name"
     if (!line || line.startsWith("#")) return;
     const cols = splitCsvLine(line);
     if (i === 0 && cols[0]?.toLowerCase() === "name") return; // header
-    const [name, roleRaw = "", zoneRaw = "", statusRaw = "", phone = ""] = cols;
+    const [name, roleRaw = "", zoneRaw = "", statusRaw = ""] = cols;
     const where = `line ${i + 1}`;
     if (!name) return void errors.push(`${where}: missing name`);
     const role = ROLE_ALIASES[roleRaw.toLowerCase().replace(/[^a-z]+/g, "_").replace(/^_|_$/g, "")];
     if (!role) return void errors.push(`${where}: unknown role "${roleRaw}" (use ${STAFF_ROLES.join(", ")})`);
     const zone = zoneFor(zoneRaw);
-    if (!zone) return void errors.push(`${where}: unknown start zone "${zoneRaw}"`);
+    if (!zone) return void errors.push(`${where}: unknown zone "${zoneRaw}"`);
     const off = /^off/i.test(statusRaw.trim());
-    staff.push({ name, role, startZone: zone.id, status: off ? "off_duty" : "available", ...(phone ? { phone } : {}) });
+    staff.push({ name, role, startZone: zone.id, status: off ? "off_duty" : "available" });
   });
   return { staff, errors };
 }
@@ -176,23 +193,6 @@ export function parseFactsReply(reply: string, source?: string): DraftFact[] {
   return facts;
 }
 
-/** Visible text of an HTML page (scripts, styles and tags removed), whitespace collapsed. */
-export function htmlToText(html: string): string {
-  return html
-    .replace(/<(script|style|noscript|svg)[\s\S]*?<\/\1>/gi, " ")
-    .replace(/<br\s*\/?>|<\/(p|div|li|h[1-6]|tr)>/gi, "\n")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/[ \t]+/g, " ")
-    .replace(/ *\n[\s]*/g, "\n")
-    .trim();
-}
-
 const placeKey = (p: DraftPlace, taken: string[]) => {
   if (p.key && !taken.includes(p.key)) return p.key;
   const table = p.kind === "table" ? /(\d+)\s*$/.exec(p.name)?.[1] : undefined;
@@ -200,7 +200,7 @@ const placeKey = (p: DraftPlace, taken: string[]) => {
 };
 
 /** The draft as a Venue Pack (validate it with parseVenuePack before using it). */
-export function draftToPack(draft: Draft, staff: DraftStaff[]): VenuePackInput {
+export function draftToPack(draft: Draft): VenuePackInput {
   const keys: string[] = [];
   const keyOf = new Map<string, string>(); // draft place id -> pack location id
   const locations = draft.places.flatMap((p) => {
@@ -219,8 +219,8 @@ export function draftToPack(draft: Draft, staff: DraftStaff[]): VenuePackInput {
     event: {
       name: draft.event.name.trim(),
       venueName: draft.event.venueName.trim(),
-      ...(draft.event.city.trim() ? { city: draft.event.city.trim() } : {}),
-      timezone: draft.event.timezone,
+      ...(draft.event.city ? { city: draft.event.city } : {}),
+      timezone: draft.event.timezone ?? "America/Los_Angeles",
       ...(helpDesk ? { helpDesk } : {}),
       keyterms: [],
     },
@@ -234,9 +234,9 @@ export function draftToPack(draft: Draft, staff: DraftStaff[]): VenuePackInput {
       kind: z.kind,
       aliases: [],
     })),
-    edges: draft.edges.map((e) => ({ from: e.from, to: e.to, kind: e.kind, via: [] })),
+    edges: connections(draft).map((e) => ({ from: e.from, to: e.to, kind: e.kind, via: [] })),
     locations,
-    staff,
+    staff: draft.staff.filter((s) => s.name.trim()).map((s) => ({ ...s, name: s.name.trim() })),
     knowledge: draft.facts.map((f) => ({ id: f.id, title: f.title, text: f.text, ...(f.source ? { source: f.source } : {}) })),
     ...(draft.passcode.trim() ? { operatorPasscode: draft.passcode.trim() } : {}),
     geometry: { notes: "Made with the PeopleOS /onboard wizard. Zones are rectangles drawn over the floor plan." },
@@ -246,7 +246,7 @@ export function draftToPack(draft: Draft, staff: DraftStaff[]): VenuePackInput {
 const round = (n: number) => Math.round(n * 100) / 100;
 
 /** A validated pack back into an editable draft (polygon zones become their bounding boxes). */
-export function packToDraft(pack: VenuePack): { draft: Draft; staffCsv: string } {
+export function packToDraft(pack: VenuePack): Draft {
   const zones: DraftZone[] = pack.zones.map((z) => {
     const poly = shapePolygon(z.shape);
     const xs = poly.map((p) => p.x);
@@ -272,25 +272,24 @@ export function packToDraft(pack: VenuePack): { draft: Draft; staffCsv: string }
     item.z = round(item.z - minZ);
   }
   const deskIndex = pack.locations.findIndex((l) => l.id === pack.event.helpDesk);
-  const staffCsv = ["name,role,start_zone,status,phone", ...pack.staff.map((s) => [s.name.includes(",") ? `"${s.name}"` : s.name, s.role, s.startZone, s.status, s.phone ?? ""].join(","))].join("\n");
+  // Keep only the connections the editor would not draw by itself.
+  const auto = suggestEdges(zones, []);
+  const isAuto = (e: DraftEdge) => e.kind === "walk" && auto.some((a) => (a.from === e.from && a.to === e.to) || (a.from === e.to && a.to === e.from));
   return {
-    staffCsv,
-    draft: {
-      event: {
-        name: pack.event.name,
-        venueName: pack.event.venueName,
-        city: pack.event.city ?? "",
-        timezone: pack.event.timezone,
-        helpDesk: deskIndex >= 0 ? places[deskIndex].id : pack.event.helpDesk?.startsWith("zone:") ? pack.event.helpDesk : "",
-      },
-      floors: pack.floors,
-      passcode: pack.operatorPasscode ?? "",
-      plan: { widthM: round(maxX - minX), heightM: round(maxZ - minZ) },
-      zones,
-      places,
-      edges: pack.edges.map((e) => ({ from: e.from, to: e.to, kind: e.kind })),
-      facts: pack.knowledge.map((k) => ({ id: k.id, title: k.title, text: k.text, ...(k.source ? { source: k.source } : {}) })),
-      staffCsv,
+    event: {
+      name: pack.event.name,
+      venueName: pack.event.venueName,
+      ...(pack.event.city ? { city: pack.event.city } : {}),
+      timezone: pack.event.timezone,
+      helpDesk: deskIndex >= 0 ? places[deskIndex].id : pack.event.helpDesk?.startsWith("zone:") ? pack.event.helpDesk : "",
     },
+    floors: pack.floors,
+    passcode: pack.operatorPasscode ?? "",
+    plan: { widthM: round(maxX - minX), heightM: round(maxZ - minZ) },
+    zones,
+    places,
+    extraEdges: pack.edges.map((e) => ({ from: e.from, to: e.to, kind: e.kind })).filter((e) => !isAuto(e)),
+    facts: pack.knowledge.map((k) => ({ id: k.id, title: k.title, text: k.text, ...(k.source ? { source: k.source } : {}) })),
+    staff: pack.staff.map((s) => ({ name: s.name, role: s.role, startZone: s.startZone, status: s.status })),
   };
 }

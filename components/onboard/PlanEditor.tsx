@@ -1,27 +1,34 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { LOCATION_KINDS, ZONE_KINDS, slugify } from "@/convex/lib/venuePack";
+import { slugify } from "@/convex/lib/venuePack";
 import { NextStepBadge } from "./NextStep";
-import { Field, inputClass } from "./fields";
-import { suggestEdges, uniqueId, zoneForPlace, type Draft, type DraftPlace, type DraftZone, type PlaceKind, type ZoneKind } from "./draft";
+import { inputClass } from "./fields";
+import { connections, uniqueId, zoneForPlace, type Draft, type DraftPlace, type DraftZone, type PlaceKind } from "./draft";
 
-type Mode = "select" | "zone" | "place" | "connect";
+type Mode = "zone" | "place" | "link" | "select";
 type Selection = { kind: "zone" | "place"; id: string } | null;
 
 const MODES: { id: Mode; label: string; hint: string }[] = [
-  { id: "select", label: "Select", hint: "Click a zone or place to edit it." },
-  { id: "zone", label: "Draw zone", hint: "Drag a rectangle over an area of the plan." },
-  { id: "place", label: "Add place", hint: "Click where a table, booth, room or amenity is." },
-  { id: "connect", label: "Connect", hint: "Click two zones people can walk between." },
+  { id: "zone", label: "Draw area", hint: "Drag a rectangle over each area (hall, room, lobby). Areas that touch are connected automatically." },
+  { id: "place", label: "Add place", hint: "Click where a table, booth, restroom or help desk is, then name it." },
+  { id: "link", label: "Link areas", hint: "Only for stairs, or areas that don't touch: click one area, then the other (switch floors in between for stairs)." },
+  { id: "select", label: "Edit", hint: "Click an area or place to rename or delete it." },
+];
+
+const PLACE_KINDS: { id: PlaceKind; label: string }[] = [
+  { id: "table", label: "Table" },
+  { id: "booth", label: "Booth" },
+  { id: "amenity", label: "Amenity (water, food, desk)" },
+  { id: "room", label: "Room (restroom, office)" },
+  { id: "entrance", label: "Entrance" },
 ];
 
 const snap = (n: number) => Math.round(n * 2) / 2;
-const KIND_FILL: Partial<Record<ZoneKind, string>> = { stairs: "#363223", corridor: "#1f2733", entrance: "#21302b", room: "#26303f" };
 
 /**
- * Floor plan step: an uploaded image under an SVG in meters, where people draw rectangular
- * zones, drop places, and connect zones. Automatic zone detection from the image is not built.
+ * Floor plan step: an uploaded image under an SVG in meters. People draw rectangular areas and
+ * drop places; touching areas connect by themselves. Automatic area detection is not built.
  */
 export function PlanEditor({ draft, setDraft, image, setImage }: {
   draft: Draft;
@@ -37,6 +44,9 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
   const [selected, setSelected] = useState<Selection>(null);
   const { widthM, heightM } = draft.plan;
   const currentFloor = draft.floors.some((f) => f.id === floor) ? floor : draft.floors[0].id;
+  const zoneById = new Map(draft.zones.map((z) => [z.id, z]));
+  const edges = connections(draft);
+  const stroke = Math.max(widthM, heightM) / 400;
 
   const toPlan = (e: React.PointerEvent) => {
     const el = svg.current!;
@@ -52,8 +62,8 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
     const d = Math.abs(z1 - z0);
     if (w < 1.5 || d < 1.5) return;
     const n = draft.zones.length + 1;
-    const id = uniqueId(`zone-${n}`, draft.zones.map((z) => z.id));
-    const zone: DraftZone = { id, name: `Zone ${n}`, floor: currentFloor, x: (x0 + x1) / 2, z: (z0 + z1) / 2, w, d, height: 3, kind: "hall" };
+    const id = uniqueId(`area-${n}`, draft.zones.map((z) => z.id));
+    const zone: DraftZone = { id, name: `Area ${n}`, floor: currentFloor, x: (x0 + x1) / 2, z: (z0 + z1) / 2, w, d, height: 3, kind: "hall" };
     setDraft((dr) => ({ ...dr, zones: [...dr.zones, zone] }));
     setSelected({ kind: "zone", id });
   };
@@ -69,31 +79,28 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
     if (mode === "select") {
       e.stopPropagation();
       setSelected({ kind: "zone", id: zone.id });
-    } else if (mode === "connect") {
+    } else if (mode === "link") {
       e.stopPropagation();
       if (!pending) return setPending(zone.id);
-      if (pending !== zone.id) {
-        const a = draft.zones.find((z) => z.id === pending)!;
-        setDraft((dr) =>
-          dr.edges.some((ed) => (ed.from === a.id && ed.to === zone.id) || (ed.from === zone.id && ed.to === a.id))
-            ? dr
-            : { ...dr, edges: [...dr.edges, { from: a.id, to: zone.id, kind: a.floor === zone.floor ? "walk" : "stairs" }] },
-        );
+      const a = zoneById.get(pending);
+      if (a && a.id !== zone.id && !edges.some((ed) => (ed.from === a.id && ed.to === zone.id) || (ed.from === zone.id && ed.to === a.id))) {
+        setDraft((dr) => ({ ...dr, extraEdges: [...dr.extraEdges, { from: a.id, to: zone.id, kind: a.floor === zone.floor ? "walk" : "stairs" }] }));
       }
       setPending(null);
     }
   };
 
-  const updateZone = (id: string, patch: Partial<DraftZone>) => {
-    // Ids follow names so staff CSVs can use either; edges and the help desk follow the rename.
-    const nextId =
-      patch.name !== undefined ? uniqueId(slugify(patch.name) || id, draft.zones.filter((z) => z.id !== id).map((z) => z.id)) : id;
-    if (nextId !== id) setSelected({ kind: "zone", id: nextId });
+  const renameZone = (id: string, name: string) => {
+    // Ids follow names so a pasted staff list can use either; links, staff and the help desk follow.
+    const nextId = uniqueId(slugify(name) || id, draft.zones.filter((z) => z.id !== id).map((z) => z.id));
+    const swap = (x: string) => (x === id ? nextId : x);
+    setSelected({ kind: "zone", id: nextId });
     setDraft((dr) => ({
-        ...dr,
-        zones: dr.zones.map((z) => (z.id === id ? { ...z, ...patch, id: nextId } : z)),
-        edges: dr.edges.map((e) => ({ ...e, from: e.from === id ? nextId : e.from, to: e.to === id ? nextId : e.to })),
-        event: dr.event.helpDesk === `zone:${id}` ? { ...dr.event, helpDesk: `zone:${nextId}` } : dr.event,
+      ...dr,
+      zones: dr.zones.map((z) => (z.id === id ? { ...z, name, id: nextId } : z)),
+      extraEdges: dr.extraEdges.map((e) => ({ ...e, from: swap(e.from), to: swap(e.to) })),
+      staff: dr.staff.map((s) => ({ ...s, startZone: swap(s.startZone) })),
+      event: dr.event.helpDesk === `zone:${id}` ? { ...dr.event, helpDesk: `zone:${nextId}` } : dr.event,
     }));
   };
   const updatePlace = (id: string, patch: Partial<DraftPlace>) =>
@@ -101,7 +108,7 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
   const remove = (sel: NonNullable<Selection>) => {
     setDraft((dr) =>
       sel.kind === "zone"
-        ? { ...dr, zones: dr.zones.filter((z) => z.id !== sel.id), edges: dr.edges.filter((e) => e.from !== sel.id && e.to !== sel.id) }
+        ? { ...dr, zones: dr.zones.filter((z) => z.id !== sel.id), extraEdges: dr.extraEdges.filter((e) => e.from !== sel.id && e.to !== sel.id) }
         : { ...dr, places: dr.places.filter((p) => p.id !== sel.id) },
     );
     setSelected(null);
@@ -119,25 +126,18 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
     img.src = url;
   };
 
-  const zone = selected?.kind === "zone" ? draft.zones.find((z) => z.id === selected.id) : undefined;
+  const zone = selected?.kind === "zone" ? zoneById.get(selected.id) : undefined;
   const place = selected?.kind === "place" ? draft.places.find((p) => p.id === selected.id) : undefined;
-  const zoneById = new Map(draft.zones.map((z) => [z.id, z]));
-  const suggestions = suggestEdges(draft.zones, draft.edges);
-  const stroke = Math.max(widthM, heightM) / 400;
+  const tab = (active: boolean) =>
+    `h-8 rounded-lg px-3 font-medium transition ${active ? "bg-raised text-fg ring-1 ring-inset ring-line-strong" : "text-muted hover:text-fg"}`;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
       <div className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <div role="group" aria-label="Tool" className="flex gap-1 rounded-xl bg-surface p-1 text-xs ring-1 ring-inset ring-line">
             {MODES.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => (setMode(m.id), setPending(null))}
-                aria-pressed={mode === m.id}
-                className={`h-8 rounded-lg px-3 font-medium transition ${mode === m.id ? "bg-raised text-fg ring-1 ring-inset ring-line-strong" : "text-muted hover:text-fg"}`}
-              >
+              <button key={m.id} type="button" onClick={() => (setMode(m.id), setPending(null))} aria-pressed={mode === m.id} className={tab(mode === m.id)}>
                 {m.label}
               </button>
             ))}
@@ -145,26 +145,20 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
           {draft.floors.length > 1 && (
             <div role="group" aria-label="Floor" className="flex gap-1 rounded-xl bg-surface p-1 text-xs ring-1 ring-inset ring-line">
               {draft.floors.map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setFloor(f.id)}
-                  aria-pressed={currentFloor === f.id}
-                  className={`h-8 rounded-lg px-3 font-medium transition ${currentFloor === f.id ? "bg-raised text-fg ring-1 ring-inset ring-line-strong" : "text-muted hover:text-fg"}`}
-                >
+                <button key={f.id} type="button" onClick={() => setFloor(f.id)} aria-pressed={currentFloor === f.id} className={tab(currentFloor === f.id)}>
                   {f.name}
                 </button>
               ))}
             </div>
           )}
           <label className="ml-auto flex h-10 cursor-pointer items-center rounded-lg bg-surface px-3 text-sm ring-1 ring-inset ring-line transition hover:bg-raised">
-            {image ? "Replace floor plan image" : "Upload floor plan image"}
+            {image ? "Replace floor plan image" : "Upload floor plan image (optional)"}
             <input type="file" accept="image/*" className="sr-only" onChange={(e) => onImage(e.target.files?.[0])} />
           </label>
         </div>
         <p className="mb-2 text-sm text-muted">
           {MODES.find((m) => m.id === mode)?.hint}
-          {mode === "connect" && pending && <> First zone: <span className="text-fg">{zoneById.get(pending)?.name}</span>.</>}
+          {mode === "link" && pending && <> First area: <span className="text-fg">{zoneById.get(pending)?.name}</span>.</>}
         </p>
 
         <div className="overflow-hidden rounded-xl bg-ink ring-1 ring-inset ring-line">
@@ -197,18 +191,18 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
             ))}
             {[...draft.zones].sort((a, b) => Number(a.floor === currentFloor) - Number(b.floor === currentFloor)).map((z) => {
               const here = z.floor === currentFloor;
-              const isSel = selected?.kind === "zone" && selected.id === z.id;
+              const hot = (selected?.kind === "zone" && selected.id === z.id) || pending === z.id;
               return (
-                <g key={z.id} opacity={here ? 1 : 0.35} pointerEvents={here ? "auto" : "none"} onPointerDown={(e) => clickZone(z, e)}>
+                <g key={z.id} opacity={here ? 1 : 0.3} pointerEvents={here || mode === "link" ? "auto" : "none"} onPointerDown={(e) => clickZone(z, e)}>
                   <rect
                     x={z.x - z.w / 2}
                     y={z.z - z.d / 2}
                     width={z.w}
                     height={z.d}
-                    fill={KIND_FILL[z.kind] ?? "#232c3b"}
+                    fill="#232c3b"
                     fillOpacity={image ? 0.65 : 0.9}
-                    stroke={isSel || pending === z.id ? "#7f9bff" : "#56627a"}
-                    strokeWidth={stroke * (isSel || pending === z.id ? 3 : 1.5)}
+                    stroke={hot ? "#7f9bff" : "#56627a"}
+                    strokeWidth={stroke * (hot ? 3 : 1.5)}
                     strokeDasharray={here ? undefined : `${stroke * 4} ${stroke * 3}`}
                   />
                   <text x={z.x} y={z.z} textAnchor="middle" dominantBaseline="middle" fontSize={Math.max(1.2, Math.min(z.w / 8, 2.4))} fill="#e7ebf2">
@@ -217,11 +211,22 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
                 </g>
               );
             })}
-            {draft.edges.map((e, i) => {
+            {edges.map((e, i) => {
               const [a, b] = [zoneById.get(e.from), zoneById.get(e.to)];
               if (!a || !b) return null;
               return (
-                <line key={i} x1={a.x} y1={a.z} x2={b.x} y2={b.z} stroke={e.kind === "stairs" ? "#f2b23e" : "#7f9bff"} strokeWidth={stroke * 2} strokeDasharray={e.kind === "stairs" ? `${stroke * 5} ${stroke * 3}` : undefined} pointerEvents="none" />
+                <line
+                  key={i}
+                  x1={a.x}
+                  y1={a.z}
+                  x2={b.x}
+                  y2={b.z}
+                  stroke={e.kind === "stairs" ? "#f2b23e" : "#7f9bff"}
+                  strokeOpacity={0.7}
+                  strokeWidth={stroke * 2}
+                  strokeDasharray={e.kind === "stairs" ? `${stroke * 5} ${stroke * 3}` : undefined}
+                  pointerEvents="none"
+                />
               );
             })}
             {draft.places.map((p) => {
@@ -257,127 +262,91 @@ export function PlanEditor({ draft, setDraft, image, setImage }: {
           </svg>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
-          <Field label="Plan width (m)" className="w-36">
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
+          <label className="flex items-center gap-2">
+            Plan is about
             <input
               type="number"
               min={5}
               value={widthM}
+              aria-label="Plan width in meters"
               onChange={(e) => {
                 const w = Math.max(5, Number(e.target.value) || 5);
                 setDraft((dr) => ({ ...dr, plan: { widthM: w, heightM: Math.round((dr.plan.heightM * w) / dr.plan.widthM) } }));
               }}
-              className={inputClass}
+              className={`${inputClass} h-8 w-20`}
             />
-          </Field>
-          <span className="text-faint">Height {heightM} m. Set the real width so distances (and routing) are in meters.</span>
-          <span className="ml-auto inline-flex items-center gap-2 text-muted">
-            <button type="button" disabled className="h-9 cursor-not-allowed rounded-lg px-3 text-faint ring-1 ring-inset ring-line">
-              Detect zones from image
-            </button>
-            <NextStepBadge title="Automatic zone recognition from a floor plan image is not built yet. Draw zones by hand." />
+            m wide
+          </label>
+          <span className="inline-flex items-center gap-2 text-faint">
+            Detect areas from the image automatically <NextStepBadge title="Not built yet: draw areas by hand." />
           </span>
         </div>
       </div>
 
       <aside className="space-y-4">
         {zone && (
-          <Panel title="Zone">
-            <Field label="Name">
-              <input value={zone.name} onChange={(e) => updateZone(zone.id, { name: e.target.value })} className={inputClass} />
-            </Field>
-            <div className="grid grid-cols-2 gap-2">
-              <Field label="Kind">
-                <select value={zone.kind} onChange={(e) => updateZone(zone.id, { kind: e.target.value as ZoneKind })} className={inputClass}>
-                  {ZONE_KINDS.map((k) => (
-                    <option key={k}>{k}</option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Wall height (m)">
-                <input type="number" min={1} step={0.5} value={zone.height} onChange={(e) => updateZone(zone.id, { height: Math.max(1, Number(e.target.value) || 1) })} className={inputClass} />
-              </Field>
-            </div>
-            <p className="text-xs text-faint">
-              id <code>{zone.id}</code> · {zone.w.toFixed(1)} × {zone.d.toFixed(1)} m
-            </p>
+          <Panel title="Area">
+            <input aria-label="Area name" value={zone.name} onChange={(e) => renameZone(zone.id, e.target.value)} className={inputClass} />
             <button type="button" onClick={() => remove({ kind: "zone", id: zone.id })} className="text-sm text-red hover:underline">
-              Delete zone
+              Delete area
             </button>
           </Panel>
         )}
         {place && (
           <Panel title="Place">
-            <Field label="Name">
-              <input value={place.name} onChange={(e) => updatePlace(place.id, { name: e.target.value })} className={inputClass} />
-            </Field>
-            <Field label="Kind">
-              <select value={place.kind} onChange={(e) => updatePlace(place.id, { kind: e.target.value as PlaceKind })} className={inputClass}>
-                {LOCATION_KINDS.map((k) => (
-                  <option key={k}>{k}</option>
-                ))}
-              </select>
-            </Field>
-            <p className="text-xs text-faint">In zone: {zoneForPlace(place, draft.zones)?.name ?? "none on this floor yet"}. Tables named &quot;Table 12&quot; get id table:12.</p>
+            <input aria-label="Place name" value={place.name} onChange={(e) => updatePlace(place.id, { name: e.target.value })} className={inputClass} />
+            <select aria-label="Place type" value={place.kind} onChange={(e) => updatePlace(place.id, { kind: e.target.value as PlaceKind })} className={inputClass}>
+              {PLACE_KINDS.map((k) => (
+                <option key={k.id} value={k.id}>
+                  {k.label}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-faint">In {zoneForPlace(place, draft.zones)?.name ?? "no area yet"}.</p>
             <button type="button" onClick={() => remove({ kind: "place", id: place.id })} className="text-sm text-red hover:underline">
               Delete place
             </button>
           </Panel>
         )}
 
-        <Panel title={`Walking connections (${draft.edges.length})`}>
-          {suggestions.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setDraft((dr) => ({ ...dr, edges: [...dr.edges, ...suggestEdges(dr.zones, dr.edges)] }))}
-              className="h-9 w-full rounded-lg bg-raised text-sm font-medium ring-1 ring-inset ring-line-strong transition hover:brightness-110"
-            >
-              Connect {suggestions.length} touching zone pair{suggestions.length === 1 ? "" : "s"}
-            </button>
-          )}
-          <ul className="space-y-1 text-sm">
-            {draft.edges.map((e, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <span className="min-w-0 flex-1 truncate">
-                  {zoneById.get(e.from)?.name} ↔ {zoneById.get(e.to)?.name}
-                </span>
-                <select
-                  value={e.kind}
-                  onChange={(ev) => setDraft((dr) => ({ ...dr, edges: dr.edges.map((x, j) => (j === i ? { ...x, kind: ev.target.value as "walk" | "stairs" } : x)) }))}
-                  className="h-7 rounded-md bg-ink px-1 text-xs ring-1 ring-inset ring-line"
-                  aria-label="Connection kind"
-                >
-                  <option value="walk">walk</option>
-                  <option value="stairs">stairs</option>
-                </select>
-                <button type="button" aria-label="Remove connection" onClick={() => setDraft((dr) => ({ ...dr, edges: dr.edges.filter((_, j) => j !== i) }))} className="text-faint hover:text-red">
-                  ×
-                </button>
-              </li>
-            ))}
-            {draft.edges.length === 0 && <li className="text-faint">None yet. Use Connect, or the button above once zones touch.</li>}
-          </ul>
-          {draft.floors.length > 1 && <p className="text-xs text-faint">Connect zones on different floors to add stairs (or an elevator).</p>}
-        </Panel>
-
-        <Panel title={`Zones (${draft.zones.length}) · Places (${draft.places.length})`}>
-          <ul className="max-h-56 space-y-1 overflow-auto text-sm">
+        <Panel title={`${draft.zones.length} areas · ${draft.places.length} places`}>
+          <ul className="max-h-64 space-y-1 overflow-auto text-sm">
             {draft.zones.map((z) => (
               <li key={z.id}>
                 <button type="button" onClick={() => (setFloor(z.floor), setSelected({ kind: "zone", id: z.id }), setMode("select"))} className="w-full truncate text-left text-muted hover:text-fg">
-                  ▭ {z.name} <span className="text-faint">· {draft.floors.find((f) => f.id === z.floor)?.name}</span>
+                  ▭ {z.name}
+                  {draft.floors.length > 1 && <span className="text-faint"> · {draft.floors.find((f) => f.id === z.floor)?.name}</span>}
                 </button>
               </li>
             ))}
             {draft.places.map((p) => (
               <li key={p.id}>
                 <button type="button" onClick={() => (setFloor(p.floor), setSelected({ kind: "place", id: p.id }), setMode("select"))} className="w-full truncate text-left text-muted hover:text-fg">
-                  • {p.name} <span className="text-faint">· {p.kind}</span>
+                  • {p.name}
                 </button>
               </li>
             ))}
+            {draft.zones.length === 0 && <li className="text-faint">Start by drawing the main areas.</li>}
           </ul>
         </Panel>
+
+        {draft.extraEdges.length > 0 && (
+          <Panel title="Stairs and extra links">
+            <ul className="space-y-1 text-sm">
+              {draft.extraEdges.map((e, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <span className="min-w-0 flex-1 truncate">
+                    {zoneById.get(e.from)?.name} {e.kind === "stairs" ? "⇅" : "↔"} {zoneById.get(e.to)?.name}
+                  </span>
+                  <button type="button" aria-label="Remove link" onClick={() => setDraft((dr) => ({ ...dr, extraEdges: dr.extraEdges.filter((_, j) => j !== i) }))} className="text-faint hover:text-red">
+                    ×
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </Panel>
+        )}
       </aside>
     </div>
   );

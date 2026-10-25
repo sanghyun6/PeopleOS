@@ -1,21 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Brand } from "@/components/ui/Brand";
 import { ChevronIcon } from "@/components/ui/icons";
 import { STAFF_ROLES, compileVenuePack, parseVenuePack, slugify, unreachableZones } from "@/convex/lib/venuePack";
 import sampleRaw from "@/docs/examples/sample-venue-pack.json";
-import { EMPTY_DRAFT, draftToPack, packToDraft, parseStaffCsv, uniqueId, type Draft, type DraftFact } from "./draft";
+import { EMPTY_DRAFT, ROLE_LABEL, draftToPack, packToDraft, parseStaffList, uniqueId, type Draft, type DraftFact, type StaffRoleName } from "./draft";
 import { Field, inputClass } from "./fields";
 import { NextStepBadge } from "./NextStep";
 import { Panel, PlanEditor } from "./PlanEditor";
 
-const STEPS = ["Venue basics", "Floor plan", "Event knowledge", "Staff", "Preview & download"];
-const STORAGE_KEY = "peopleos.onboard.draft";
+const STEPS = ["Venue", "Floor plan", "Staff & info", "Finish & setup"];
+const STORAGE_KEY = "peopleos.onboard.draft.v2";
 
-const button = "h-10 rounded-lg px-4 text-sm font-medium ring-1 ring-inset transition";
-const primary = `${button} bg-accent text-accent-ink ring-accent hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40`;
+const button = "h-10 rounded-lg px-4 text-sm font-medium ring-1 ring-inset transition disabled:cursor-not-allowed disabled:opacity-40";
+const primary = `${button} bg-accent text-accent-ink ring-accent hover:brightness-110`;
 const secondary = `${button} bg-surface ring-line hover:bg-raised`;
 
 function loadDraft(): Draft | null {
@@ -27,13 +27,12 @@ function loadDraft(): Draft | null {
   }
 }
 
-/** Five-step "Bring your own venue" wizard. Produces a Venue Pack JSON for scripts/venue-load.ts. */
+/** "Bring your own venue" wizard: four steps, keys and deployment setup only at the end. */
 export function Wizard() {
   // The draft survives reloads in this browser only (the plan image does not). Rendered client-only.
   const [draft, setDraftState] = useState<Draft>(() => loadDraft() ?? EMPTY_DRAFT);
   const [step, setStep] = useState(0);
   const [image, setImage] = useState<string | null>(null);
-  const [importError, setImportError] = useState<string | null>(null);
 
   const setDraft = (update: (d: Draft) => Draft) =>
     setDraftState((d) => {
@@ -46,12 +45,11 @@ export function Wizard() {
       return next;
     });
 
-  const openPack = (json: unknown, label: string) => {
-    const parsed = parseVenuePack(json);
-    if (!parsed.ok) return setImportError(`${label} is not a valid Venue Pack: ${parsed.errors.slice(0, 3).join("; ")}`);
-    setImportError(null);
+  const openSample = () => {
+    const parsed = parseVenuePack(sampleRaw);
+    if (!parsed.ok) return;
     setImage(null);
-    setDraft(() => packToDraft(parsed.pack).draft);
+    setDraft(() => packToDraft(parsed.pack));
   };
 
   return (
@@ -60,27 +58,10 @@ export function Wizard() {
         <Link href="/" aria-label="Back to PeopleOS">
           <Brand suffix="Bring your own venue" />
         </Link>
-        <div className="ml-auto flex flex-wrap gap-2">
-          <button type="button" className={secondary} onClick={() => openPack(sampleRaw, "The sample")}>
-            Open sample venue
+        <div className="ml-auto flex gap-2">
+          <button type="button" className={secondary} onClick={openSample}>
+            Fill with sample
           </button>
-          <label className={`${secondary} inline-flex cursor-pointer items-center`}>
-            Import pack .json
-            <input
-              type="file"
-              accept="application/json,.json"
-              className="sr-only"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                try {
-                  openPack(JSON.parse(await file.text()), file.name);
-                } catch {
-                  setImportError(`${file.name} is not JSON.`);
-                }
-              }}
-            />
-          </label>
           <button
             type="button"
             className={secondary}
@@ -97,11 +78,7 @@ export function Wizard() {
       </header>
 
       <h1 className="text-3xl font-semibold tracking-tight">Set up PeopleOS for your venue</h1>
-      <p className="mt-2 max-w-2xl text-muted">
-        Describe the floor plan, what callers ask about, and who is on staff. The result is one Venue Pack file that the loader puts into a
-        separate PeopleOS deployment.
-      </p>
-      {importError && <p className="mt-4 rounded-xl bg-red/10 px-4 py-3 text-sm text-red ring-1 ring-inset ring-red/30">{importError}</p>}
+      <p className="mt-2 max-w-2xl text-muted">Four short steps. Keys and deployment come last, once the venue is described.</p>
 
       <ol className="mt-8 mb-6 flex flex-wrap gap-2" aria-label="Steps">
         {STEPS.map((s, i) => (
@@ -121,11 +98,10 @@ export function Wizard() {
         ))}
       </ol>
 
-      {step === 0 && <BasicsStep draft={draft} setDraft={setDraft} />}
+      {step === 0 && <VenueStep draft={draft} setDraft={setDraft} />}
       {step === 1 && <PlanEditor draft={draft} setDraft={setDraft} image={image} setImage={setImage} />}
-      {step === 2 && <KnowledgeStep draft={draft} setDraft={setDraft} />}
-      {step === 3 && <StaffStep draft={draft} setDraft={setDraft} />}
-      {step === 4 && <PreviewStep draft={draft} setDraft={setDraft} />}
+      {step === 2 && <StaffInfoStep draft={draft} setDraft={setDraft} />}
+      {step === 3 && <FinishStep draft={draft} setDraft={setDraft} />}
 
       <nav className="mt-8 flex justify-between border-t border-line pt-6">
         <button type="button" className={secondary} disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>
@@ -144,87 +120,62 @@ export function Wizard() {
 
 type StepProps = { draft: Draft; setDraft: (update: (d: Draft) => Draft) => void };
 
-function BasicsStep({ draft, setDraft }: StepProps) {
+function VenueStep({ draft, setDraft }: StepProps) {
   const event = (patch: Partial<Draft["event"]>) => setDraft((d) => ({ ...d, event: { ...d.event, ...patch } }));
-  const twoFloors = draft.floors.length > 1;
+  const setFloors = (n: 1 | 2) =>
+    setDraft((d) => ({ ...d, floors: n === 1 ? d.floors.slice(0, 1) : [d.floors[0], d.floors[1] ?? { id: "upper", name: "Upper level", elevation: 6 }] }));
+  const renameFloor = (i: number, name: string) => setDraft((d) => ({ ...d, floors: d.floors.map((f, j) => (j === i ? { ...f, name } : f)) }));
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <Panel title="Event and venue">
+    <div className="max-w-xl space-y-4">
+      <Panel title="What and where">
         <Field label="Event name">
           <input value={draft.event.name} onChange={(e) => event({ name: e.target.value })} placeholder="Harbor Builders Summit" className={inputClass} />
         </Field>
         <Field label="Venue name">
           <input value={draft.event.venueName} onChange={(e) => event({ venueName: e.target.value })} placeholder="Harborview Convention Center" className={inputClass} />
         </Field>
-        <div className="grid grid-cols-2 gap-2">
-          <Field label="City">
-            <input value={draft.event.city} onChange={(e) => event({ city: e.target.value })} className={inputClass} />
-          </Field>
-          <Field label="Time zone">
-            <input value={draft.event.timezone} onChange={(e) => event({ timezone: e.target.value })} className={inputClass} />
-          </Field>
-        </div>
-        <Field label="Operator passcode" hint="Opens the ops dashboard for this venue. At least 4 characters; leave empty to keep the app default.">
-          <input value={draft.passcode} onChange={(e) => setDraft((d) => ({ ...d, passcode: e.target.value }))} className={inputClass} autoComplete="off" />
-        </Field>
       </Panel>
       <Panel title="Floors">
         <div role="group" aria-label="Number of floors" className="flex gap-1 rounded-xl bg-ink p-1 text-xs ring-1 ring-inset ring-line">
-          {[1, 2].map((n) => (
+          {([1, 2] as const).map((n) => (
             <button
               key={n}
               type="button"
               aria-pressed={draft.floors.length === n}
-              onClick={() =>
-                setDraft((d) => ({
-                  ...d,
-                  floors: n === 1 ? d.floors.slice(0, 1) : [d.floors[0], d.floors[1] ?? { id: "upper", name: "Upper level", elevation: 6 }],
-                }))
-              }
+              onClick={() => setFloors(n)}
               className={`h-8 flex-1 rounded-lg font-medium transition ${draft.floors.length === n ? "bg-raised text-fg ring-1 ring-inset ring-line-strong" : "text-muted hover:text-fg"}`}
             >
               {n === 1 ? "One floor" : "Two floors"}
             </button>
           ))}
         </div>
-        {draft.floors.map((f, i) => (
-          <div key={f.id} className="grid grid-cols-[1fr_120px] gap-2">
-            <Field label={i === 0 ? "Lower floor name" : "Upper floor name"}>
-              <input value={f.name} onChange={(e) => setDraft((d) => ({ ...d, floors: d.floors.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)) }))} className={inputClass} />
-            </Field>
-            <Field label="Height (m)">
-              <input
-                type="number"
-                step={0.5}
-                value={f.elevation}
-                disabled={i === 0}
-                onChange={(e) => setDraft((d) => ({ ...d, floors: d.floors.map((x, j) => (j === i ? { ...x, elevation: Number(e.target.value) || 0 } : x)) }))}
-                className={inputClass}
-              />
-            </Field>
+        {draft.floors.length > 1 && (
+          <div className="grid grid-cols-2 gap-2">
+            {draft.floors.map((f, i) => (
+              <Field key={f.id} label={i === 0 ? "Lower floor" : "Upper floor"}>
+                <input value={f.name} onChange={(e) => renameFloor(i, e.target.value)} className={inputClass} />
+              </Field>
+            ))}
           </div>
-        ))}
-        <p className="text-xs text-faint">
-          PeopleOS supports up to two floors today{twoFloors ? "" : " (add a second one for a mezzanine or upper level)"}. More floors is a{" "}
-          <span className="inline-flex align-middle">
-            <NextStepBadge />
-          </span>
-        </p>
+        )}
       </Panel>
     </div>
   );
 }
 
-function KnowledgeStep({ draft, setDraft }: StepProps) {
-  const [text, setText] = useState("");
-  const [url, setUrl] = useState("");
-  const [state, setState] = useState<{ busy: boolean; error?: string; info?: string }>({ busy: false });
+function StaffInfoStep({ draft, setDraft }: StepProps) {
+  const [paste, setPaste] = useState("");
+  const [pasteErrors, setPasteErrors] = useState<string[]>([]);
+  const [info, setInfo] = useState("");
+  const [state, setState] = useState<{ busy: boolean; error?: string; note?: string }>({ busy: false });
+  const firstZone = draft.zones[0]?.id ?? "";
+  const setRow = (i: number, patch: Partial<Draft["staff"][number]>) => setDraft((d) => ({ ...d, staff: d.staff.map((s, j) => (j === i ? { ...s, ...patch } : s)) }));
 
-  const extract = async (input: { text?: string; url?: string }) => {
+  const extract = async () => {
     setState({ busy: true });
     try {
-      const res = await fetch("/api/onboard/extract", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
-      const body = (await res.json()) as { facts?: DraftFact[]; error?: string; model?: string; latencyMs?: number; truncated?: boolean };
+      const res = await fetch("/api/onboard/extract", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: info }) });
+      const body = (await res.json()) as { facts?: DraftFact[]; error?: string; model?: string; latencyMs?: number };
       if (!res.ok || !body.facts) return setState({ busy: false, error: body.error ?? `Request failed (${res.status})` });
       setDraft((d) => {
         const taken = d.facts.map((f) => f.id);
@@ -235,131 +186,159 @@ function KnowledgeStep({ draft, setDraft }: StepProps) {
         });
         return { ...d, facts: [...d.facts, ...added] };
       });
-      setState({
-        busy: false,
-        info: `${body.facts.length} facts from ${body.model} in ${((body.latencyMs ?? 0) / 1000).toFixed(1)} s${body.truncated ? " (input was cut to 12,000 characters)" : ""}. Check them before you use them.`,
-      });
+      setState({ busy: false, note: `${body.facts.length} facts from Bitdeer (${body.model}) in ${((body.latencyMs ?? 0) / 1000).toFixed(1)} s. Check them below.` });
     } catch (error) {
       setState({ busy: false, error: error instanceof Error ? error.message : String(error) });
     }
   };
-  const update = (i: number, patch: Partial<DraftFact>) => setDraft((d) => ({ ...d, facts: d.facts.map((f, j) => (j === i ? { ...f, ...patch } : f)) }));
+  const setFact = (i: number, patch: Partial<DraftFact>) => setDraft((d) => ({ ...d, facts: d.facts.map((f, j) => (j === i ? { ...f, ...patch } : f)) }));
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      <Panel title="Policies and guidelines">
-        <Field label="Paste text" hint="Schedules, meal times, wifi, rules, where things are. Sent to Bitdeer AI Model Studio from the server.">
-          <textarea value={text} onChange={(e) => setText(e.target.value)} rows={9} className={`${inputClass} h-auto py-2`} />
-        </Field>
-        <button type="button" className={primary} disabled={state.busy || !text.trim()} onClick={() => extract({ text })}>
-          {state.busy ? "Extracting…" : "Extract facts with Bitdeer"}
+    <div className="grid gap-6 lg:grid-cols-2">
+      <Panel title={`Staff (${draft.staff.length})`}>
+        {draft.zones.length === 0 && <p className="text-sm text-amber">Draw areas on the floor plan first, so staff have a starting area.</p>}
+        <ul className="space-y-2">
+          {draft.staff.map((s, i) => (
+            <li key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
+              <input aria-label="Name" value={s.name} onChange={(e) => setRow(i, { name: e.target.value })} placeholder="Name" className={`${inputClass} h-9`} />
+              <select aria-label="Role" value={s.role} onChange={(e) => setRow(i, { role: e.target.value as StaffRoleName })} className={`${inputClass} h-9`}>
+                {STAFF_ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {ROLE_LABEL[r]}
+                  </option>
+                ))}
+              </select>
+              <select aria-label="Starts in" value={s.startZone} onChange={(e) => setRow(i, { startZone: e.target.value })} className={`${inputClass} h-9`}>
+                {draft.zones.map((z) => (
+                  <option key={z.id} value={z.id}>
+                    {z.name}
+                  </option>
+                ))}
+              </select>
+              <button type="button" aria-label="Remove" onClick={() => setDraft((d) => ({ ...d, staff: d.staff.filter((_, j) => j !== i) }))} className="px-2 text-faint hover:text-red">
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          className={secondary}
+          disabled={!firstZone}
+          onClick={() => setDraft((d) => ({ ...d, staff: [...d.staff, { name: "", role: "facilities", startZone: firstZone, status: "available" }] }))}
+        >
+          Add person
         </button>
-        <div className="flex gap-2">
-          <Field label="…or a public page URL" className="flex-1">
-            <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com/attendee-guide" className={inputClass} />
-          </Field>
-          <button type="button" className={`${secondary} self-end`} disabled={state.busy || !url.trim()} onClick={() => extract({ url })}>
-            Fetch & extract
+        <details className="text-sm">
+          <summary className="cursor-pointer text-muted hover:text-fg">Paste a list instead</summary>
+          <p className="mt-2 text-xs text-faint">One per line: name, role, area. Roles: {STAFF_ROLES.join(", ")}.</p>
+          <textarea aria-label="Staff list" value={paste} onChange={(e) => setPaste(e.target.value)} rows={4} placeholder="Rosa Delgado, facilities, Expo Hall" className={`${inputClass} mt-2 h-auto py-2 font-mono text-xs`} />
+          <button
+            type="button"
+            className={`${secondary} mt-2`}
+            disabled={!paste.trim()}
+            onClick={() => {
+              const { staff, errors } = parseStaffList(paste, draft.zones);
+              setDraft((d) => ({ ...d, staff: [...d.staff, ...staff] }));
+              setPasteErrors(errors);
+              if (errors.length === 0) setPaste("");
+            }}
+          >
+            Add these
           </button>
-        </div>
+          {pasteErrors.length > 0 && (
+            <ul className="mt-2 space-y-1 text-xs text-red">
+              {pasteErrors.map((e) => (
+                <li key={e}>{e}</li>
+              ))}
+            </ul>
+          )}
+        </details>
+      </Panel>
+
+      <Panel title={`Event info the phone agent can answer (${draft.facts.length})`}>
+        <textarea
+          aria-label="Event info"
+          value={info}
+          onChange={(e) => setInfo(e.target.value)}
+          rows={5}
+          placeholder="Paste the attendee guide: schedule, meals, wifi, rules, where things are."
+          className={`${inputClass} h-auto py-2`}
+        />
+        <button type="button" className={primary} disabled={state.busy || !info.trim()} onClick={extract}>
+          {state.busy ? "Extracting…" : "Turn into facts (Bitdeer)"}
+        </button>
         {state.error && (
           <p role="alert" className="rounded-lg bg-red/10 px-3 py-2 text-sm text-red ring-1 ring-inset ring-red/30">
             {state.error}
           </p>
         )}
-        {state.info && <p className="text-sm text-muted">{state.info}</p>}
-      </Panel>
-      <Panel title={`Facts the agent can answer from (${draft.facts.length})`}>
-        <ul className="max-h-[480px] space-y-3 overflow-auto">
+        {state.note && <p className="text-sm text-muted">{state.note}</p>}
+        <ul className="max-h-80 space-y-2 overflow-auto">
           {draft.facts.map((f, i) => (
-            <li key={f.id} className="space-y-1 rounded-lg bg-ink p-3 ring-1 ring-inset ring-line">
+            <li key={f.id} className="space-y-1 rounded-lg bg-ink p-2 ring-1 ring-inset ring-line">
               <div className="flex gap-2">
-                <input aria-label="Fact title" value={f.title} onChange={(e) => update(i, { title: e.target.value })} className={`${inputClass} h-8 font-medium`} />
+                <input aria-label="Fact title" value={f.title} onChange={(e) => setFact(i, { title: e.target.value })} className={`${inputClass} h-8 font-medium`} />
                 <button type="button" aria-label="Remove fact" onClick={() => setDraft((d) => ({ ...d, facts: d.facts.filter((_, j) => j !== i) }))} className="px-2 text-faint hover:text-red">
                   ×
                 </button>
               </div>
-              <textarea aria-label="Fact text" value={f.text} onChange={(e) => update(i, { text: e.target.value })} rows={2} className={`${inputClass} h-auto py-1.5`} />
+              <textarea aria-label="Fact text" value={f.text} onChange={(e) => setFact(i, { text: e.target.value })} rows={2} className={`${inputClass} h-auto py-1.5`} />
             </li>
           ))}
-          {draft.facts.length === 0 && <li className="text-sm text-faint">No facts yet. Extract them from your guidelines or add one by hand.</li>}
         </ul>
         <button
           type="button"
           className={secondary}
           onClick={() => setDraft((d) => ({ ...d, facts: [...d.facts, { id: uniqueId("fact", d.facts.map((f) => f.id)), title: "New fact", text: "" }] }))}
         >
-          Add fact by hand
+          Add a fact by hand
         </button>
       </Panel>
     </div>
   );
 }
 
-function StaffStep({ draft, setDraft }: StepProps) {
-  const { staff, errors } = useMemo(() => parseStaffCsv(draft.staffCsv, draft.zones), [draft.staffCsv, draft.zones]);
+type SetupStatus = { deployment: "none" | "calhacks" | "local" | "other"; cartesia: boolean; moss: boolean; bitdeer: boolean };
+
+function Check({ ok, warn, label, children }: { ok: boolean | null; warn?: boolean; label: string; children?: React.ReactNode }) {
+  const mark = ok === null ? "…" : ok ? "✓" : warn ? "!" : "–";
+  const color = ok === null ? "text-faint" : ok ? "text-green" : warn ? "text-red" : "text-amber";
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <Panel title="Paste staff CSV">
-        <textarea
-          aria-label="Staff CSV"
-          value={draft.staffCsv}
-          onChange={(e) => setDraft((d) => ({ ...d, staffCsv: e.target.value }))}
-          rows={12}
-          placeholder={"name,role,start_zone,status,phone\nRosa Delgado,facilities,Expo Hall,available\nBen Carter,ops_lead,Main Lobby,available"}
-          className={`${inputClass} h-auto py-2 font-mono text-xs`}
-        />
-        <p className="text-xs text-faint">
-          Roles: {STAFF_ROLES.join(", ")}. Start zone by name or id ({draft.zones.map((z) => z.name).join(", ") || "draw zones first"}). Status: available or off_duty.
-          Phone is stored but SMS alerts are a{" "}
-          <span className="inline-flex align-middle">
-            <NextStepBadge />
-          </span>
-        </p>
-      </Panel>
-      <Panel title={`Parsed: ${staff.length} staff`}>
-        {errors.length > 0 && (
-          <ul className="space-y-1 rounded-lg bg-red/10 px-3 py-2 text-sm text-red ring-1 ring-inset ring-red/30">
-            {errors.map((e) => (
-              <li key={e}>{e}</li>
-            ))}
-          </ul>
-        )}
-        <table className="w-full text-left text-sm">
-          <thead className="text-xs text-faint">
-            <tr>
-              <th className="py-1 font-medium">Name</th>
-              <th className="py-1 font-medium">Role</th>
-              <th className="py-1 font-medium">Starts in</th>
-              <th className="py-1 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {staff.map((s, i) => (
-              <tr key={i} className="border-t border-line">
-                <td className="py-1.5">{s.name}</td>
-                <td className="py-1.5 text-muted">{s.role}</td>
-                <td className="py-1.5 text-muted">{draft.zones.find((z) => z.id === s.startZone)?.name}</td>
-                <td className="py-1.5 text-muted">{s.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {!staff.some((s) => s.role === "ops_lead") && staff.length > 0 && (
-          <p className="text-xs text-amber">No ops_lead: blockages and &quot;other&quot; reports will have nobody to dispatch to and go to the operator.</p>
-        )}
-      </Panel>
-    </div>
+    <li className="flex gap-3">
+      <span className={`mt-0.5 w-4 shrink-0 text-center font-semibold ${color}`}>{mark}</span>
+      <div className="min-w-0 text-sm">
+        <p className="font-medium">{label}</p>
+        {children && <div className="text-muted">{children}</div>}
+      </div>
+    </li>
   );
 }
 
-function PreviewStep({ draft, setDraft }: StepProps) {
-  const { staff, errors: staffErrors } = useMemo(() => parseStaffCsv(draft.staffCsv, draft.zones), [draft.staffCsv, draft.zones]);
-  const pack = useMemo(() => draftToPack(draft, staff), [draft, staff]);
+function FinishStep({ draft, setDraft }: StepProps) {
+  const [status, setStatus] = useState<SetupStatus | null>(null);
+  useEffect(() => {
+    fetch("/api/onboard/status")
+      .then((r) => r.json())
+      .then(setStatus)
+      .catch(() => setStatus(null));
+  }, []);
+
+  const pack = useMemo(() => draftToPack(draft), [draft]);
   const result = useMemo(() => parseVenuePack(JSON.parse(JSON.stringify(pack))), [pack]);
-  const unreachable = result.ok ? unreachableZones(result.pack) : [];
-  const compiled = result.ok ? compileVenuePack(result.pack) : null;
-  const problems = [...(result.ok ? [] : result.errors), ...staffErrors.map((e) => `staff CSV ${e}`), ...unreachable.map((z) => `zone "${z}" has no walking connection to the rest`)];
+  const zoneName = (id: string) => draft.zones.find((z) => z.id === id)?.name ?? id;
+  const problems = [
+    ...(!draft.event.name.trim() ? ["Give the event a name (step 1)."] : []),
+    ...(!draft.event.venueName.trim() ? ["Give the venue a name (step 1)."] : []),
+    ...(draft.zones.length === 0 ? ["Draw at least one area (step 2)."] : []),
+    ...(draft.staff.filter((s) => s.name.trim()).length === 0 ? ["Add at least one staff member (step 3)."] : []),
+    ...(draft.passcode && draft.passcode.trim().length < 4 ? ["The passcode needs at least 4 characters."] : []),
+    ...(result.ok ? unreachableZones(result.pack).map((z) => `"${zoneName(z)}" doesn't touch any other area: move it, or link it (step 2).`) : []),
+  ];
+  // Schema errors are only worth showing when the plain checks above pass.
+  const schemaErrors = problems.length === 0 && !result.ok ? result.errors : [];
+  const ready = problems.length === 0 && result.ok;
+  const compiled = ready && result.ok ? compileVenuePack(result.pack) : null;
   const file = `${slugify(draft.event.name) || "venue"}-venue-pack.json`;
   const json = JSON.stringify(pack, null, 2);
 
@@ -373,10 +352,10 @@ function PreviewStep({ draft, setDraft }: StepProps) {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-4">
-        <Panel title="Help desk">
-          <Field label="Where callers are sent for help" hint="Also where emergency reports without a location are pinned.">
+        <Panel title="Last details">
+          <Field label="Help desk" hint="Where the agent sends callers, and where emergencies without a location are pinned.">
             <select value={draft.event.helpDesk} onChange={(e) => setDraft((d) => ({ ...d, event: { ...d.event, helpDesk: e.target.value } }))} className={inputClass}>
               <option value="">None</option>
               {draft.places.map((p) => (
@@ -386,51 +365,80 @@ function PreviewStep({ draft, setDraft }: StepProps) {
               ))}
               {draft.zones.map((z) => (
                 <option key={z.id} value={`zone:${z.id}`}>
-                  {z.name} (zone)
+                  {z.name} (area)
                 </option>
               ))}
             </select>
           </Field>
+          <Field label="Operator passcode" hint="Opens the ops dashboard. Leave empty to keep the app default.">
+            <input value={draft.passcode} onChange={(e) => setDraft((d) => ({ ...d, passcode: e.target.value }))} className={inputClass} autoComplete="off" />
+          </Field>
         </Panel>
-        <Panel title={problems.length ? `${problems.length} thing${problems.length === 1 ? "" : "s"} to fix` : "Ready to load"}>
-          {problems.length > 0 ? (
+
+        <Panel title={ready ? "Venue Pack is ready" : "Before you can download"}>
+          {problems.length + schemaErrors.length > 0 ? (
             <ul className="space-y-1 text-sm text-red">
-              {problems.map((p) => (
+              {[...problems, ...schemaErrors].map((p) => (
                 <li key={p}>{p}</li>
               ))}
             </ul>
           ) : (
             <p className="text-sm text-muted">
-              {compiled!.zones.length} zones, {compiled!.edges.length} connections, {compiled!.locations.length} named places (zones included), {compiled!.staff.length} staff,{" "}
-              {compiled!.meta.knowledge.length} facts on {compiled!.meta.floors.length} floor{compiled!.meta.floors.length === 1 ? "" : "s"}.
+              {compiled!.zones.length} areas, {compiled!.locations.length - compiled!.zones.length} places, {compiled!.staff.length} staff, {compiled!.meta.knowledge.length} facts.
             </p>
           )}
-          <div className="flex flex-wrap gap-2">
-            <button type="button" className={primary} onClick={download} disabled={!result.ok}>
-              Download {file}
-            </button>
-          </div>
-          {!result.ok && <p className="text-xs text-faint">Download unlocks once the pack validates (same schema the loader uses).</p>}
-        </Panel>
-        <Panel title="Load into PeopleOS">
-          <div className="flex items-center gap-2">
-            <button type="button" disabled className={`${button} cursor-not-allowed text-faint ring-line`}>
-              Load into PeopleOS
-            </button>
-            <NextStepBadge title="Loading from the browser is not built: it would replace the venue on whatever deployment this page is connected to." />
-          </div>
-          <p className="text-sm text-muted">
-            Loading replaces every zone, staff member and incident on a deployment, so it runs from the command line against a separate Convex deployment, never the live
-            one:
-          </p>
-          <pre className="overflow-auto rounded-lg bg-ink p-3 font-mono text-xs text-fg ring-1 ring-inset ring-line">npm run venue:load -- {file} --site-url https://&lt;public-url&gt;</pre>
-          <p className="text-xs text-faint">
-            It loads Convex, writes the agent prompt, registers a new Cartesia agent (no phone number) and a new Moss index. Connecting a phone number stays manual.
-          </p>
+          <button type="button" className={primary} onClick={download} disabled={!ready}>
+            Download {file}
+          </button>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-muted hover:text-fg">Show the JSON</summary>
+            <pre className="mt-2 max-h-80 overflow-auto rounded-lg bg-ink p-3 font-mono text-[11px] text-muted ring-1 ring-inset ring-line">{json}</pre>
+          </details>
         </Panel>
       </div>
-      <Panel title="Venue Pack JSON">
-        <pre className="max-h-[560px] overflow-auto rounded-lg bg-ink p-3 font-mono text-[11px] leading-relaxed text-muted ring-1 ring-inset ring-line">{json}</pre>
+
+      <Panel title="Setup (once per venue)">
+        <p className="text-sm text-muted">
+          Keys never go in this page. Put them in <code>.env.local</code> next to the app and restart it; this list checks what the server can see (yes/no only).
+        </p>
+        <ol className="space-y-4">
+          <Check
+            ok={status ? status.deployment === "local" || status.deployment === "other" : null}
+            warn={status?.deployment === "calhacks"}
+            label="1. A separate Convex deployment for this venue"
+          >
+            {status?.deployment === "calhacks" ? (
+              <>This app is connected to the live Cal Hacks deployment. Loading would replace it, so the loader refuses. Point <code>.env.local</code> elsewhere first.</>
+            ) : (
+              <>
+                Easiest: <code>CONVEX_AGENT_MODE=anonymous npx convex dev</code> (local). Loading replaces every area, staff member and incident there.
+              </>
+            )}
+          </Check>
+          <Check ok={status?.cartesia ?? null} label="2. CARTESIA_API_KEY (required for the phone agent)">
+            From the Cartesia dashboard. The loader creates a new agent with it.
+          </Check>
+          <Check ok={status?.bitdeer ?? null} label="3. BITDEER_API_KEY (optional)">
+            Turns pasted event info into facts, and judges duplicate reports. Also set it on the deployment: <code>npx convex env set BITDEER_API_KEY …</code>
+          </Check>
+          <Check ok={status?.moss ?? null} label="4. MOSS_PROJECT_ID + MOSS_PROJECT_KEY (optional)">
+            Better event answers. Without them the agent uses keyword search over your facts.
+          </Check>
+          <li className="flex gap-3">
+            <span className="mt-0.5 w-4 shrink-0 text-center font-semibold text-accent">5</span>
+            <div className="min-w-0 space-y-2 text-sm">
+              <p className="font-medium">Load the downloaded file</p>
+              <pre className="overflow-auto rounded-lg bg-ink p-2 font-mono text-xs ring-1 ring-inset ring-line">npm run venue:load -- {file} --site-url https://&lt;public url&gt;</pre>
+              <p className="text-muted">The public URL lets Cartesia reach your deployment, e.g. <code>ssh -R 80:localhost:3211 nokey@localhost.run</code>.</p>
+              <p className="flex items-center gap-2 text-faint">
+                Load from this page instead <NextStepBadge title="Not built: loading replaces a whole deployment, so it stays a command." />
+              </p>
+            </div>
+          </li>
+          <Check ok={false} label="6. Connect a phone number (by hand)">
+            In the Cartesia dashboard, attach a number to the new agent &quot;PeopleOS - {draft.event.name || "your event"}&quot;. The loader never touches phone numbers.
+          </Check>
+        </ol>
       </Panel>
     </div>
   );

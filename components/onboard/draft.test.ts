@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { compileVenuePack, parseVenuePack, unreachableZones } from "../../convex/lib/venuePack";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { EMPTY_DRAFT, draftToPack, htmlToText, packToDraft, parseFactsReply, parseStaffCsv, suggestEdges, zoneForPlace, type Draft } from "./draft";
+import { EMPTY_DRAFT, connections, draftToPack, packToDraft, parseFactsReply, parseStaffList, suggestEdges, zoneForPlace, type Draft } from "./draft";
 
 const draft: Draft = {
   ...EMPTY_DRAFT,
-  event: { name: "Test Expo", venueName: "Hall 9", city: "", timezone: "America/Los_Angeles", helpDesk: "p1" },
+  event: { name: "Test Expo", venueName: "Hall 9", helpDesk: "p1" },
   zones: [
     { id: "hall", name: "Main Hall", floor: "ground", x: 10, z: 10, w: 20, d: 20, height: 4, kind: "hall" },
     { id: "foyer", name: "Foyer", floor: "ground", x: 25, z: 10, w: 10, d: 10, height: 3, kind: "corridor" },
@@ -28,8 +28,8 @@ describe("onboard draft", () => {
     expect(zoneForPlace(draft.places[0], draft.zones)?.id).toBe("foyer");
   });
 
-  it("parses staff CSV with a header, aliases, quotes and per-line errors", () => {
-    const { staff, errors } = parseStaffCsv(
+  it("parses a pasted staff list with a header, aliases, quotes and per-line errors", () => {
+    const { staff, errors } = parseStaffList(
       'name,role,start_zone,status\n"Lee, Ana",Guest Services,Main Hall,\nBo,ops,foyer,off duty\nCy,chef,hall\nDi,it,nowhere',
       draft.zones,
     );
@@ -37,7 +37,7 @@ describe("onboard draft", () => {
       { name: "Lee, Ana", role: "guest_services", startZone: "hall", status: "available" },
       { name: "Bo", role: "ops_lead", startZone: "foyer", status: "off_duty" },
     ]);
-    expect(errors).toEqual([expect.stringMatching(/line 4: unknown role "chef"/), expect.stringMatching(/line 5: unknown start zone "nowhere"/)]);
+    expect(errors).toEqual([expect.stringMatching(/line 4: unknown role "chef"/), expect.stringMatching(/line 5: unknown zone "nowhere"/)]);
   });
 
   it("reads facts from a fenced model reply and rejects non-JSON", () => {
@@ -46,12 +46,9 @@ describe("onboard draft", () => {
     expect(() => parseFactsReply("no facts here")).toThrow(/JSON list/);
   });
 
-  it("strips HTML to text", () => {
-    expect(htmlToText("<html><script>x()</script><p>Hi &amp; welcome</p><p>Lunch at noon</p></html>")).toBe("Hi & welcome\nLunch at noon");
-  });
-
   it("builds a pack the loader accepts (and flags disconnected zones)", () => {
-    const pack = draftToPack({ ...draft, edges: suggestEdges(draft.zones, []) }, [{ name: "Bo", role: "facilities", startZone: "hall", status: "available" }]);
+    const pack = draftToPack({ ...draft, staff: [{ name: "Bo", role: "facilities", startZone: "hall", status: "available" }] });
+    expect(pack.edges.map((e) => [e.from, e.to])).toEqual([["hall", "foyer"]]); // touching areas connect by themselves
     const parsed = parseVenuePack(JSON.parse(JSON.stringify(pack)));
     if (!parsed.ok) throw new Error(parsed.errors.join("\n"));
     expect(parsed.pack.event.helpDesk).toBe("amenity:info-desk");
@@ -64,15 +61,15 @@ describe("onboard draft", () => {
     const raw = JSON.parse(readFileSync(join(__dirname, "../../docs/examples/sample-venue-pack.json"), "utf8"));
     const original = parseVenuePack(raw);
     if (!original.ok) throw new Error(original.errors.join("\n"));
-    const { draft: d, staffCsv } = packToDraft(original.pack);
-    const { staff, errors } = parseStaffCsv(staffCsv, d.zones);
-    expect(errors).toEqual([]);
-    const again = parseVenuePack(JSON.parse(JSON.stringify(draftToPack(d, staff))));
+    const d = packToDraft(original.pack);
+    expect(connections(d)).toHaveLength(original.pack.edges.length);
+    const again = parseVenuePack(JSON.parse(JSON.stringify(draftToPack(d))));
     if (!again.ok) throw new Error(again.errors.join("\n"));
     const a = compileVenuePack(original.pack);
     const b = compileVenuePack(again.pack);
     expect(b.locations.map((l) => [l.key, l.zoneKey, l.level])).toEqual(a.locations.map((l) => [l.key, l.zoneKey, l.level]));
-    expect(b.edges.map((e) => [e.a, e.b, e.kind])).toEqual(a.edges.map((e) => [e.a, e.b, e.kind]));
+    const pairs = (es: { a: string; b: string; kind: string }[]) => es.map((e) => [e.a, e.b].sort().join("|") + e.kind).sort();
+    expect(pairs(b.edges)).toEqual(pairs(a.edges));
     expect(b.staff).toEqual(a.staff);
     expect(again.pack.event.helpDesk).toBe("amenity:registration-desk");
   });

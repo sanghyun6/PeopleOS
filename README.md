@@ -122,11 +122,14 @@ knowledge facts, escalation contacts, and an optional operator passcode.
 ### Steps
 
 1. **Works** Make the pack: `/onboard` (link at the bottom of `/`), or write the JSON.
-   The wizard has venue basics, a floor plan editor (upload a plan image, draw rectangle
-   zones, add places, connect zones, auto-connect touching zones), event knowledge (paste
-   text or a public URL; a Bitdeer chat model extracts facts on the server, errors are shown
-   as returned), staff CSV (`name,role,start_zone,status,phone`), and a validated preview
-   with download. The draft is kept in this browser's localStorage; the plan image is not.
+   Four steps, asking only for what dispatch needs: (1) event and venue name, one or two
+   floors; (2) floor plan: draw rectangle areas and drop named places (optional plan image
+   underneath); areas that touch connect automatically, stairs are one "Link areas" click;
+   (3) staff (name, role, starting area) and event info pasted as text, turned into facts by
+   a Bitdeer chat model on the server (or typed by hand); (4) help desk, optional passcode,
+   download, and a setup checklist. Keys are never typed into the page: the checklist shows
+   which ones the server sees in `.env.local` (yes/no only). The draft is kept in this
+   browser's localStorage; the plan image is not.
 2. **Manual** Point `.env.local` at a separate Convex deployment, never the Cal Hacks one.
    Quickest: remove `CONVEX_DEPLOYMENT`/`NEXT_PUBLIC_CONVEX_*` from `.env.local`, then
    `CONVEX_AGENT_MODE=anonymous npx convex dev` (local backend on 127.0.0.1:3210/3211).
