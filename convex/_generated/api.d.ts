@@ -22,6 +22,7 @@ import type * as lib_directions from "../lib/directions.js";
 import type * as lib_dispatch from "../lib/dispatch.js";
 import type * as lib_emergency from "../lib/emergency.js";
 import type * as lib_graph from "../lib/graph.js";
+import type * as lib_matching from "../lib/matching.js";
 import type * as lib_seedStaff from "../lib/seedStaff.js";
 import type * as lib_todo from "../lib/todo.js";
 import type * as lib_validators from "../lib/validators.js";
@@ -57,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   "lib/dispatch": typeof lib_dispatch;
   "lib/emergency": typeof lib_emergency;
   "lib/graph": typeof lib_graph;
+  "lib/matching": typeof lib_matching;
   "lib/seedStaff": typeof lib_seedStaff;
   "lib/todo": typeof lib_todo;
   "lib/validators": typeof lib_validators;

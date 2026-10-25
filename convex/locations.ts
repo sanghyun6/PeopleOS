@@ -4,6 +4,7 @@ import { internalQuery, query, type QueryCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
 import { directionsBetween, directionsMessage } from "./lib/directions";
 import { locationKind, type LocationKind } from "./lib/validators";
+import { sharesWord } from "./lib/matching";
 
 // When several entries match equally, the most specific place wins.
 const KIND_RANK: Record<LocationKind, number> = {
@@ -75,8 +76,10 @@ export async function resolveLocation(ctx: QueryCtx, text: string): Promise<Doc<
     .query("locations")
     .withSearchIndex("search_text", (q) => q.search("searchText", wanted))
     .take(3);
-  if (hits.length === 0) return null;
-  return hits.length === 1 || hits[0].zoneId === hits[1].zoneId ? hits[0] : null;
+  // A hit that shares only a number with the query ("Gate 3" vs "Table 3") is not a match.
+  const trusted = hits.filter((h) => sharesWord(wanted, h.searchText));
+  if (trusted.length === 0) return null;
+  return trusted.length === 1 || trusted[0].zoneId === trusted[1].zoneId ? trusted[0] : null;
 }
 
 export const resolve = internalQuery({
@@ -117,6 +120,7 @@ export const directions = internalQuery({
       edges,
       [],
       new Map(zones.map((z) => [z._id as string, z.name])),
+      new Map(zones.map((z) => [z._id as string, z.level])),
     );
     if (!route) {
       return {

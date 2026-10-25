@@ -19,6 +19,8 @@ export const spokenZoneName = (name: string) => name.replace(/\s*\(.*?\)\s*/g, "
  * Route from one zone to another, skipping edges that are `blocked` in the table
  * or listed in `blockedEdgeIds`. Returns null when blockages disconnect the zones.
  * `zoneNames` (zone id -> name) makes the steps speakable; ids are the fallback.
+ * `zoneLevels` (zone id -> level) decides "up" vs "down" on stairs; without it a zone
+ * named like "Mezzanine ..." counts as upstairs (Cal Hacks).
  */
 export function directionsBetween(
   fromZoneId: Id<"zones">,
@@ -26,6 +28,7 @@ export function directionsBetween(
   edges: Doc<"edges">[],
   blockedEdgeIds: Id<"edges">[] = [],
   zoneNames: ReadonlyMap<string, string> = new Map(),
+  zoneLevels?: ReadonlyMap<string, "main" | "mezz">,
 ): Directions | null {
   const closed = new Set<string>(blockedEdgeIds);
   const name = (id: string) => spokenZoneName(zoneNames.get(id) ?? id);
@@ -52,7 +55,7 @@ export function directionsBetween(
       const to = route.zoneIds[i + 1];
       const stairs = kindOf.get(edgeId) === "stairs";
       if (stairs) {
-        const up = /mezz/i.test(zoneNames.get(to) ?? to); // mezzanine zones are upstairs
+        const up = zoneLevels ? zoneLevels.get(to) === "mezz" : /mezz/i.test(zoneNames.get(to) ?? to);
         steps.push(`Take the stairs ${up ? "up" : "down"} to ${name(to)}`);
       } else if (i === 0) {
         steps.push(`Head through ${name(route.zoneIds[0])} into ${name(to)}`);
