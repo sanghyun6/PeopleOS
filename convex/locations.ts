@@ -2,6 +2,7 @@
 import { v } from "convex/values";
 import { internalQuery, query, type QueryCtx } from "./_generated/server";
 import type { Doc } from "./_generated/dataModel";
+import { normalizeLocationText } from "./lib/locationText";
 import { directionsBetween, directionsMessage } from "./lib/directions";
 import { locationKind, type LocationKind } from "./lib/validators";
 
@@ -16,14 +17,7 @@ const KIND_RANK: Record<LocationKind, number> = {
   zone: 6,
 };
 
-const normalize = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/[‘’]/g, "'")
-    .replace(/\b(the|near|by|at|next to|in front of)\b/g, " ")
-    .replace(/[.,!?]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+const normalize = normalizeLocationText;
 
 /** Pick one match: unique, or all in the same zone (then the most specific one). */
 function pickOne(matches: Doc<"locations">[]): Doc<"locations"> | null {
