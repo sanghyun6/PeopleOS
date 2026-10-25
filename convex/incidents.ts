@@ -157,6 +157,8 @@ export const insertReport = internalMutation({
       escalationReason: isEmergency ? `Emergency rule: ${args.emergency.join(", ")}` : undefined,
       lastReportedAt: now,
     });
+    // One-line staff instruction from Bitdeer, generated after the call (never inline).
+    await ctx.scheduler.runAfter(0, internal.bitdeer.generateBrief, { incidentId });
 
     if (status === "escalated") {
       return {
@@ -204,7 +206,7 @@ type ReportInput = {
   callId?: string;
 };
 
-/** The report pipeline. An action, because the dedup judgment calls Claude. */
+/** The report pipeline. An action, because the dedup judgment calls Bitdeer/Claude. */
 async function runReport(ctx: ActionCtx, args: ReportInput): Promise<ReportOutcome> {
   const prep = await ctx.runQuery(internal.incidents.prepareReport, { ...args, now: Date.now() });
   if (!prep.location) {
@@ -214,7 +216,7 @@ async function runReport(ctx: ActionCtx, args: ReportInput): Promise<ReportOutco
       message: `"${args.location}" did not match a venue location. Ask for the nearest table number or booth name.`,
     };
   }
-  const duplicateOf = await judgeDuplicate(args.description, prep.candidates);
+  const duplicateOf = await judgeDuplicate(ctx, { description: args.description, locationLabel: prep.location.label }, prep.candidates);
   if (duplicateOf) {
     return await ctx.runMutation(internal.incidents.recordDuplicate, { incidentId: duplicateOf, transcript: args.transcript });
   }

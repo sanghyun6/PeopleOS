@@ -18,7 +18,8 @@ Built at Cal Hacks 13.0 (Palace of Fine Arts, SF).
 | `/demo` | one screen: `/ops` on the left, two staff phones (Priya, Jordan) on the right, all live |
 | `/ops` 3D view | live markers, staff dots, assignment routes, incident list, metrics |
 | `/staff/[id]` | accept / decline / complete, sound + vibration |
-| Claude dedup judgment | needs `ANTHROPIC_API_KEY` on the Convex deployment; without it, same table/booth = same problem |
+| Dedup judgment | Bitdeer first (`BITDEER_API_KEY`): bge-m3 embeddings rank the candidates, a Bitdeer chat model rules on the top one (3 s budget). Any failure or no key falls back to Claude (`ANTHROPIC_API_KEY`), then to "same table/booth = same problem" |
+| Staff brief | after an incident is created, a scheduled action asks a Bitdeer chat model for a one-line (<= 12 words) instruction, stored as `incident.staffBrief` and shown on the staff card and ops detail; falls back to the caller's description |
 
 ## Setup
 
@@ -33,7 +34,9 @@ npm run dev             # http://localhost:3000/ops
 `npm run typecheck` checks both the Next app and `convex/`. `npm test` runs the vitest unit tests.
 
 Convex deployment env vars (`npx convex env set`): `CARTESIA_TOOL_SECRET` (Bearer token
-Cartesia tools send), `ANTHROPIC_API_KEY` (dedup judgment).
+Cartesia tools send), `ANTHROPIC_API_KEY` (dedup fallback judge), `BITDEER_API_KEY`
+(dedup judgment + staff briefs; optional `BITDEER_CHAT_MODEL`, default
+`deepseek-ai/DeepSeek-V4.1-Flash`; embeddings use `BAAI/bge-m3`).
 
 Env vars live in `.env.local` (never committed): `CONVEX_DEPLOYMENT`,
 `NEXT_PUBLIC_CONVEX_URL`, `NEXT_PUBLIC_CONVEX_SITE_URL`, and later
@@ -52,7 +55,9 @@ convex/            backend
   dispatch.ts      role -> availability -> workload -> path distance
   assignments.ts   accept / decline / complete
   blockages.ts     auto-applied blockages (+ undo) -> reroute
-  dedup.ts         same zone + category within 15 min -> Claude judges
+  dedup.ts         same zone + category within 15 min -> Bitdeer (Claude fallback) judges
+  bitdeer.ts       Bitdeer call log + ops stat, staff-brief action
+  lib/bitdeer.ts   Bitdeer client, cosine ranking, verdict/brief parsers (pure)
   cartesia.ts      HTTP actions for agent tools (routed in http.ts)
 agent/             Cartesia Managed Agent: tool schemas, types, prompt, vocabulary
 components/venue/  R3F scene, floor, markers, staff dots, route lines

@@ -2,8 +2,10 @@
 // whether it is the same problem -> bump reportCount instead of creating a task.
 import Anthropic from "@anthropic-ai/sdk";
 import { v, type Infer } from "convex/values";
-import { internalAction, internalQuery, type QueryCtx } from "./_generated/server";
+import { internalAction, internalQuery, type ActionCtx, type QueryCtx } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
+import { withBitdeer } from "./bitdeer";
+import { dedupDeadline, judgeDuplicateWithBitdeer } from "./lib/bitdeer";
 import { filterDedupCandidates } from "./lib/dedup";
 import { incidentCategory, type IncidentCategory } from "./lib/validators";
 
@@ -43,7 +45,7 @@ const SYSTEM = `You deduplicate problem reports phoned in at a hackathon venue. 
  * Claude judges "same problem?". Without ANTHROPIC_API_KEY, or if the call fails or
  * is refused, falls back to "same table/booth = same problem".
  */
-export async function judgeDuplicate(description: string, candidates: DedupCandidate[]): Promise<Id<"incidents"> | null> {
+async function judgeWithClaude(description: string, candidates: DedupCandidate[]): Promise<Id<"incidents"> | null> {
   if (candidates.length === 0) return null;
   const fallback = () => candidates.find((c) => c.sameLocation)?.incidentId ?? null;
   if (!process.env.ANTHROPIC_API_KEY) return fallback();
@@ -87,10 +89,30 @@ export async function judgeDuplicate(description: string, candidates: DedupCandi
   }
 }
 
-/** Claude judges "same problem?"; returns the matching incident or null. */
+/**
+ * "Same problem?" Bitdeer first: bge-m3 ranks the candidates, a Bitdeer chat model rules on
+ * the top one (3 s budget for both). No BITDEER_API_KEY, or any Bitdeer failure, falls back
+ * to the Claude judge above.
+ */
+export async function judgeDuplicate(
+  ctx: ActionCtx,
+  report: { description: string; locationLabel?: string },
+  candidates: DedupCandidate[],
+): Promise<Id<"incidents"> | null> {
+  return withBitdeer(ctx, dedupDeadline(), (client) =>
+    judgeDuplicateWithBitdeer(
+      client,
+      { text: report.description, locationLabel: report.locationLabel },
+      candidates.map((c) => ({ id: c.incidentId, text: c.description, locationLabel: c.locationLabel })),
+      () => judgeWithClaude(report.description, candidates),
+    ),
+  );
+}
+
+/** "Same problem?"; returns the matching incident or null. */
 export const judgeSameProblem = internalAction({
-  args: { description: v.string(), candidates: v.array(dedupCandidate) },
+  args: { description: v.string(), locationLabel: v.optional(v.string()), candidates: v.array(dedupCandidate) },
   returns: v.union(v.id("incidents"), v.null()),
-  handler: async (_ctx, { description, candidates }): Promise<Id<"incidents"> | null> =>
-    judgeDuplicate(description, candidates),
+  handler: async (ctx, { description, locationLabel, candidates }): Promise<Id<"incidents"> | null> =>
+    judgeDuplicate(ctx, { description, locationLabel }, candidates),
 });

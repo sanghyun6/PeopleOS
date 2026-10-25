@@ -9,12 +9,14 @@
  */
 
 import type * as assignments from "../assignments.js";
+import type * as bitdeer from "../bitdeer.js";
 import type * as blockages from "../blockages.js";
 import type * as cartesia from "../cartesia.js";
 import type * as dedup from "../dedup.js";
 import type * as dispatch from "../dispatch.js";
 import type * as http from "../http.js";
 import type * as incidents from "../incidents.js";
+import type * as lib_bitdeer from "../lib/bitdeer.js";
 import type * as lib_dedup from "../lib/dedup.js";
 import type * as lib_directions from "../lib/directions.js";
 import type * as lib_dispatch from "../lib/dispatch.js";
@@ -39,12 +41,14 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   assignments: typeof assignments;
+  bitdeer: typeof bitdeer;
   blockages: typeof blockages;
   cartesia: typeof cartesia;
   dedup: typeof dedup;
   dispatch: typeof dispatch;
   http: typeof http;
   incidents: typeof incidents;
+  "lib/bitdeer": typeof lib_bitdeer;
   "lib/dedup": typeof lib_dedup;
   "lib/directions": typeof lib_directions;
   "lib/dispatch": typeof lib_dispatch;

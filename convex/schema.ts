@@ -82,6 +82,7 @@ export default defineSchema({
     resolvedAt: v.optional(v.number()),
     lastReportedAt: v.number(),
     reroutedCount: v.optional(v.number()), // blockages: tasks rerouted when it was applied
+    staffBrief: v.optional(v.string()), // Bitdeer: one-line instruction (<= 12 words) for the assigned staff
   })
     .index("by_status", ["status"])
     .index("by_zone_category", ["zoneId", "category"])
@@ -110,5 +111,13 @@ export default defineSchema({
     outcome: v.union(v.literal("found"), v.literal("no_match"), v.literal("fallback")),
     latencyMs: v.number(),
     callId: v.optional(v.string()),
+  }),
+
+  // One row per Bitdeer AI Model Studio request (embedding, dedup verdict, staff brief).
+  bitdeerCalls: defineTable({
+    kind: v.union(v.literal("embedding"), v.literal("judge"), v.literal("brief")),
+    model: v.string(),
+    latencyMs: v.number(),
+    ok: v.boolean(),
   }),
 });
