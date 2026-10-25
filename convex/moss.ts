@@ -1,33 +1,10 @@
-"use node";
-// Moss retrieval for venue_search. The SDK is a native module (see convex.json
-// externalPackages) that downloads the cloud index and queries it in memory.
-// The loaded index is cached in module scope: the first call in a fresh container
-// pays the load (several seconds), later ones take a few ms. The caller
-// (cartesia.ts) enforces the 2 s timeout and falls back to keyword search.
+// Moss retrieval for venue_search. Moss's in-process embedding model cannot load
+// inside Convex actions and Moss has no server-side query API, so the query runs on
+// scripts/moss-server.ts (reached via MOSS_SEARCH_URL). The caller (cartesia.ts)
+// enforces the overall 2 s limit and falls back to keyword search on any failure.
 import { v } from "convex/values";
-import { MossClient } from "@moss-js/moss";
 import { internalAction } from "./_generated/server";
-import { MOSS_INDEX_NAME, relevantFacts, toFact } from "../agent/venue-search";
-
-let client: MossClient | undefined;
-let loading: Promise<void> | undefined;
-
-function ensureLoaded(): { ready: Promise<void>; cold: boolean } {
-  if (loading) return { ready: loading, cold: false };
-  const projectId = process.env.MOSS_PROJECT_ID;
-  const projectKey = process.env.MOSS_PROJECT_KEY;
-  if (!projectId || !projectKey) throw new Error("MOSS_PROJECT_ID / MOSS_PROJECT_KEY not set");
-  const c = (client ??= new MossClient(projectId, projectKey));
-  // /tmp is the only writable path in the Convex Node runtime.
-  loading = c.loadIndex(MOSS_INDEX_NAME, { cachePath: "/tmp/moss" }).then(
-    () => undefined,
-    (error) => {
-      loading = undefined; // let the next call retry instead of caching the failure
-      throw error;
-    },
-  );
-  return { ready: loading, cold: true };
-}
+import { MOSS_TIMEOUT_MS, type Fact } from "../agent/venue-search";
 
 const factValidator = v.object({
   id: v.string(),
@@ -37,20 +14,22 @@ const factValidator = v.object({
   score: v.number(),
 });
 
-/** Hybrid (semantic + keyword) search over the calhacks-venue index. Throws if Moss is unreachable. */
+/** Hybrid search over the calhacks-venue index. Throws if the search server is unreachable. */
 export const search = internalAction({
   args: { query: v.string() },
-  returns: v.object({ facts: v.array(factValidator), cold: v.boolean(), queryMs: v.number() }),
+  returns: v.object({ facts: v.array(factValidator), queryMs: v.number() }),
   handler: async (_ctx, { query }) => {
-    const { ready, cold } = ensureLoaded();
-    await ready;
-    const started = Date.now();
-    // alpha 0.5 blends keyword and semantic so exact names ("Gate 4", "Group C") still match.
-    const result = await client!.query(MOSS_INDEX_NAME, query, { topK: 3, alpha: 0.5 });
-    return {
-      facts: relevantFacts(result.docs.map(toFact)),
-      cold,
-      queryMs: Date.now() - started,
-    };
+    const url = process.env.MOSS_SEARCH_URL;
+    if (!url) throw new Error("MOSS_SEARCH_URL not set");
+    const token = process.env.MOSS_SEARCH_TOKEN;
+    const response = await fetch(`${url.replace(/\/$/, "")}/search`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify({ query }),
+      signal: AbortSignal.timeout(MOSS_TIMEOUT_MS),
+    });
+    if (!response.ok) throw new Error(`search server answered ${response.status}`);
+    const body = (await response.json()) as { facts: Fact[]; queryMs: number };
+    return { facts: body.facts, queryMs: body.queryMs };
   },
 });

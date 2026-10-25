@@ -230,11 +230,9 @@ export const venueSearch = toolHandler("venue_search", async (ctx, { args, callI
   const started = Date.now();
   let facts: Fact[];
   let outcome: "found" | "no_match" | "fallback";
-  let cold: boolean | undefined;
   try {
     const result = await withTimeout(ctx.runAction(internal.moss.search, { query: args.query }), MOSS_TIMEOUT_MS);
     facts = result.facts;
-    cold = result.cold;
     outcome = facts.length > 0 ? "found" : "no_match";
   } catch (error) {
     console.error("[cartesia] venue_search: Moss failed, using keyword fallback:", error instanceof Error ? error.message : error);
@@ -243,7 +241,7 @@ export const venueSearch = toolHandler("venue_search", async (ctx, { args, callI
   }
   const latencyMs = Date.now() - started;
   try {
-    await ctx.runMutation(internal.retrievals.record, { outcome, latencyMs, cold, callId });
+    await ctx.runMutation(internal.retrievals.record, { outcome, latencyMs, callId });
   } catch (error) {
     console.error("[cartesia] venue_search: could not log retrieval", error);
   }

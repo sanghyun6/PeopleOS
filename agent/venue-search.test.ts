@@ -7,6 +7,8 @@ import {
   buildMessage,
   buildMossDocuments,
   formatAsOf,
+  isBearerAuthorized,
+  parseSearchRequest,
   keywordSearch,
   relevantFacts,
   toFact,
@@ -134,5 +136,21 @@ describe("Moss results", () => {
       fact({ id: "d", score: 0 }),
     ]);
     expect(facts.map((f) => f.id)).toEqual(["c", "b"]);
+  });
+});
+
+describe("search server request handling", () => {
+  test("parseSearchRequest accepts a trimmed query string only", () => {
+    expect(parseSearchRequest({ query: "  when is dinner " })).toBe("when is dinner");
+    for (const bad of [null, "x", [], {}, { query: 3 }, { query: "   " }, { query: "x".repeat(501) }]) {
+      expect(parseSearchRequest(bad)).toBeNull();
+    }
+  });
+
+  test("isBearerAuthorized needs the exact token, and allows all when none is set", () => {
+    expect(isBearerAuthorized("Bearer s3", "s3")).toBe(true);
+    expect(isBearerAuthorized("Bearer nope", "s3")).toBe(false);
+    expect(isBearerAuthorized(undefined, "s3")).toBe(false);
+    expect(isBearerAuthorized(undefined, undefined)).toBe(true);
   });
 });

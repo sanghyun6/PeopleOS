@@ -162,3 +162,16 @@ export function buildMessage(facts: Fact[]): string {
   const asOf = stamps.find((s): s is string => s !== null);
   return asOf ? `${spoken.join(" ")} (Information as of ${asOf}.)` : spoken.join(" ");
 }
+
+/** Body of POST /search on scripts/moss-server.ts: `{ query }`, trimmed. Null when invalid. */
+export function parseSearchRequest(body: unknown): string | null {
+  if (typeof body !== "object" || body === null) return null;
+  const query = (body as Record<string, unknown>).query;
+  if (typeof query !== "string") return null;
+  const trimmed = query.trim();
+  return trimmed === "" || trimmed.length > 500 ? null : trimmed;
+}
+
+/** `Authorization: Bearer <token>` check; with no token configured every request passes. */
+export const isBearerAuthorized = (header: string | null | undefined, token: string | undefined) =>
+  !token || header === `Bearer ${token}`;

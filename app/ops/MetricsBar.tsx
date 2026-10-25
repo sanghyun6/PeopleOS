@@ -36,7 +36,7 @@ export function MetricsBar({ zoneCount, edgeCount, children }: { zoneCount?: num
           value={retrieval ? (retrieval.avgMs === null ? "–" : `${retrieval.avgMs} ms`) : "…"}
           hint={
             retrieval && retrieval.count > 0
-              ? `${retrieval.count} lookups, warm avg ${retrieval.avgWarmMs ?? "–"} ms, ${retrieval.fallbacks} fallbacks`
+              ? `${retrieval.count} lookups, ${retrieval.fallbacks} fallbacks`
               : undefined
           }
         />

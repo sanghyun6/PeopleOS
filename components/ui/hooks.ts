@@ -43,12 +43,12 @@ export function useStats(): Stats | undefined {
   return LIVE.stats ? live : mockStats;
 }
 
-export type RetrievalStats = { count: number; avgMs: number | null; avgWarmMs: number | null; fallbacks: number };
+export type RetrievalStats = { count: number; avgMs: number | null; fallbacks: number };
 
 /** Moss retrieval latency for the voice agent's venue_search tool. Mock mode shows none. */
 export function useRetrievalStats(): RetrievalStats | undefined {
   const live = useQuery(api.retrievals.stats, LIVE.stats ? {} : "skip");
-  return LIVE.stats ? live : { count: 0, avgMs: null, avgWarmMs: null, fallbacks: 0 };
+  return LIVE.stats ? live : { count: 0, avgMs: null, fallbacks: 0 };
 }
 
 /** Offered + accepted assignments with routes (3D route lines). Mock mode draws none. */

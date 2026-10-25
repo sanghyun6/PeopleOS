@@ -8,7 +8,6 @@ export const record = internalMutation({
   args: {
     outcome: v.union(v.literal("found"), v.literal("no_match"), v.literal("fallback")),
     latencyMs: v.number(),
-    cold: v.optional(v.boolean()),
     callId: v.optional(v.string()),
   },
   returns: v.null(),
@@ -24,7 +23,6 @@ export const stats = query({
   returns: v.object({
     count: v.number(),
     avgMs: v.union(v.number(), v.null()),
-    avgWarmMs: v.union(v.number(), v.null()),
     fallbacks: v.number(),
   }),
   handler: async (ctx) => {
@@ -34,7 +32,6 @@ export const stats = query({
     return {
       count: moss.length,
       avgMs: avg(moss.map((r) => r.latencyMs)),
-      avgWarmMs: avg(moss.filter((r) => !r.cold).map((r) => r.latencyMs)),
       fallbacks: rows.length - moss.length,
     };
   },
