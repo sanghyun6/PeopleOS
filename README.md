@@ -14,7 +14,7 @@ Built at Cal Hacks 13.0 (Palace of Fine Arts, SF).
 | Convex schema (`zones`, `edges`, `locations`, `staff`, `incidents`, `assignments`) | done |
 | Seed from `data/palace-venue.json`: 18 zones, 27 edges, 406 locations, 8 staff | done |
 | Cartesia HTTP actions, dispatch, Dijkstra, staff actions, dedup, blockages, stats | done (curl smoke-tested end to end) |
-| `/` | "Who are you?" picker (staff or operator), remembered in localStorage. Demo-level gate only: the operator passcode (`NEXT_PUBLIC_OPS_PASSCODE`, default `calhacks`) ships in the client bundle, so this is not real auth. |
+| `/` | "Who are you?" picker (staff or operator), remembered in localStorage. Demo-level gate only: the operator passcode (`NEXT_PUBLIC_OPS_PASSCODE`, default `calhacks`, or a loaded Venue Pack's passcode checked by a public query) is not real auth. |
 | `/demo` | one screen: `/ops` on the left, two staff phones (Priya, Jordan) on the right, all live |
 | `/ops` 3D view | live markers, staff dots, assignment routes, incident list, metrics |
 | `/staff/[id]` | accept / decline / complete, sound + vibration |
@@ -23,6 +23,7 @@ Built at Cal Hacks 13.0 (Palace of Fine Arts, SF).
 | Voice agent | Cartesia Managed Agent with five webhook tools (`create_incident`, `report_blockage`, `escalate_to_human`, `get_directions`, `venue_search`); see `agent/README.md` |
 | Event Q&A | `venue_search` asks a Moss index (2 s limit) and falls back to keyword search over `agent/event-kb.json`; latency and fallbacks shown on `/ops` |
 | Web/SMS reporting | backend only: `incidents.reportFromWeb` runs the same pipeline as voice, but no screen calls it yet |
+| Other venues | Venue Pack format, loader, generic 3D renderer and `/onboard` wizard; see "Onboarding another venue" |
 
 ## Setup
 
@@ -63,7 +64,13 @@ convex/            backend
   bitdeer.ts       Bitdeer call log + ops stat, staff-brief action
   lib/bitdeer.ts   Bitdeer client, cosine ranking, verdict/brief parsers (pure)
   cartesia.ts      HTTP actions for agent tools (routed in http.ts)
+  lib/venuePack.ts Venue Pack schema (zod) + compiler to table rows (pure)
+  venuePack.ts     load a pack, venue metadata for the UI and webhooks
 agent/             Cartesia Managed Agent: tool schemas, types, prompt, vocabulary
+  pack-agent.ts    prompt, guide and tools for a Venue Pack
+scripts/venue-load.ts         npm run venue:load (Convex + prompt + Cartesia + Moss)
+scripts/export-venue-pack.ts  npm run export:venue-pack (Cal Hacks as a pack)
+components/onboard/           /onboard wizard (app/onboard, API in app/api/onboard)
 components/venue/  R3F scene, floor, markers, staff dots, route lines
 app/ops            ops dashboard (+ blockage banner with Undo)
 app/demo           split screen: ops + two staff phones
@@ -91,27 +98,83 @@ HTTP actions: `GET /health`, `POST /cartesia/create_incident`,
 - Speech input keyterms (venue words such as "mezzanine", "Broadway") and noise suppression.
 - `end_call` system tool.
 
-## Onboarding another venue
+## Onboarding another venue ("Bring your own venue")
 
-The dispatch, routing, dedup, and emergency code has no venue names in it. A venue is data:
+Labels below: **Works** = built and verified on the sample venue; **Manual** = a person does
+it once per venue; **Next step** = not built (the app shows the same badge, never a fake result).
 
-1. Venue geometry in the shape of `data/palace-venue.json` (tables, booths, amenities,
-   rooms, labels, entrances).
-2. Zones and walkable edges in `convex/lib/zoning.ts` (`ZONES`, `EDGES` with door/stair
-   waypoints, `ROOMS`, `AMENITY_ALIASES`). Drawn by hand today: 18 zones and 27 edges here.
-3. Staff roster in `convex/seed.ts`, then `npm run reseed`.
-4. Event facts in `agent/event-kb.json` and `agent/event-facts.md`, then
-   `npx tsx scripts/moss-index.ts`.
-5. `npx tsx agent/export.ts` regenerates the location vocabulary, venue guide, system
-   prompt, and tool definitions; `agent/setup-cartesia.mjs` registers them.
+A venue is one **Venue Pack** JSON file (`convex/lib/venuePack.ts`, zod): event info,
+1-2 floors (name + height), zones (rectangle or polygon, floor, wall height, kind), walking
+edges (walk/stairs, optional waypoints and distance), named locations (table, booth,
+amenity, room, area, entrance), staff (name, role, start zone, available/off_duty),
+knowledge facts, escalation contacts, and an optional operator passcode.
 
-Still hard-coded for Cal Hacks: the agent's identity line (`agent/prompt.ts`), the
-escalation fallback location and failure message (`convex/cartesia.ts`), the Moss index
-name (`agent/venue-search.ts`), and the greeting and keyterms in `agent/setup-cartesia.mjs`.
+- `npm run export:venue-pack` writes the live Cal Hacks venue as
+  `docs/examples/calhacks-venue-pack.json`. `agent/calhacks-pack.test.ts` proves it compiles
+  back to exactly the seeded zones, edges (distances included), 406 locations and 8 staff.
+  What the format cannot express for Cal Hacks: real zone polygons (Cal Hacks zones are
+  graph nodes, so the export uses each zone's padded bounding box and points
+  `geometry.detailed` at the built-in Palace model for tables, chairs and stairs), and the
+  hand-written `agent/event-facts.md` guide text (the pack carries `event-kb.json` only).
+- `docs/examples/sample-venue-pack.json`: a fictional second venue (Harborview Convention
+  Center, 7 zones, two full floors at 0 m and 6 m, 4 staff, 5 facts, its own passcode).
+
+### Steps
+
+1. **Works** Make the pack: `/onboard` (link at the bottom of `/`), or write the JSON.
+   The wizard has venue basics, a floor plan editor (upload a plan image, draw rectangle
+   zones, add places, connect zones, auto-connect touching zones), event knowledge (paste
+   text or a public URL; a Bitdeer chat model extracts facts on the server, errors are shown
+   as returned), staff CSV (`name,role,start_zone,status,phone`), and a validated preview
+   with download. The draft is kept in this browser's localStorage; the plan image is not.
+2. **Manual** Point `.env.local` at a separate Convex deployment, never the Cal Hacks one.
+   Quickest: remove `CONVEX_DEPLOYMENT`/`NEXT_PUBLIC_CONVEX_*` from `.env.local`, then
+   `CONVEX_AGENT_MODE=anonymous npx convex dev` (local backend on 127.0.0.1:3210/3211).
+   The loader refuses `resolute-horse-290` and any `prod:` deployment.
+3. **Works** `npm run venue:load -- my-pack.json --site-url https://<public url of that deployment>`
+   validates the pack, then (a) replaces zones, edges, locations, staff and incidents on that
+   deployment, (b) writes the agent prompt, venue guide and tool bodies to
+   `.venue-packs/<event>/` (same builders as `agent/export.ts`), (c) registers a new Cartesia
+   agent "PeopleOS - <event>" with `agent/setup-cartesia.mjs` and `SKIP_PHONE=1`, and
+   (d) creates the Moss index `venue-<event>` with `scripts/moss-index.ts`.
+   Flags: `--dry-run`, `--skip-cartesia`, `--skip-moss`.
+4. **Manual** Tools need a public URL: a local deployment can be exposed with
+   `ssh -R 80:localhost:3211 nokey@localhost.run` (what we tested).
+5. **Manual** Phone number: the loader never provisions or re-points numbers. In the
+   Cartesia dashboard, attach a number to the new agent (or test with a web call).
+6. **Manual** Moss search for the new index: `MOSS_INDEX=venue-<event> npx tsx scripts/moss-server.ts`
+   behind a tunnel, then set `MOSS_SEARCH_URL` on that deployment. Without it, event questions
+   use keyword search over the pack's facts.
+7. Run the web app against that deployment and reload the page after a load (the venue is
+   read once per page load).
+
+### What works on another venue (verified on the sample, local deployment)
+
+- `create_incident` by curl -> location match (exact, table number, alias such as
+  "the acme booth") -> auto-dispatch by role, availability, workload and walking distance ->
+  marker on `/demo` and `/ops` -> accept and complete from the staff phone -> green marker.
+- Dedup (report count 1 -> 2), blockage reroute (79 m -> 103.5 m via the other stairs),
+  directions with up/down stairs from the zone levels, unknown places rejected,
+  escalations without a location pinned to the pack's help desk, event answers from the
+  pack's facts, the pack's operator passcode.
+- Generic 3D renderer when the pack has no detailed model: zone floors, see-through walls
+  at the pack's heights, zone labels, tables/booths/amenities, the pack's floor names on
+  the level buttons. Markers, staff dots, routes and drag controls are the same components.
+
+### Not built yet
+
+- **Next step** Floor plan image -> zones automatically. Zones are drawn by hand.
+- **Next step** Indoor positioning. Staff positions are zones (start zone, then the last
+  completed task).
+- **Next step** Several venues in one deployment (multi-tenant). One deployment holds one
+  venue; loading a pack replaces the previous venue and its incidents.
+- **Next step** Loading from the browser ("Load into PeopleOS" is disabled), more than two
+  floors, polygon drawing in the wizard (rectangles only), custom staff roles (the five
+  roles and the category -> role map are fixed), SMS to staff phones.
 
 ## Known limitations
 
-- Zone graph is hand-drawn; nothing generates zones from a floor plan yet.
+- Zone graph is hand-drawn (in code for Cal Hacks, in `/onboard` for other venues); nothing generates zones from a floor plan yet.
 - Staff location is zone-level and only updates when a task is completed. No live tracking.
 - Unanswered offers stay offered: no timeout re-dispatch. Decline re-dispatches immediately.
 - Escalations show red on `/ops` but do not page the ops lead.
