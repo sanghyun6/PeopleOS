@@ -6,6 +6,14 @@ dispatches the best-fit staff member using walking routes (not straight lines).
 
 Built at Cal Hacks 13.0 (Palace of Fine Arts, SF).
 
+## How we use Convex
+
+- Realtime: `/ops`, `/demo` and `/staff/[id]` read Convex with `useQuery`, so incidents, staff and routes update without a refresh.
+- Backend: schema with indexes, queries, mutations, actions, and HTTP actions that receive the Cartesia voice tool calls.
+- Extras: a full text search index for location lookup and a scheduled function for staff briefs.
+- Not used: Convex components, auth, crons, file storage, vector search.
+- Details and build log: [hackathon.md](hackathon.md). Repo: https://github.com/sanghyun6/PeopleOS
+
 ## Status
 
 | Piece | State |
