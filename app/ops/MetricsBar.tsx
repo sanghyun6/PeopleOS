@@ -60,12 +60,12 @@ export function MetricsBar({ zoneCount, edgeCount, children }: { zoneCount?: num
         </div>
         <div className="ml-4 flex divide-x divide-line rounded-xl bg-surface py-2 pr-2 pl-4 ring-1 ring-inset ring-line">
           <Stat
-            title="Location lookup (Moss)"
+            title="Event Q&A (Moss)"
             value={retrieval ? (retrieval.avgMs === null ? "–" : `${retrieval.avgMs}ms`) : "…"}
-            sub={retrieval ? `${retrieval.count} lookups` : undefined}
+            sub={retrieval ? `${retrieval.count} searches` : undefined}
             hint={
-              retrieval && retrieval.count > 0
-                ? `${retrieval.count} lookups, ${retrieval.fallbacks} fallbacks`
+              retrieval && retrieval.count + retrieval.fallbacks > 0
+                ? `${retrieval.count} answered by Moss, ${retrieval.fallbacks} by keyword fallback`
                 : undefined
             }
           />

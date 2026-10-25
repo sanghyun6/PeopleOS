@@ -1,5 +1,5 @@
 // Duplicate-candidate filter: same zone + same category + reported within 15 minutes.
-// Claude then judges "same problem?" among these (convex/dedup.ts).
+// Bitdeer then judges "same problem?" among these (convex/dedup.ts).
 import type { Doc, Id } from "../_generated/dataModel";
 import type { IncidentCategory, IncidentStatus } from "./validators";
 

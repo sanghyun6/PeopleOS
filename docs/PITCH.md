@@ -38,13 +38,13 @@
 | "어떤 행사장이든 바로 돌아간다" / "plug and play" | 구역 중심 좌표, 통로, 경유점은 **손으로** 그렸다(`ZONES`, `EDGES`). 프롬프트 첫 줄, 실패 안내, 응급 fallback 위치, Moss 인덱스 이름, Cartesia 인사말에 Cal Hacks/Box Office가 하드코딩 | "새 행사장은 코드 재작성이 아니라 **데이터 작업**이다. 지금은 구역 그래프를 손으로 그리고, 자동화가 다음 단계다" |
 | "직원 실시간 위치 추적" | 직원 위치는 구역 단위, 작업 완료 시에만 갱신(`assignments.complete`) | "zone-level presence, updated when a task completes" |
 | "운영자가 확인하면 막힘이 적용된다" | 즉시 적용, 확인 단계 없음. `pending_review` 상태는 스키마에만 있고 미사용. CLAUDE.md 데모 대본의 "operator confirms"와 다름 | "applied instantly, one-click Undo for the operator" |
-| "Claude가 중복을 판정한다" | 중복판정은 Bitdeer(bge-m3 + DeepSeek). Claude 호출 없음. `convex/lib/dedup.ts` 주석과 CLAUDE.md는 옛 설계라 틀림 | Claude = 전화 에이전트의 두뇌. 중복판정 = Bitdeer |
+| "Claude가 중복을 판정한다" | 중복판정은 Bitdeer(bge-m3 + DeepSeek). Claude 호출 없음. CLAUDE.md는 옛 설계라 틀림(`convex/lib/dedup.ts` 주석은 수정함) | Claude = 전화 에이전트의 두뇌. 중복판정 = Bitdeer |
 | "AI가 배정한다" | 배정은 결정론적 알고리즘(역할 → 가용 → 업무량 → 거리) | 오히려 강점: "**AI는 듣고, 배정은 설명 가능한 규칙이 한다**" |
 | "직원에게 푸시/문자 알림" | 열려 있는 웹 페이지에서 비프 + 진동. 소리는 한 번 탭해야 나옴, iOS는 진동 미지원 | "staff web page buzzes on new assignment" |
 | "응급 시 운영 리더 폰이 울린다" | `escalated`는 대시보드 빨간 마커뿐. Alex(ops_lead)에게 배정·알림 없음 | "escalations land red on the ops dashboard for a human" |
 | "응답 없으면 자동 재배정" | 타임아웃 재배정 없음. decline 시에만 다음 후보 | "decline re-dispatches instantly; timeout re-dispatch is next" |
 | "전화가 안 되면 웹/문자로 신고" | 백엔드 action만 있고 화면 없음 | 만들기 전엔 말하지 말 것 |
-| "Moss로 위치를 찾는다" | 위치 해석은 Convex 규칙 + search index(`resolveLocation`). Moss는 **행사 Q&A**(`venue_search`) 전용. `/ops`의 "Location lookup (Moss)" 라벨이 틀렸음 | "Moss answers event questions on the call (schedule, showers, wifi rules)" |
+| "Moss로 위치를 찾는다" | 위치 해석은 Convex 규칙 + search index(`resolveLocation`). Moss는 **행사 Q&A**(`venue_search`) 전용. `/ops` 라벨은 "Event Q&A (Moss)"로 수정함 | "Moss answers event questions on the call (schedule, showers, wifi rules)" |
 | "중복을 N% 줄였다", "응답 시간 N분 단축" | 측정 데이터 없음 | 숫자 대신 데모에서 report count 1 → 2를 보여줄 것 |
 | "수천 명 규모 검증" | 부하 테스트 없음 | 말하지 말 것 |
 
@@ -151,7 +151,7 @@ CLAUDE.md의 Slack 사례(콘센트 신고 무응답, 컵 질문 약 3시간, �
 - **검색**: `scripts/moss-server.ts`(`loadIndex` 1회, warm-up 쿼리, `query(topK: 3, alpha: 0.5)` 하이브리드로 "Gate 4" 같은 고유명사도 매칭).
 - **통화 경로**: `convex/moss.ts` `search` → `convex/cartesia.ts` `venueSearch`(2 s 상한, 실패 시 키워드 fallback, `retrievals`에 found/no_match/fallback + 지연시간 기록).
 - **시간 민감 정보**: `buildMessage`가 식사·샤워 등에 "as of" 시각을 붙임(`TIME_SENSITIVE_IDS`).
-- 약점과 정직한 설명: Moss SDK의 임베딩 모델이 Convex action 안에서 안 떠서 노트북 서버 + 터널을 씀. 심사 직전 `scripts/demo-up.sh`로 `MOSS OK` 확인 필수. `/ops` 라벨 "Location lookup (Moss)"는 사실과 다르니 고치거나, 못 고치면 말로 바로잡을 것.
+- 약점과 정직한 설명: Moss SDK의 임베딩 모델이 Convex action 안에서 안 떠서 노트북 서버 + 터널을 씀. 심사 직전 `scripts/demo-up.sh`로 `MOSS OK` 확인 필수. `/ops` 라벨은 "Event Q&A (Moss)"로 수정됨.
 
 ### Bitdeer: "두 모델, 두 작업, 하나는 통화 중 핵심 경로"
 - **클라이언트**: `createBitdeerClient`(`convex/lib/bitdeer.ts`): 모든 요청이 하나의 deadline 공유, 호출마다 kind/model/latency/ok 기록.
@@ -192,7 +192,7 @@ CLAUDE.md의 Slack 사례(콘센트 신고 무응답, 컵 질문 약 3시간, �
 |---|---|---|---|
 | **1** | **실전 리허설 + 리셋 절차 고정** | 45분 | 수상은 재배정 15초에 달려 있음. 실제 전화로 대본을 3번 연속 돌리고 시간을 잰다. 그 과정에서 Cartesia 도구 URL/시크릿/모델(U1), "Broadway 1 hallway"가 정확히 `broadway-1` 구역으로 해석되는지, Jordan 재배정이 화면에 보이는지 확인. 심사위원마다 반복하므로 리셋을 손에 익혀야 함: `npm run reseed`(사건·직원 위치 초기화. `retrievals`/`bitdeerCalls`는 남아서 사용량 지표는 유지됨). 안 하면: 두 번째 심사위원 앞에서 Jordan이 이미 Atrium에 있거나 막힘이 남아 있어 장면이 안 나옴 |
 | **2** | **백업 영상 녹화** | 30분 | 리허설이 성공한 그 상태로 바로 녹화(조용한 지금이 최적). 와이파이나 전화가 죽으면 이게 데모. Devpost에도 영상 필요. 안 하면: 장애 시 보여줄 게 없음 |
-| **3** | **사실과 다른 표기 2곳 수정 + README 갱신** | 30분 | (a) `app/ops/MetricsBar.tsx`의 "Location lookup (Moss)" → "Event Q&A (Moss)". Moss 심사위원이 화면에서 바로 볼 틀린 문구. (b) `convex/lib/dedup.ts` 주석 "Claude then judges" → Bitdeer. 코드 보는 심사위원용. (c) README: HTTP 라우트 목록에 get_directions/venue_search 추가, Moss env, "Cartesia features used", "Known limitations"(이 문서 1장 표 재사용), 행사장 온보딩 절차 5줄. 기존 기능을 정확히 보이게 하는 작업이라 위험이 거의 없음 |
+| **3** | ~~사실과 다른 표기 2곳 수정 + README 갱신~~ **완료** | 30분 | (a) `app/ops/MetricsBar.tsx`의 "Location lookup (Moss)" → "Event Q&A (Moss)". Moss 심사위원이 화면에서 바로 볼 틀린 문구. (b) `convex/lib/dedup.ts` 주석 "Claude then judges" → Bitdeer. 코드 보는 심사위원용. (c) README: HTTP 라우트 목록에 get_directions/venue_search 추가, Moss env, "Cartesia features used", "Known limitations"(이 문서 1장 표 재사용), 행사장 온보딩 절차 5줄. 기존 기능을 정확히 보이게 하는 작업이라 위험이 거의 없음 |
 | **4** | **Devpost 초안 제출** | 30분 | 6장 초안 붙여넣기 + 영상 + 트랙 선택. 마감 시각이 불확실하니 자기 전에 일단 제출(보통 마감 전까지 수정 가능, 확인할 것). 안 하면: 아침에 마감에 쫓김 |
 | 5 (선택) | 웹 대체 신고 폼 (`incidents.reportFromWeb` 호출하는 화면 하나) | 45–60분 | 백엔드는 이미 있음. 전화가 죽어도 라이브 데모가 가능해지고 "채널 무관 파이프라인" 주장이 사실이 됨. **1–4가 04:00 전에 끝났을 때만.** 새 UI라 버그 위험이 있으니 수면을 깎아서 하지 말 것 |
 
