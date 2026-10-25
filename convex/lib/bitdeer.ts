@@ -15,6 +15,8 @@ export const DEDUP_TOTAL_MS = 4_000;
 export const SIMILARITY_THRESHOLD = 0.55;
 export const BRIEF_MAX_WORDS = 12;
 const BRIEF_TIMEOUT_MS = 10_000; // scheduled action, nobody is waiting on it
+/** DeepSeek spends 180-350 tokens reasoning before the ~15-word answer; 200 left the answer empty. */
+export const BRIEF_MAX_TOKENS = 1_000;
 
 export type BitdeerCallKind = "embedding" | "judge" | "brief";
 export type BitdeerCall = { kind: BitdeerCallKind; model: string; latencyMs: number; ok: boolean };
@@ -257,7 +259,7 @@ export function parseBrief(text: string | null | undefined): string | null {
 export async function buildStaffBrief(client: BitdeerClient | null, input: BriefInput): Promise<string | null> {
   if (!client) return null;
   try {
-    return parseBrief(await client.chat("brief", briefMessages(input), 200));
+    return parseBrief(await client.chat("brief", briefMessages(input), BRIEF_MAX_TOKENS));
   } catch (error) {
     console.error("[bitdeer] staff brief failed, keeping the original description:", error instanceof Error ? error.message : error);
     return null;

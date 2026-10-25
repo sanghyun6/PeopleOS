@@ -19,6 +19,8 @@ import { cancelOpenAssignments, dispatchToBest } from "./dispatch";
 
 const ACTIVE_STATUSES: IncidentStatus[] = ["open", "assigned", "acknowledged", "escalated", "pending_review"];
 const MAX_ROWS = 500;
+/** Resolved incidents stay on the map (green marker) this long before dropping off. */
+export const RESOLVED_VISIBLE_MS = 10 * 60 * 1000;
 
 /** Everything a report needs, whatever the channel (voice tool call, SMS, web form). */
 export const reportArgs = {
@@ -48,7 +50,11 @@ const reportOutcome = v.object({
   message: v.string(),
 });
 
-/** Live list for the ops dashboard and 3D markers. */
+/**
+ * Live list for the ops dashboard and 3D markers: active incidents plus the ones resolved in
+ * the last RESOLVED_VISIBLE_MS, so a completed task turns green before it disappears.
+ * (Recomputed when incident rows change, so a stale green marker may linger until the next change.)
+ */
 export const listActive = query({
   args: {},
   handler: async (ctx) => {
@@ -60,7 +66,14 @@ export const listActive = query({
           .take(MAX_ROWS),
       ),
     );
-    return lists.flat().sort((a, b) => b._creationTime - a._creationTime);
+    const recentlyResolved = (
+      await ctx.db
+        .query("incidents")
+        .withIndex("by_status", (q) => q.eq("status", "resolved"))
+        .order("desc")
+        .take(50)
+    ).filter((i) => i.resolvedAt !== undefined && Date.now() - i.resolvedAt <= RESOLVED_VISIBLE_MS);
+    return [...lists.flat(), ...recentlyResolved].sort((a, b) => b._creationTime - a._creationTime);
   },
 });
 
