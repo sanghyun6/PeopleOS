@@ -3,16 +3,16 @@
 - **Project:** PeopleOS
 - **Event:** Cal Hacks 13.0
 - **What it does:** Voice calls to an AI agent become located incidents on a live 3D venue map, auto-dispatched to the nearest eligible staff member.
-- **Live app:** not deployed
+- **Live app:** https://peopleos-mu.vercel.app
 - **Repo:** https://github.com/sanghyun6/PeopleOS
-- **Frontend:** not deployed
+- **Frontend:** Vercel
 - **Convex deployment:** https://resolute-horse-290.convex.cloud
 - **Components:** none
 - **Convex features:** schema, indexes, full text search, queries, mutations, actions, HTTP actions, scheduled functions, realtime useQuery
 - **Auth:** none
 - **AI models:** BAAI/bge-m3, deepseek-ai/DeepSeek-V4.1-Flash
 - **Started:** 2026-10-24T10:23:06Z
-- **Last updated:** 2026-10-25T16:55:00Z
+- **Last updated:** 2026-10-25T17:03:28Z
 
 ## How we use Convex
 
