@@ -1,10 +1,12 @@
 "use client";
 
 import { Line } from "@react-three/drei";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { MEZZ_HEIGHT, venue, type PlacedRect, type Segment, type VenueLevel, type XZ } from "@/convex/lib/venueData";
+import { MEZZ_HEIGHT, venue, type HackerTable, type PlacedRect, type Segment, type VenueLevel, type XZ } from "@/convex/lib/venueData";
 import { Label } from "./Label";
+import { toWorld } from "./coords";
 import { isLevelVisible, type LevelView } from "./types";
 import { useCloseZoom, useNearZoom } from "./zoom";
 
@@ -187,19 +189,172 @@ export function VenueRooms() {
   );
 }
 
-/** Named areas (Atrium, Broadway #1...) as faint floor-level captions; the only labels kept at far zoom. */
+const PILL_BLUE = "#3f6fd8";
+const PILL_HEIGHT = 7;
+
+/** Named areas (Atrium, Broadway #1...) as blue pills on a stem down to the floor; the only labels kept at far zoom. */
 export function AreaLabels({ view = "all" }: { view?: LevelView }) {
+  const near = useNearZoom();
+  const close = useCloseZoom();
+  // Labels are world-sized, so shrink them as the camera comes in to keep them pill-sized on screen.
+  const size = close ? 1.1 : near ? 1.7 : 2.6;
+  const height = close ? 3.5 : PILL_HEIGHT;
   if (!isLevelVisible(view, "main")) return null;
   return (
     <>
       {venue.labels.map((l) => (
-        <Label key={l.label} position={[l.at.x, 0.8, l.at.z]} text={l.label} size={2.6} color="#5d6879" bg="transparent" bold />
+        <group key={l.label} position={[l.at.x, 0, l.at.z]}>
+          <mesh position={[0, height / 2, 0]} raycast={() => null}>
+            <cylinderGeometry args={[0.05, 0.05, height, 6]} />
+            <meshBasicMaterial color={PILL_BLUE} transparent opacity={0.7} />
+          </mesh>
+          <mesh position={[0, 0.06, 0]} rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
+            <circleGeometry args={[0.45, 16]} />
+            <meshBasicMaterial color={PILL_BLUE} />
+          </mesh>
+          <Label position={[0, height + size / 2, 0]} text={l.label} size={size} color="#ffffff" bg={PILL_BLUE} bold pill />
+        </group>
       ))}
     </>
   );
 }
 
-/** 304 hacker tables as instanced boxes, mezzanine raised to MEZZ_HEIGHT (step 4). Also check-in, service and printer tables. */
+// Furniture palette (wood desks, cream chairs on grey legs), tuned to read on the dark floor.
+const WOOD_TOP = "#b97f4b";
+const WOOD_FRAME = "#834c27";
+const CHAIR_SEAT = "#f2f0ec";
+const CHAIR_LEG = "#8e939b";
+
+type Part = { offset: [number, number, number]; size: [number, number, number]; yaw?: number };
+
+/** Desk parts in table-local space: x along the long side (w), z across (h), y up from the floor. */
+function deskParts(w: number, h: number): { top: Part[]; frame: Part[] } {
+  const lx = w / 2 - 0.12;
+  const lz = h / 2 - 0.12;
+  return {
+    // Slightly short of w so desks placed end to end still read as separate tables.
+    top: [{ offset: [0, TABLE_HEIGHT - 0.03, 0], size: [w - 0.1, 0.06, h] }],
+    frame: [
+      { offset: [0, TABLE_HEIGHT - 0.11, 0], size: [w - 0.14, 0.1, h - 0.14] },
+      ...[-1, 1].flatMap((sx) =>
+        [-1, 1].map((sz): Part => ({ offset: [sx * lx, (TABLE_HEIGHT - 0.06) / 2, sz * lz], size: [0.07, TABLE_HEIGHT - 0.06, 0.07] })),
+      ),
+    ],
+  };
+}
+
+/** Two chairs on each long side, turned to face the desk. */
+function chairParts(w: number, h: number): { seat: Part[]; leg: Part[] } {
+  const seat: Part[] = [];
+  const leg: Part[] = [];
+  for (const side of [-1, 1]) {
+    // A chair at local +z faces -z (towards the desk), so its back sits on the far (+z) side.
+    const yaw = side > 0 ? 0 : Math.PI;
+    const cz = side * (h / 2 + 0.38);
+    for (const sx of [-w / 4, w / 4]) {
+      seat.push({ offset: [sx, 0.46, cz], size: [0.46, 0.06, 0.44], yaw });
+      seat.push({ offset: [sx, 0.72, cz + side * 0.2], size: [0.46, 0.46, 0.05], yaw });
+      for (const lx of [-0.19, 0.19]) leg.push({ offset: [sx + lx, 0.22, cz], size: [0.04, 0.44, 0.4], yaw });
+    }
+  }
+  return { seat, leg };
+}
+
+/** Bake per-table part transforms into instance matrices (table pose * part pose). */
+function partMatrices(rects: PlacedRect[], y: number, parts: (r: PlacedRect) => Part[]): THREE.Matrix4[] {
+  const base = new THREE.Matrix4();
+  const local = new THREE.Matrix4();
+  const q = new THREE.Quaternion();
+  const up = new THREE.Vector3(0, 1, 0);
+  const out: THREE.Matrix4[] = [];
+  for (const r of rects) {
+    base.compose(new THREE.Vector3(r.at.x, y, r.at.z), q.setFromAxisAngle(up, r.rotY), new THREE.Vector3(1, 1, 1));
+    for (const p of parts(r)) {
+      local.compose(new THREE.Vector3(...p.offset), new THREE.Quaternion().setFromAxisAngle(up, p.yaw ?? 0), new THREE.Vector3(...p.size));
+      out.push(base.clone().multiply(local));
+    }
+  }
+  return out;
+}
+
+/** One draw call for every instance of one furniture part. */
+function InstancedParts({ matrices, color, roughness = 0.8 }: { matrices: THREE.Matrix4[]; color: string; roughness?: number }) {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  useLayoutEffect(() => {
+    const mesh = ref.current;
+    if (!mesh) return;
+    matrices.forEach((m, i) => mesh.setMatrixAt(i, m));
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.computeBoundingSphere();
+  }, [matrices]);
+  if (matrices.length === 0) return null;
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, matrices.length]} raycast={() => null}>
+      <boxGeometry />
+      <meshStandardMaterial color={color} roughness={roughness} />
+    </instancedMesh>
+  );
+}
+
+/** Desks + chairs for one floor's hacker tables (5 draw calls regardless of table count). */
+function DeskRows({ tables, y }: { tables: PlacedRect[]; y: number }) {
+  const m = useMemo(
+    () => ({
+      top: partMatrices(tables, y, (r) => deskParts(r.w, r.h).top),
+      frame: partMatrices(tables, y, (r) => deskParts(r.w, r.h).frame),
+      seat: partMatrices(tables, y, (r) => chairParts(r.w, r.h).seat),
+      leg: partMatrices(tables, y, (r) => chairParts(r.w, r.h).leg),
+    }),
+    [tables, y],
+  );
+  return (
+    <group>
+      <InstancedParts matrices={m.top} color={WOOD_TOP} roughness={0.65} />
+      <InstancedParts matrices={m.frame} color={WOOD_FRAME} />
+      <InstancedParts matrices={m.seat} color={CHAIR_SEAT} roughness={0.9} />
+      <InstancedParts matrices={m.leg} color={CHAIR_LEG} roughness={0.5} />
+    </group>
+  );
+}
+
+// Table numbers appear only once the camera is this close (well inside the "close" tier), and only
+// within a radius of the orbit target, so they stay a readable handful.
+const TABLE_LABEL_DISTANCE = 42;
+const TABLE_LABEL_RADIUS = 22;
+
+/** "Table 142" captions, only when zoomed right in and only near what the camera is looking at. */
+function TableNumbers({ tables }: { tables: HackerTable[] }) {
+  const close = useCloseZoom();
+  const controls = useThree((s) => s.controls) as { target?: THREE.Vector3 } | null;
+  const [nearby, setNearby] = useState<HackerTable[]>([]);
+  const last = useRef({ x: NaN, z: NaN, on: false });
+
+  useFrame(({ camera }) => {
+    const t = controls?.target;
+    if (!close || !t) return;
+    const d = camera.position.distanceTo(t);
+    const on = d < (last.current.on ? TABLE_LABEL_DISTANCE * 1.15 : TABLE_LABEL_DISTANCE);
+    // Re-filter on the first close frame, when toggling, or after the target has moved a few meters.
+    const fresh = Number.isNaN(last.current.x);
+    if (!fresh && on === last.current.on && (!on || Math.hypot(t.x - last.current.x, t.z - last.current.z) < 3)) return;
+    last.current = { x: t.x, z: t.z, on };
+    setNearby(on ? tables.filter((tb) => Math.hypot(tb.at.x - t.x, tb.at.z - t.z) < TABLE_LABEL_RADIUS) : []);
+  });
+  useEffect(() => {
+    if (!close) last.current = { x: NaN, z: NaN, on: false };
+  }, [close]);
+
+  if (!close) return null;
+  return (
+    <>
+      {nearby.map((t) => (
+        <Label key={t.n} position={toWorld(t.at, t.level, TABLE_HEIGHT + 0.7)} text={`Table ${t.n}`} size={0.6} color="#f4ead9" bg="rgba(40,26,14,0.78)" />
+      ))}
+    </>
+  );
+}
+
+/** 304 hacker tables with chairs (instanced), mezzanine raised to MEZZ_HEIGHT. Also check-in, service and printer tables. */
 export function HackerTables({ view = "all" }: { view?: LevelView }) {
   const { main, mezz } = useMemo(
     () => ({
@@ -213,11 +368,16 @@ export function HackerTables({ view = "all" }: { view?: LevelView }) {
   const showMezz = isLevelVisible(view, "mezz");
   return (
     <group>
-      <InstancedBoxes rects={main} y={0} height={TABLE_HEIGHT} color="#5a667b" visible={showMain} />
-      <InstancedBoxes rects={mezz} y={MEZZ_HEIGHT} height={TABLE_HEIGHT} color="#6b7790" visible={showMezz} />
-      <InstancedBoxes rects={g.checkinTables} y={0} height={TABLE_HEIGHT} color="#6b5636" visible={showMain} />
-      <InstancedBoxes rects={g.serviceTables} y={0} height={TABLE_HEIGHT} color="#5f5034" visible={showMain} />
-      <InstancedBoxes rects={g.printerTables} y={MEZZ_HEIGHT} height={TABLE_HEIGHT} color="#5f5034" visible={showMezz} />
+      <group visible={showMain}>
+        <DeskRows tables={main} y={0} />
+        <InstancedBoxes rects={g.checkinTables} y={0} height={TABLE_HEIGHT} color={WOOD_FRAME} />
+        <InstancedBoxes rects={g.serviceTables} y={0} height={TABLE_HEIGHT} color={WOOD_FRAME} />
+      </group>
+      <group visible={showMezz}>
+        <DeskRows tables={mezz} y={MEZZ_HEIGHT} />
+        <InstancedBoxes rects={g.printerTables} y={MEZZ_HEIGHT} height={TABLE_HEIGHT} color={WOOD_FRAME} />
+      </group>
+      <TableNumbers tables={view === "all" ? venue.hackerTables : view === "main" ? main : mezz} />
     </group>
   );
 }

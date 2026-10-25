@@ -3,13 +3,13 @@
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 
-type LabelStyle = { color: string; bg: string; bold: boolean };
+type LabelStyle = { color: string; bg: string; bold: boolean; pill: boolean };
 
 const cache = new Map<string, { texture: THREE.CanvasTexture; aspect: number }>();
 
 /** Text -> canvas texture, cached. A sprite instead of drei <Html>: no DOM overlay, no CDN font fetch. */
-function textTexture(text: string, { color, bg, bold }: LabelStyle) {
-  const key = `${text}|${color}|${bg}|${bold}`;
+function textTexture(text: string, { color, bg, bold, pill }: LabelStyle) {
+  const key = `${text}|${color}|${bg}|${bold}|${pill}`;
   const hit = cache.get(key);
   if (hit) return hit;
 
@@ -18,7 +18,7 @@ function textTexture(text: string, { color, bg, bold }: LabelStyle) {
   const font = `${bold ? 600 : 500} ${px}px ${family}`;
   const ctx = document.createElement("canvas").getContext("2d")!;
   ctx.font = font;
-  const padX = px * 0.35;
+  const padX = px * (pill ? 0.6 : 0.35);
   const w = Math.ceil(ctx.measureText(text).width + padX * 2);
   const h = Math.ceil(px * 1.5);
 
@@ -29,7 +29,7 @@ function textTexture(text: string, { color, bg, bold }: LabelStyle) {
   if (bg !== "transparent") {
     c.fillStyle = bg;
     c.beginPath();
-    c.roundRect(0, 0, w, h, h * 0.25);
+    c.roundRect(0, 0, w, h, h * (pill ? 0.5 : 0.25));
     c.fill();
   }
   c.font = font;
@@ -55,6 +55,7 @@ export function Label({
   bg = "rgba(13,17,23,0.82)",
   bold = false,
   onTop = false,
+  pill = false,
 }: {
   position: [number, number, number];
   text: string;
@@ -64,8 +65,10 @@ export function Label({
   bold?: boolean;
   /** Draw over other geometry (for badges that must never be hidden). */
   onTop?: boolean;
+  /** Fully rounded ends (zone pills). */
+  pill?: boolean;
 }) {
-  const { texture, aspect } = useMemo(() => textTexture(text, { color, bg, bold }), [text, color, bg, bold]);
+  const { texture, aspect } = useMemo(() => textTexture(text, { color, bg, bold, pill }), [text, color, bg, bold, pill]);
   const material = useMemo(
     () => new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false, depthTest: !onTop }),
     [texture, onTop],

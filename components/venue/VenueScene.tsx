@@ -1,9 +1,9 @@
 "use client";
 
-import { OrbitControls } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
-import type * as THREE from "three";
-import { useEffect, useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { useCallback, useRef, useState } from "react";
+import { CameraRig, type CameraApi } from "./CameraRig";
+import { toWorld } from "./coords";
 import { AreaLabels, Booths, HackerTables, MezzanineDeck, VenueFloor, VenueRooms } from "./VenueFloor";
 import { IncidentMarker } from "./IncidentMarker";
 import { RouteLine } from "./RouteLine";
@@ -16,21 +16,6 @@ const LEVELS: { id: LevelView; label: string }[] = [
   { id: "main", label: "Main" },
   { id: "mezz", label: "Mezzanine" },
 ];
-
-/** Place the camera once so the whole building (~215 m wide) fits at the canvas aspect. */
-function FitCamera() {
-  const camera = useThree((s) => s.camera);
-  const aspect = useThree((s) => s.size.width / Math.max(1, s.size.height));
-  useEffect(() => {
-    const persp = camera as THREE.PerspectiveCamera;
-    const tanHalf = Math.tan((persp.fov * Math.PI) / 360);
-    const dist = Math.max(108 / (tanHalf * aspect), 62 / tanHalf);
-    camera.position.set(0, dist * 0.82, 5 + dist * 0.57);
-    camera.lookAt(0, 0, 5);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return null;
-}
 
 /**
  * R3F venue: floor, rooms, tables, mezzanine, plus incident markers, staff dots and route lines.
@@ -46,9 +31,15 @@ export default function VenueScene({
   children,
 }: VenueSceneProps) {
   const [view, setView] = useState<LevelView>(initialLevel);
+  const camera = useRef<CameraApi>(null);
+  const compass = useRef<HTMLSpanElement>(null);
+  const selected = incidents.find((i) => i._id === selectedId);
+  const onHeading = useCallback((azimuth: number) => {
+    if (compass.current) compass.current.style.transform = `rotate(${azimuth}rad)`;
+  }, []);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="@container relative h-full w-full">
       <Canvas camera={{ position: [0, 140, 110], fov: 45, near: 1, far: 2000 }}>
         <color attach="background" args={["#0d1117"]} />
         <fog attach="fog" args={["#0d1117", 320, 720]} />
@@ -56,7 +47,6 @@ export default function VenueScene({
         <ambientLight intensity={0.35} />
         <directionalLight position={[60, 140, 80]} intensity={1.1} />
         <directionalLight position={[-80, 60, -40]} intensity={0.25} color="#9fb2ff" />
-        <FitCamera />
         <ZoomProvider>
         <VenueFloor />
         <VenueRooms />
@@ -83,7 +73,12 @@ export default function VenueScene({
         {children}
         </ZoomProvider>
 
-        <OrbitControls makeDefault target={[0, 0, 5]} maxPolarAngle={Math.PI / 2.1} minDistance={15} maxDistance={500} />
+        <CameraRig
+          apiRef={camera}
+          focus={selected ? toWorld(selected.at, selected.level) : null}
+          focusKey={selectedId}
+          onHeading={onHeading}
+        />
       </Canvas>
 
       <div
@@ -106,7 +101,43 @@ export default function VenueScene({
         ))}
       </div>
 
-      <ul className="pointer-events-none absolute right-4 bottom-4 z-20 hidden flex-wrap items-center gap-x-4 gap-y-1 rounded-xl bg-overlay px-3 py-2 text-[11px] text-muted ring-1 ring-inset ring-line backdrop-blur sm:flex">
+      <div
+        role="group"
+        aria-label="Camera"
+        className="absolute right-4 bottom-4 z-20 flex flex-col overflow-hidden rounded-xl bg-overlay text-fg ring-1 ring-inset ring-line backdrop-blur"
+      >
+        {[
+          { label: "Zoom in", glyph: "+", factor: 0.6 },
+          { label: "Zoom out", glyph: "\u2212", factor: 1 / 0.6 },
+        ].map((b) => (
+          <button
+            key={b.label}
+            type="button"
+            aria-label={b.label}
+            title={b.label}
+            onClick={() => camera.current?.zoomBy(b.factor)}
+            className="grid size-9 place-items-center border-b border-line text-lg leading-none text-muted transition hover:bg-raised hover:text-fg"
+          >
+            {b.glyph}
+          </button>
+        ))}
+        <button
+          type="button"
+          aria-label="Reset to north"
+          title="Reset to north"
+          onClick={() => camera.current?.resetHeading()}
+          className="grid size-9 place-items-center text-muted transition hover:bg-raised hover:text-fg"
+        >
+          <span ref={compass} className="block">
+            <svg width="14" height="18" viewBox="0 0 14 18" aria-hidden>
+              <path d="M7 0 L12 9 L2 9 Z" fill="#f0605d" />
+              <path d="M7 18 L12 9 L2 9 Z" fill="currentColor" />
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <ul className="pointer-events-none absolute right-17 bottom-4 z-20 hidden flex-wrap items-center gap-x-4 gap-y-1 rounded-xl bg-overlay px-3 py-2 text-[11px] text-muted ring-1 ring-inset ring-line backdrop-blur @md:flex">
         {[
           { hex: COLOR_HEX.red, text: "Needs staff" },
           { hex: COLOR_HEX.yellow, text: "On it" },
