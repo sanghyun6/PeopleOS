@@ -9,9 +9,13 @@
 | # | 지점 | 근거 | 영향 |
 |---|---|---|---|
 | B1 | **Moss 검색 서버 터널 다운** | `MOSS_SEARCH_URL`은 localhost.run(`*.lhr.life`) 주소. 직접 `POST /search` → `502 no tunnel`. `/cartesia/venue_search`는 `outcome:"fallback"`(42 ms)으로 응답 | 전화 답변은 계속 나옴(`agent/event-kb.json` 키워드 매칭). 다만 Moss가 실제로 쓰이지 않아 Moss 트랙 시연 불가. 터널 URL은 재시작할 때마다 바뀌므로 `npx convex env set MOSS_SEARCH_URL ...`도 다시 해야 함 |
-| B2 | **Bitdeer 직원 브리프 실패** | 테스트 사건 생성 직후 `bitdeerCalls`에 `kind:"brief", ok:false`. 같은 프롬프트로 직접 호출하니 3/3 `finish_reason:"length"`, `content:""`. `DeepSeek-V4.1-Flash`가 reasoning 토큰으로 `max_tokens: 200`(`buildStaffBrief`, `convex/lib/bitdeer.ts`)을 다 씀 | `staffBrief`가 저장되지 않아 직원 카드에 원문 설명이 대신 나옴(`displayBrief` fallback). 기능은 안 죽지만 Bitdeer 브리프 시연이 안 됨. dedup judge(`max_tokens: 400`)는 3/3 정상(66–89 토큰, ~1 s) |
-| B3 | **완료 시 마커가 초록으로 바뀌지 않고 사라짐** | `incidents.listActive`는 `open/assigned/acknowledged/escalated/pending_review`만 반환. `STATUS_COLOR.resolved = "green"`은 정의돼 있지만 resolved 행이 프런트로 오지 않음 | 데모 대본 5단계("marker turns green")와 다름. 완료하면 마커와 경로가 그냥 없어짐 |
 | B4 | **웹/SMS 대체 신고 UI 없음** | `incidents.reportFromWeb` action은 있지만 이를 호출하는 화면이 어디에도 없음(`useAction` 사용처 0) | CLAUDE.md의 "SMS/web-call fallback" 필수 항목이 미완성. 전화가 죽으면 신고 경로가 없음 |
+
+### 수정됨 (이 점검 직후)
+| # | 지점 | 수정 | 검증 |
+|---|---|---|---|
+| B2 | Bitdeer 직원 브리프 실패 | `DeepSeek-V4.1-Flash`가 reasoning에 180–350 토큰을 써서 `max_tokens: 200`에서 답이 비었음. `BRIEF_MAX_TOKENS = 1000`으로 상향 (`convex/lib/bitdeer.ts`) | 라이브 테스트 사건에서 `staffBrief` 저장됨, `bitdeerCalls` brief `ok:true`(4.6 s, 10 s 제한 안) |
+| B3 | 완료한 사건의 마커가 초록이 아니라 사라짐 | `incidents.listActive`가 최근 10분(`RESOLVED_VISIBLE_MS`) 안에 resolved 된 사건도 반환 → 초록 마커 + 목록에 Resolved로 표시 | 라이브에서 accept → complete 후 `listActive`에 `status:"resolved"`로 포함됨. 3D 화면 렌더링은 눈으로 확인하지 않음 |
 
 ### 확인됨 (동작을 코드 + 실호출로 확인)
 | # | 지점 | 동작 |
@@ -61,7 +65,7 @@ flowchart TD
   prep --> judge["judgeDuplicate<br/>Bitdeer bge-m3 + DeepSeek judge<br/>실패/4s 초과 시 같은 위치 휴리스틱"]
   judge -- "중복" --> dup["recordDuplicate<br/>reportCount +1"]
   judge -- "새 사건" --> ins["insertReport"]
-  ins -- "scheduler" --> brief["bitdeer.generateBrief<br/>staffBrief (현재 실패: B2)"]
+  ins -- "scheduler" --> brief["bitdeer.generateBrief<br/>staffBrief"]
   ins -- "응급" --> escd["status=escalated<br/>배정 없음"]
   ins -- "blockage" --> blk["applyBlockage<br/>edge blocked=true → rerouteAll"]
   ins -- "일반" --> disp["dispatchToBest<br/>역할 → 가용 → 업무량 → Dijkstra 거리"]
@@ -113,7 +117,7 @@ flowchart TD
 | 중복 판정 | `judgeDuplicate` (`convex/dedup.ts`) + `judgeDuplicateWithBitdeer` (`convex/lib/bitdeer.ts`) | 새 설명 + 후보 | Bitdeer `BAAI/bge-m3` 임베딩 코사인 순위 → 0.55 이상이면 1등만 `DeepSeek-V4.1-Flash` JSON 판정. 예산 3 s, 전체 상한 4 s. 키 없음/실패/시간 초과 → `sameLocationDuplicate` | 중복 incidentId 또는 null. 호출 기록은 `bitdeerCalls` |
 | 중복 기록 | `recordDuplicate` | incidentId | `reportCount + 1`, `lastReportedAt` 갱신 | `outcome:"duplicate"` 메시지 |
 | 새 사건 | `insertReport` | 인자 + locationId + emergency | `incidents` insert(응급이면 `escalated`/`critical`). `scheduler.runAfter(0, bitdeer.generateBrief)` | 응급 → `escalated`. blockage → 3단계. 그 외 → 4단계 |
-| 직원 브리프 | `bitdeer.generateBrief` → `buildStaffBrief` | incident | 통화 밖에서 1회 chat 호출, 12단어 이하로 정리, 10 s 제한 | `incidents.staffBrief` (실패 시 저장 안 함, B2) |
+| 직원 브리프 | `bitdeer.generateBrief` → `buildStaffBrief` | incident | 통화 밖에서 1회 chat 호출, 12단어 이하로 정리, 10 s 제한 | `incidents.staffBrief` (실패 시 저장 안 함) |
 
 ### 3. 막힘 처리 (`convex/blockages.ts`)
 
@@ -132,7 +136,7 @@ flowchart TD
 | 배정 | `dispatchToBest` (`convex/dispatch.ts`) | 1등 후보 | 없으면 사건 `escalated` | `assignments` insert(`offered`, `route`), 사건 `assigned`, `assigneeId` |
 | 수락 | `assignments.accept` | assignmentId(`offered`여야 함) | 배정 `accepted`, 사건 `acknowledged`, 첫 `acknowledgedAt` 유지, `syncStaffStatus` → `busy` | 지표 avg time-to-acknowledge |
 | 거절 | `assignments.decline` | assignmentId(`offered`) | 배정 `declined`, 사건 `open` → `dispatchToBest` 재실행 | 다음 후보에게 `offered`, 없으면 `escalated` (C6) |
-| 완료 | `assignments.complete` | assignmentId(`accepted`) | 배정 `completed`, 사건 `resolved`/`resolvedAt`, 직원 zone을 사건 zone으로, `available` | 사건이 `listActive`에서 빠짐 (B3) |
+| 완료 | `assignments.complete` | assignmentId(`accepted`) | 배정 `completed`, 사건 `resolved`/`resolvedAt`, 직원 zone을 사건 zone으로, `available` | 사건은 10분간 `listActive`에 남아 초록 마커 (B3 수정) |
 | 취소/에스컬레이션 | `incidents.cancel`, `incidents.escalate` | incidentId | `cancelOpenAssignments` 후 상태 변경 | 직원 해제 |
 
 ### 5. 길 안내와 venue_search
@@ -188,7 +192,7 @@ flowchart TD
 | `POST /cartesia/get_directions` Table 142 → Box Office | `200 directions`, 약 2분 |
 | `POST /cartesia/venue_search` "when is lunch" | `200 fallback`, 42 ms (Moss 다운) |
 | `MOSS_SEARCH_URL/search` 직접 | `502 no tunnel` |
-| `bitdeerCalls` 최근 | 00:02 PT `embedding`/`judge`/`brief` ok. 01:02 PT 테스트 사건의 `brief` **ok:false** |
+| `bitdeerCalls` 최근 | 00:02 PT `embedding`/`judge`/`brief` ok. 01:02 PT 테스트 사건의 `brief` **ok:false** → 수정 후 01:28 PT `brief` ok:true |
 | Bitdeer chat 직접(브리프 프롬프트, `max_tokens` 200) | 3/3 `finish_reason:length`, 빈 내용 |
 | Bitdeer chat 직접(judge 프롬프트, `max_tokens` 400) | 3/3 정상 |
 | `npm run typecheck` / `lint` / `test` | 통과 / 통과 / 122 통과 |
