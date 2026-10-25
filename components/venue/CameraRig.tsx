@@ -29,7 +29,7 @@ export type CameraApi = {
   flyTo: (point: [number, number, number]) => void;
 };
 
-type Controls = THREE.EventDispatcher<{ start: object }> & { target: THREE.Vector3; getAzimuthalAngle: () => number };
+type Controls = THREE.EventDispatcher<{ start: object }> & { mouseButtons: { LEFT: MOUSE | null }; target: THREE.Vector3; getAzimuthalAngle: () => number };
 
 type Flight = { fromPos: THREE.Vector3; toPos: THREE.Vector3; fromTarget: THREE.Vector3; toTarget: THREE.Vector3; t0: number; dur: number };
 
@@ -57,6 +57,8 @@ export function CameraRig({
   const gl = useThree((s) => s.gl);
   const flight = useRef<Flight | null>(null);
   // Wheel zoom still to apply (log of distance factor) and the ground point it zooms towards.
+  // Inertia left over from a grab-pan (ground m/s), applied and decayed each frame.
+  const glide = useRef(new THREE.Vector3());
   const wheel = useRef({ pending: 0, anchor: new THREE.Vector3() });
   const homePolar = useRef(0.96);
 
@@ -100,6 +102,80 @@ export function CameraRig({
     };
     el.addEventListener("wheel", onWheel, { capture: true, passive: false });
     return () => el.removeEventListener("wheel", onWheel, { capture: true });
+  }, [controls, gl, camera]);
+
+  // Grab-pan: left drag / one finger. The ground point under the pointer at press time stays under
+  // the pointer for the whole drag, at any distance or tilt. Shift+left (and right) drag rotate via
+  // the stock controls, which swap LEFT<->PAN when shift is held.
+  useEffect(() => {
+    if (!controls) return;
+    const el = gl.domElement;
+    const ray = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    const anchor = new THREE.Vector3();
+    const hit = new THREE.Vector3();
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const touches = new Set<number>();
+    let active: number | null = null;
+    let last = { t: 0, v: new THREE.Vector3() };
+
+    const groundAt = (e: PointerEvent, out: THREE.Vector3) => {
+      const rect = el.getBoundingClientRect();
+      ndc.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
+      ray.setFromCamera(ndc, camera);
+      plane.constant = -controls.target.y;
+      return ray.ray.intersectPlane(plane, out) !== null;
+    };
+    const stop = () => {
+      active = null;
+    };
+
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === "touch") {
+        touches.add(e.pointerId);
+        if (touches.size > 1) return stop(); // two fingers: the controls zoom + rotate
+      } else if (e.button !== 0) {
+        return; // right = rotate (controls)
+      } else {
+        // Shift+left: let the controls rotate (they swap PAN for ROTATE with shift); otherwise disable theirs.
+        controls.mouseButtons.LEFT = e.shiftKey ? MOUSE.PAN : (-1 as MOUSE);
+        if (e.shiftKey) return;
+      }
+      if (!groundAt(e, anchor)) return;
+      flight.current = null;
+      glide.current.set(0, 0, 0);
+      active = e.pointerId;
+      last = { t: performance.now(), v: new THREE.Vector3() };
+    };
+    const onMove = (e: PointerEvent) => {
+      if (active !== e.pointerId || !groundAt(e, hit)) return;
+      const d = anchor.clone().sub(hit);
+      d.y = 0;
+      camera.position.add(d);
+      controls.target.add(d);
+      camera.updateMatrixWorld(); // the next ray must see the moved camera, or the grab overshoots
+      const now = performance.now();
+      const dt = Math.max(1, now - last.t) / 1000;
+      last = { t: now, v: d.divideScalar(dt) };
+    };
+    const onUp = (e: PointerEvent) => {
+      touches.delete(e.pointerId);
+      if (active !== e.pointerId) return;
+      active = null;
+      // Only glide if the pointer was still moving when released.
+      if (performance.now() - last.t < 60) glide.current.copy(last.v).clampLength(0, 400);
+    };
+
+    el.addEventListener("pointerdown", onDown, { capture: true });
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      el.removeEventListener("pointerdown", onDown, { capture: true });
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
   }, [controls, gl, camera]);
 
   const fly = (toPos: THREE.Vector3, toTarget: THREE.Vector3, dur = 0.9) => {
@@ -149,6 +225,13 @@ export function CameraRig({
 
   useFrame((_, dt) => {
     if (!controls) return;
+    const g = glide.current;
+    if (g.lengthSq() > 0.01) {
+      const d = g.clone().multiplyScalar(dt);
+      camera.position.add(d);
+      controls.target.add(d);
+      g.multiplyScalar(Math.exp(-dt * 5));
+    }
     const w = wheel.current;
     if (Math.abs(w.pending) > 1e-4) {
       const step = w.pending * (1 - Math.exp(-dt * 14));
@@ -194,8 +277,8 @@ export function CameraRig({
       minDistance={MIN_DISTANCE}
       maxDistance={MAX_DISTANCE}
       maxPolarAngle={MAX_POLAR}
-      mouseButtons={{ LEFT: MOUSE.ROTATE, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.PAN }}
-      touches={{ ONE: TOUCH.ROTATE, TWO: TOUCH.DOLLY_PAN }}
+      mouseButtons={{ LEFT: -1 as MOUSE, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.ROTATE }}
+      touches={{ ONE: -1 as TOUCH, TWO: TOUCH.DOLLY_ROTATE }}
     />
   );
 }

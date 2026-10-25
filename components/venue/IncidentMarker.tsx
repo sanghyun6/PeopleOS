@@ -9,6 +9,9 @@ import { COLOR_HEX, STATUS_COLOR, type IncidentMarkerProps } from "./types";
 import { useNearZoom } from "./zoom";
 import { displayBrief } from "@/convex/lib/bitdeer";
 
+/** Pointer travel (px) between press and release beyond which a click counts as a drag. */
+const CLICK_SLOP_PX = 4;
+
 const clip = (s: string, n = 34) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
 
 /** Status-colored pin at incident.at; shows reportCount badge when > 1 (step 4). */
@@ -41,6 +44,7 @@ export function IncidentMarker({ incident, selected, onSelect }: IncidentMarkerP
       position={[x, y, z]}
       onClick={(e) => {
         e.stopPropagation();
+        if (e.delta > CLICK_SLOP_PX) return; // the pointer travelled: that was a drag, not a click
         onSelect(incident._id);
       }}
       onPointerOver={(e) => {
