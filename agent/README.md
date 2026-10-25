@@ -39,6 +39,18 @@ call's latency is logged in the `retrievals` table and shown on `/ops`.
 npx tsx scripts/moss-index.ts   # creates the index, or upserts in place and drops removed ids
 ```
 
+### Demo day: one command
+
+```bash
+scripts/demo-up.sh           # start server + localhost.run tunnel, set MOSS_SEARCH_URL on Convex, verify
+scripts/demo-up.sh --check   # are server, tunnel and Convex URL still alive? (non-zero exit if not)
+scripts/demo-up.sh --down    # stop server and tunnel
+```
+
+The verify step calls `venue_search` on Convex and prints `MOSS OK` or `FALLBACK` (keyword
+search answered). Rerun the script whenever `--check` fails: the tunnel URL changes each time.
+Logs and pids are in `.demo-up/`. No key values are printed.
+
 ### Search server (required for live Moss answers)
 
 Moss has no server-side query API (the REST API only manages indexes and documents), and
