@@ -1,0 +1,170 @@
+[
+  {
+    "id": "sleeping-area",
+    "title": "Sleeping Area",
+    "text": "The Sleeping Area opened Friday night at 11 PM in the area where the food was served. It is open floor space covered with a tarp. Bring your own sleeping bag and a yoga mat or air mattress. Annapurna Labs (Sleep Labs) handed out sleep masks.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "showers",
+    "title": "Showers",
+    "text": "The shower trailers are outside the venue on Palace Drive, behind the building. They reopened Saturday morning. On the map they are listed as Shower Trailers (Go From Outside).",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "merch",
+    "title": "Merch distribution",
+    "text": "Merch (t-shirts, tote bags, stickers, postcards) is handed out at the Annapurna (Sleep) Labs. Saturday distribution was 10 AM and 4 to 5:30 PM, no app reservation needed. Stickers and postcards are also at the Info Desk. Earlier merch pickup was at Gate 7, where the food was served.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "souvenir-shop",
+    "title": "Souvenir Shop",
+    "text": "The Souvenir Shop opened Saturday at 4:15 PM. Redeem points earned in Terminal Tasks for merch. Tap Check for Updates in the Cal Hacks app first so the correct screen shows.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "badge",
+    "title": "Badges",
+    "text": "You need your badge to get into the venue. Organizers are not handing out extra badges.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "meals",
+    "title": "Meals and food groups",
+    "text": "Meals are served by boarding group A, B, C, or D, shown in your digital wallet pass. Do not line up until your group is called. Saturday dinner started at 6 PM with order Group C at 6:00, Group B at 6:20, Group A at 6:40, Group D at 7:00. Vegetarian, vegan, and gluten-free options are available. Saturday lunch order was D, A, B, C. Breakfast was bagels and hard boiled eggs. Seconds are announced in Slack.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "midnight-snack",
+    "title": "Midnight snack",
+    "text": "Friday midnight snack was onigiri, served by group at Gate 6.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "wifi-policy",
+    "title": "Wi-Fi policy",
+    "text": "Personal hotspots, routers, and any broadcasting equipment are prohibited in the venue, and organizers can detect them. Do not unplug any access points, switches, or network gear. If there are not enough outlets, use another table. Unplugging network gear is a Code of Conduct violation and can get you removed.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "wifi-tips",
+    "title": "Wi-Fi tips",
+    "text": "Wi-Fi 6 works much better than Wi-Fi 5. The only area that supports 2.4 GHz is the Mezzanine.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "ethernet",
+    "title": "Wired ethernet",
+    "text": "There is a hardline switch every 3 tables. Ethernet cables and patch cables can be checked out from the Airline Adventures and Hardware Checkout window on the Mezzanine. Request one in the Cal Hacks app first and you get moved to the front of the queue. You need your own Ethernet to USB-C adapter if your device has no Ethernet port.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "hardware-checkout",
+    "title": "Hardware checkout",
+    "text": "Hardware checkout is on the Mezzanine. Order in the Cal Hacks app or at hive.hackberkeley.org/hardware. Do not line up around the checkout area unless you have an order submitted. ASUS Ascent GX10 units are at the ASUS table on the second floor (mezzanine), first come first served.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "mentors",
+    "title": "Mentor queue",
+    "text": "Join the mentor queue at hive.hackberkeley.org/mentorship-queue. Mentors cover frontend, backend, API integration, agentic tooling, ideation, and pitching. In person, find the Mentor Tables.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "info-desk",
+    "title": "Info desk and check-in",
+    "text": "The Info Desk and Cal Hacks sign-in are near the top of the stairs. Lost items and general questions go to the Info Desk or the concierge desk. Box Office is the check-in area.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "lost-found",
+    "title": "Lost and found",
+    "text": "Return found items to the concierge desk. For lost items, ask at the Info Desk or the concierge desk.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "workshops-sat",
+    "title": "Saturday workshops",
+    "text": "Saturday workshops: Microsoft at 10 AM in the Theater (System Design for Deployed Agents); Bright Data at 10 AM in Gate 4; Moss at about 10 AM in Gate 4; Apify at 11 AM in Gate 3; Creao at about 11 AM at Gate 4; Capital One Smash tournament at noon (Gate 4); Anthropic workshop at about 1 PM in the Theater (Claude's Corner); Bitdeer AI workshop 1 to 2 PM at Gate 4, Breakout Room 4; Meta workshop 2 to 3 PM at Gate 4; Fetch.ai workshop 3 to 4 PM at Gate 4; SpacetimeDB workshop around 4 PM in the Theater. Times may have shifted.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "scrabblebot",
+    "title": "Scrabblebot tournament",
+    "text": "The SpacetimeDB Scrabblebot Tournament is Saturday at 11:59 PM (midnight) in the Theater. Sign up your bot at scrabblebot.spacetimedb.com.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "activities",
+    "title": "Fun activities",
+    "text": "Face painting was scheduled in Gate 3 Saturday evening, pushed back an hour. Caricatures were moved back an hour with the location to be announced. Paper airplane making happened at the top of the stairs near the Cal Hacks sign-in. Candy corn and MLH merch are at the MLH table.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "meta",
+    "title": "Meta",
+    "text": "Meta was on site until 5 PM Saturday for questions about tracks, recruiting, and engineering. Top submissions in the Meta track advance to Round 2 at Meta in Menlo Park with travel paid.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "restrooms",
+    "title": "Restrooms",
+    "text": "Restrooms: North Restrooms, East Restrooms, and Theater Restrooms on the main floor. Please put all trash in the toilet, not on the floor, in the restrooms.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "catering",
+    "title": "Catering",
+    "text": "Catering prep is in the North Hall. Food is served in the Food area, with the Food and Breakout 5 area nearby.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "luggage",
+    "title": "Luggage",
+    "text": "Luggage storage and the Luggage Room are by the East Lobby (Luggage and Queue).",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "submissions",
+    "title": "Devpost submissions",
+    "text": "Submit on Devpost and join the Cal Hacks 13.0 Devpost first. You can opt in to multiple prize categories at submission. The deadline has not been confirmed in the sources used here, so ask the Info Desk.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "emergency",
+    "title": "Emergencies",
+    "text": "For injuries, medical problems, fire, smoke, or anyone feeling unsafe, tell the nearest staff member and call 911 if life is in danger. The PeopleOS line alerts a human operator for these.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  },
+  {
+    "id": "poker",
+    "title": "Poker prize",
+    "text": "AirPods Pro 3 meant as a poker tournament prize went missing. If you have an unexplained box, return it to the concierge desk, no questions asked.",
+    "asOf": "2026-10-24T19:08-07:00",
+    "source": "Cal Hacks Slack #0-announcements"
+  }
+]
