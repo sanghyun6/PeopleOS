@@ -9,6 +9,10 @@ import { venue, type XZ } from "@/convex/lib/venueData";
 
 const MIN_DISTANCE = 12;
 const MAX_DISTANCE = 420;
+/** Wheel zoom strength: log-distance change per pixel of deltaY (one mouse notch ~ x1.65 closer/farther). */
+const WHEEL_ZOOM_GAIN = 0.005;
+/** Cap on queued zoom, so a fast spin cannot overshoot the whole venue. */
+const WHEEL_ZOOM_MAX = 2.5;
 /** Never look from below ~15deg above the horizon, so the camera can't sink under the floor. */
 const MAX_POLAR = Math.PI * 0.42;
 const HOME_TARGET = new THREE.Vector3(0, 0, 5);
@@ -114,7 +118,7 @@ export function CameraRig({
       ray.setFromCamera(ndc, camera);
       const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -controls.target.y);
       if (!ray.ray.intersectPlane(plane, wheel.current.anchor)) wheel.current.anchor.copy(controls.target);
-      wheel.current.pending = THREE.MathUtils.clamp(wheel.current.pending + THREE.MathUtils.clamp(dy, -120, 120) * 0.0022, -1.2, 1.2);
+      wheel.current.pending = THREE.MathUtils.clamp(wheel.current.pending + THREE.MathUtils.clamp(dy, -150, 150) * WHEEL_ZOOM_GAIN, -WHEEL_ZOOM_MAX, WHEEL_ZOOM_MAX);
     };
     el.addEventListener("wheel", onWheel, { capture: true, passive: false });
     return () => el.removeEventListener("wheel", onWheel, { capture: true });

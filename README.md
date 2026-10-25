@@ -152,7 +152,8 @@ knowledge facts, escalation contacts, and an optional operator passcode.
 
 - `create_incident` by curl -> location match (exact, table number, alias such as
   "the acme booth") -> auto-dispatch by role, availability, workload and walking distance ->
-  marker on `/demo` and `/ops` -> accept and complete from the staff phone -> green marker.
+  marker on `/demo` and `/ops` -> accept and complete from the staff phone -> marker leaves
+  the map (resolved count goes up).
 - Dedup (report count 1 -> 2), blockage reroute (79 m -> 103.5 m via the other stairs),
   directions with up/down stairs from the zone levels, unknown places rejected,
   escalations without a location pinned to the pack's help desk, event answers from the

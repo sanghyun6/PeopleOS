@@ -15,7 +15,7 @@
 | # | 지점 | 수정 | 검증 |
 |---|---|---|---|
 | B2 | Bitdeer 직원 브리프 실패 | `DeepSeek-V4.1-Flash`가 reasoning에 180–350 토큰을 써서 `max_tokens: 200`에서 답이 비었음. `BRIEF_MAX_TOKENS = 1000`으로 상향 (`convex/lib/bitdeer.ts`) | 라이브 테스트 사건에서 `staffBrief` 저장됨, `bitdeerCalls` brief `ok:true`(4.6 s, 10 s 제한 안) |
-| B3 | 완료한 사건의 마커가 초록이 아니라 사라짐 | `incidents.listActive`가 최근 10분(`RESOLVED_VISIBLE_MS`) 안에 resolved 된 사건도 반환 → 초록 마커 + 목록에 Resolved로 표시 | 라이브에서 accept → complete 후 `listActive`에 `status:"resolved"`로 포함됨. 3D 화면 렌더링은 눈으로 확인하지 않음 |
+| B3 | 완료한 사건의 마커가 초록이 아니라 사라짐 | (변경됨) 데모 요청으로 완료된 사건은 마커가 바로 사라지도록 되돌림: `incidents.listActive`는 활성 사건만 반환 | 라이브에서 accept → complete 후 `listActive`에 `status:"resolved"`로 포함됨. 3D 화면 렌더링은 눈으로 확인하지 않음 |
 
 ### 확인됨 (동작을 코드 + 실호출로 확인)
 | # | 지점 | 동작 |
@@ -136,7 +136,7 @@ flowchart TD
 | 배정 | `dispatchToBest` (`convex/dispatch.ts`) | 1등 후보 | 없으면 사건 `escalated` | `assignments` insert(`offered`, `route`), 사건 `assigned`, `assigneeId` |
 | 수락 | `assignments.accept` | assignmentId(`offered`여야 함) | 배정 `accepted`, 사건 `acknowledged`, 첫 `acknowledgedAt` 유지, `syncStaffStatus` → `busy` | 지표 avg time-to-acknowledge |
 | 거절 | `assignments.decline` | assignmentId(`offered`) | 배정 `declined`, 사건 `open` → `dispatchToBest` 재실행 | 다음 후보에게 `offered`, 없으면 `escalated` (C6) |
-| 완료 | `assignments.complete` | assignmentId(`accepted`) | 배정 `completed`, 사건 `resolved`/`resolvedAt`, 직원 zone을 사건 zone으로, `available` | 사건은 10분간 `listActive`에 남아 초록 마커 (B3 수정) |
+| 완료 | `assignments.complete` | assignmentId(`accepted`) | 배정 `completed`, 사건 `resolved`/`resolvedAt`, 직원 zone을 사건 zone으로, `available` | 사건은 `listActive`에서 바로 빠져 마커가 사라짐 |
 | 취소/에스컬레이션 | `incidents.cancel`, `incidents.escalate` | incidentId | `cancelOpenAssignments` 후 상태 변경 | 직원 해제 |
 
 ### 5. 길 안내와 venue_search
