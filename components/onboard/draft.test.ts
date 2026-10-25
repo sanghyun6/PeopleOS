@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { compileVenuePack, parseVenuePack, unreachableZones } from "../../convex/lib/venuePack";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { EMPTY_DRAFT, connections, draftToPack, packToDraft, parseFactsReply, parseStaffList, suggestEdges, zoneForPlace, type Draft } from "./draft";
+import { EMPTY_DRAFT, connections, draftToPack, packToDraft, parseFactsReply, suggestEdges, withMap, zoneForPlace, type Draft } from "./draft";
 
 const draft: Draft = {
   ...EMPTY_DRAFT,
@@ -28,16 +28,12 @@ describe("onboard draft", () => {
     expect(zoneForPlace(draft.places[0], draft.zones)?.id).toBe("foyer");
   });
 
-  it("parses a pasted staff list with a header, aliases, quotes and per-line errors", () => {
-    const { staff, errors } = parseStaffList(
-      'name,role,start_zone,status\n"Lee, Ana",Guest Services,Main Hall,\nBo,ops,foyer,off duty\nCy,chef,hall\nDi,it,nowhere',
-      draft.zones,
-    );
-    expect(staff).toEqual([
-      { name: "Lee, Ana", role: "guest_services", startZone: "hall", status: "available" },
-      { name: "Bo", role: "ops_lead", startZone: "foyer", status: "off_duty" },
-    ]);
-    expect(errors).toEqual([expect.stringMatching(/line 4: unknown role "chef"/), expect.stringMatching(/line 5: unknown zone "nowhere"/)]);
+  it("makes the whole venue one area when no map was added", () => {
+    const pack = draftToPack({ ...EMPTY_DRAFT, event: { name: "Meetup", venueName: "Hall 9", helpDesk: "" }, staff: [{ name: "Bo", role: "ops_lead", startZone: "", status: "available" }] });
+    const parsed = parseVenuePack(JSON.parse(JSON.stringify(pack)));
+    if (!parsed.ok) throw new Error(parsed.errors.join("\n"));
+    expect(parsed.pack.zones.map((z) => [z.id, z.name])).toEqual([["venue", "Hall 9"]]);
+    expect(parsed.pack.staff[0].startZone).toBe("venue");
   });
 
   it("reads facts from a fenced model reply and rejects non-JSON", () => {
@@ -72,5 +68,13 @@ describe("onboard draft", () => {
     expect(pairs(b.edges)).toEqual(pairs(a.edges));
     expect(b.staff).toEqual(a.staff);
     expect(again.pack.event.helpDesk).toBe("amenity:registration-desk");
+  });
+
+  it("takes only the map from a pack file", () => {
+    const raw = JSON.parse(readFileSync(join(__dirname, "../../docs/examples/sample-venue-pack.json"), "utf8"));
+    const parsed = parseVenuePack(raw);
+    if (!parsed.ok) throw new Error(parsed.errors.join("\n"));
+    const d = withMap({ ...EMPTY_DRAFT, event: { name: "Mine", venueName: "", helpDesk: "" } }, parsed.pack);
+    expect([d.event.name, d.event.venueName, d.zones.length, d.staff.length, d.facts.length]).toEqual(["Mine", "Harborview Convention Center", 7, 0, 0]);
   });
 });

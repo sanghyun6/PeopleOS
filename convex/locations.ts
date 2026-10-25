@@ -72,8 +72,12 @@ export async function resolveLocation(ctx: QueryCtx, text: string): Promise<Doc<
     .take(3);
   // A hit that shares only a number with the query ("Gate 3" vs "Table 3") is not a match.
   const trusted = hits.filter((h) => sharesWord(wanted, h.searchText));
-  if (trusted.length === 0) return null;
-  return trusted.length === 1 || trusted[0].zoneId === trusted[1].zoneId ? trusted[0] : null;
+  if (trusted.length > 0) return trusted.length === 1 || trusted[0].zoneId === trusted[1].zoneId ? trusted[0] : null;
+
+  // 6. A venue loaded without a map is one area: whatever the caller named is in it.
+  const zones = await ctx.db.query("zones").take(2);
+  if (zones.length !== 1) return null;
+  return await byKey(`zone:${zones[0].key}`);
 }
 
 export const resolve = internalQuery({

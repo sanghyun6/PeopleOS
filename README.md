@@ -122,14 +122,14 @@ knowledge facts, escalation contacts, and an optional operator passcode.
 ### Steps
 
 1. **Works** Make the pack: `/onboard` (link at the bottom of `/`), or write the JSON.
-   Four steps, asking only for what dispatch needs: (1) event and venue name, one or two
-   floors; (2) floor plan: draw rectangle areas and drop named places (optional plan image
-   underneath); areas that touch connect automatically, stairs are one "Link areas" click;
-   (3) staff (name, role, starting area) and event info pasted as text, turned into facts by
-   a Bitdeer chat model on the server (or typed by hand); (4) help desk, optional passcode,
-   download, and a setup checklist. Keys are never typed into the page: the checklist shows
-   which ones the server sees in `.env.local` (yes/no only). The draft is kept in this
-   browser's localStorage; the plan image is not.
+   Four steps: (1) event and venue name, plus an optional map file (a Venue Pack .json,
+   which brings areas, places and the 3D view; without one the venue is a single area and
+   staff are picked by role and workload, not walking distance); (2) staff: a name and a
+   role picked from five buttons; (3) policy and guideline files (.txt, .md, .html, or
+   pasted text) turned into facts by a Bitdeer chat model on the server; (4) passcode,
+   download, and a collapsed "Developer setup" checklist (Convex deployment, which keys the
+   server sees as yes/no, the load command, the phone number). Keys are never typed into
+   the page. The draft is kept in this browser's localStorage.
 2. **Manual** Point `.env.local` at a separate Convex deployment, never the Cal Hacks one.
    Quickest: remove `CONVEX_DEPLOYMENT`/`NEXT_PUBLIC_CONVEX_*` from `.env.local`, then
    `CONVEX_AGENT_MODE=anonymous npx convex dev` (local backend on 127.0.0.1:3210/3211).
@@ -161,20 +161,24 @@ knowledge facts, escalation contacts, and an optional operator passcode.
   directions with up/down stairs from the zone levels, unknown places rejected,
   escalations without a location pinned to the pack's help desk, event answers from the
   pack's facts, the pack's operator passcode.
+- A pack made without a map: one area named after the venue; any place a caller names
+  resolves to it (only when the deployment has exactly one area), and dispatch picks by
+  role and workload.
 - Generic 3D renderer when the pack has no detailed model: zone floors, see-through walls
   at the pack's heights, zone labels, tables/booths/amenities, the pack's floor names on
   the level buttons. Markers, staff dots, routes and drag controls are the same components.
 
 ### Not built yet
 
-- **Next step** Floor plan image -> zones automatically. Zones are drawn by hand.
+- **Next step** Floor plan image -> zones automatically. The wizard takes a map file or
+  treats the venue as one area; zones are only drawn by editing the pack JSON.
 - **Next step** Indoor positioning. Staff positions are zones (start zone, then the last
   completed task).
 - **Next step** Several venues in one deployment (multi-tenant). One deployment holds one
   venue; loading a pack replaces the previous venue and its incidents.
-- **Next step** Loading from the browser ("Load into PeopleOS" is disabled), more than two
-  floors, polygon drawing in the wizard (rectangles only), custom staff roles (the five
-  roles and the category -> role map are fixed), SMS to staff phones.
+- **Next step** Loading from the browser, reading PDF or Word policy files, more than two
+  floors, custom staff roles (the five roles and the category -> role map are fixed),
+  SMS to staff phones.
 
 ## Known limitations
 

@@ -10,3 +10,12 @@ export function Field({ label, hint, className = "", children }: { label: string
     </label>
   );
 }
+
+export function Panel({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-3 rounded-xl bg-surface p-4 ring-1 ring-inset ring-line">
+      <h3 className="text-sm font-medium">{title}</h3>
+      {children}
+    </section>
+  );
+}
