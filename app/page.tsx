@@ -8,9 +8,9 @@ import { api } from "@/convex/_generated/api";
 import { Avatar, RoleChip } from "@/components/ui/badges";
 import { Brand } from "@/components/ui/Brand";
 import { ChevronIcon, LockIcon } from "@/components/ui/icons";
-import { OPS_PASSCODE, clearIdentity, identityPath, isIdentityValid, useSavedIdentity, saveIdentity } from "@/components/ui/identity";
+import { OPS_PASSCODE, clearIdentity, isIdentityValid, useSavedIdentity, saveIdentity } from "@/components/ui/identity";
 
-/** Single entry: pick who you are once; later visits go straight to your view. */
+/** Single entry: always shows the picker (staff cards + Operator) so people can switch easily. */
 export default function Page() {
   return (
     <Suspense fallback={<main className="p-8 text-muted">Loading…</main>}>
@@ -34,12 +34,8 @@ function WhoAreYouPage() {
     if (stale) {
       clearIdentity();
       router.replace("/?expired=1");
-    } else if (saved && staff !== undefined) {
-      router.replace(identityPath(saved));
     }
-  }, [saved, staff, stale, router]);
-
-  if (saved !== null && !stale) return <main className="p-8 text-muted">Loading…</main>;
+  }, [stale, router]);
 
   const pickStaff = (id: string) => {
     saveIdentity({ kind: "staff", id });
