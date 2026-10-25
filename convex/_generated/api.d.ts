@@ -22,15 +22,18 @@ import type * as lib_directions from "../lib/directions.js";
 import type * as lib_dispatch from "../lib/dispatch.js";
 import type * as lib_emergency from "../lib/emergency.js";
 import type * as lib_graph from "../lib/graph.js";
+import type * as lib_seedStaff from "../lib/seedStaff.js";
 import type * as lib_todo from "../lib/todo.js";
 import type * as lib_validators from "../lib/validators.js";
 import type * as lib_venueData from "../lib/venueData.js";
+import type * as lib_venuePack from "../lib/venuePack.js";
 import type * as lib_zoning from "../lib/zoning.js";
 import type * as locations from "../locations.js";
 import type * as moss from "../moss.js";
 import type * as retrievals from "../retrievals.js";
 import type * as seed from "../seed.js";
 import type * as staff from "../staff.js";
+import type * as venuePack from "../venuePack.js";
 import type * as zones from "../zones.js";
 
 import type {
@@ -54,15 +57,18 @@ declare const fullApi: ApiFromModules<{
   "lib/dispatch": typeof lib_dispatch;
   "lib/emergency": typeof lib_emergency;
   "lib/graph": typeof lib_graph;
+  "lib/seedStaff": typeof lib_seedStaff;
   "lib/todo": typeof lib_todo;
   "lib/validators": typeof lib_validators;
   "lib/venueData": typeof lib_venueData;
+  "lib/venuePack": typeof lib_venuePack;
   "lib/zoning": typeof lib_zoning;
   locations: typeof locations;
   moss: typeof moss;
   retrievals: typeof retrievals;
   seed: typeof seed;
   staff: typeof staff;
+  venuePack: typeof venuePack;
   zones: typeof zones;
 }>;
 

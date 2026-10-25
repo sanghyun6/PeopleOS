@@ -1,0 +1,6972 @@
+{
+  "format": "peopleos.venue-pack",
+  "version": 1,
+  "event": {
+    "name": "Cal Hacks 13.0",
+    "venueName": "Palace of Fine Arts",
+    "city": "San Francisco",
+    "timezone": "America/Los_Angeles",
+    "startsAt": "2026-10-23T17:00:00-07:00",
+    "endsAt": "2026-10-25T15:00:00-07:00",
+    "helpDesk": "zone:box-office",
+    "keyterms": [
+      "mezzanine",
+      "Broadway",
+      "atrium",
+      "Cal Hacks"
+    ]
+  },
+  "floors": [
+    {
+      "id": "main",
+      "name": "Main floor",
+      "elevation": 0
+    },
+    {
+      "id": "mezz",
+      "name": "Mezzanine",
+      "elevation": 5
+    }
+  ],
+  "outline": [
+    {
+      "x": -106.57,
+      "z": -23.71
+    },
+    {
+      "x": -99.75,
+      "z": -27.56
+    },
+    {
+      "x": -91,
+      "z": -31.41
+    },
+    {
+      "x": -82.25,
+      "z": -35.26
+    },
+    {
+      "x": -73.5,
+      "z": -38.06
+    },
+    {
+      "x": -64.75,
+      "z": -40.25
+    },
+    {
+      "x": -56,
+      "z": -42.17
+    },
+    {
+      "x": -47.25,
+      "z": -43.57
+    },
+    {
+      "x": -38.5,
+      "z": -44.01
+    },
+    {
+      "x": -29.75,
+      "z": -44.71
+    },
+    {
+      "x": -21,
+      "z": -44.89
+    },
+    {
+      "x": -12.25,
+      "z": -43.84
+    },
+    {
+      "x": -3.5,
+      "z": -42.44
+    },
+    {
+      "x": 5.25,
+      "z": -40.77
+    },
+    {
+      "x": 14,
+      "z": -40.16
+    },
+    {
+      "x": 22.75,
+      "z": -37.36
+    },
+    {
+      "x": 31.5,
+      "z": -34.65
+    },
+    {
+      "x": 40.25,
+      "z": -30.97
+    },
+    {
+      "x": 49,
+      "z": -26.07
+    },
+    {
+      "x": 57.75,
+      "z": -19.95
+    },
+    {
+      "x": 66.5,
+      "z": -13.91
+    },
+    {
+      "x": 75.25,
+      "z": -7.35
+    },
+    {
+      "x": 80.15,
+      "z": -3.5
+    },
+    {
+      "x": 86.19,
+      "z": 3.59
+    },
+    {
+      "x": 92.75,
+      "z": 9.19
+    },
+    {
+      "x": 97.39,
+      "z": 15.84
+    },
+    {
+      "x": 101.5,
+      "z": 21
+    },
+    {
+      "x": 106.66,
+      "z": 28.17
+    },
+    {
+      "x": 99.57,
+      "z": 33.34
+    },
+    {
+      "x": 97.13,
+      "z": 31.33
+    },
+    {
+      "x": 79.63,
+      "z": 43.93
+    },
+    {
+      "x": 80.68,
+      "z": 45.85
+    },
+    {
+      "x": 72.27,
+      "z": 50.84
+    },
+    {
+      "x": 67.9,
+      "z": 45.06
+    },
+    {
+      "x": 63,
+      "z": 40.25
+    },
+    {
+      "x": 57.75,
+      "z": 32.81
+    },
+    {
+      "x": 54.25,
+      "z": 29.31
+    },
+    {
+      "x": 49.79,
+      "z": 24.85
+    },
+    {
+      "x": 36.66,
+      "z": 14.87
+    },
+    {
+      "x": 32.73,
+      "z": 13.83
+    },
+    {
+      "x": 17.59,
+      "z": 6.91
+    },
+    {
+      "x": 14,
+      "z": 3.33
+    },
+    {
+      "x": 5.25,
+      "z": 1.14
+    },
+    {
+      "x": -3.5,
+      "z": -0.7
+    },
+    {
+      "x": -12.25,
+      "z": -2.1
+    },
+    {
+      "x": -21,
+      "z": -3.41
+    },
+    {
+      "x": -23.19,
+      "z": -3.76
+    },
+    {
+      "x": -42,
+      "z": -2.97
+    },
+    {
+      "x": -47.25,
+      "z": -2.1
+    },
+    {
+      "x": -56,
+      "z": -0.52
+    },
+    {
+      "x": -64.75,
+      "z": 2.28
+    },
+    {
+      "x": -69.12,
+      "z": 4.11
+    },
+    {
+      "x": -73.5,
+      "z": 5.78
+    },
+    {
+      "x": -79.19,
+      "z": 8.57
+    },
+    {
+      "x": -79.19,
+      "z": 10.68
+    },
+    {
+      "x": -86.62,
+      "z": 11.81
+    }
+  ],
+  "zones": [
+    {
+      "id": "stage",
+      "name": "Main Stage & Green Rooms",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -86.9,
+          "z": -5.5
+        },
+        "width": 16.26,
+        "depth": 31.58,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": -89,
+        "z": -5
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "stage",
+        "green rooms",
+        "southwest lobby"
+      ]
+    },
+    {
+      "id": "pavilion-north",
+      "name": "Pavilion North",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -69.45,
+          "z": -8.94
+        },
+        "width": 32.69,
+        "depth": 29.49,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": -73,
+        "z": -8
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "pavilion"
+      ]
+    },
+    {
+      "id": "pavilion-south",
+      "name": "Pavilion South",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -72.62,
+          "z": -28.81
+        },
+        "width": 40.99,
+        "depth": 27.13,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": -65,
+        "z": -29
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "pavilion back",
+        "west storage"
+      ]
+    },
+    {
+      "id": "atrium-west",
+      "name": "Atrium West",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -48.55,
+          "z": -19.02
+        },
+        "width": 27.11,
+        "depth": 32.33,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": -48,
+        "z": -21
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "atrium"
+      ]
+    },
+    {
+      "id": "atrium-east",
+      "name": "Atrium East",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -19.72,
+          "z": -19.91
+        },
+        "width": 33.37,
+        "depth": 27.42,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": -24,
+        "z": -21
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "atrium",
+        "bleachers"
+      ]
+    },
+    {
+      "id": "public-entrance",
+      "name": "Public Entrance",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -34.71,
+          "z": -9
+        },
+        "width": 31.48,
+        "depth": 16.99,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": -33,
+        "z": -5
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "main entrance",
+        "front entrance"
+      ]
+    },
+    {
+      "id": "north-hall",
+      "name": "North Hall (Catering & Sponsor Row)",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -27.25,
+          "z": -37.34
+        },
+        "width": 44.14,
+        "depth": 19.94,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": -20,
+        "z": -38
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "catering",
+        "loading doors",
+        "north sponsor row"
+      ]
+    },
+    {
+      "id": "broadway-1",
+      "name": "Broadway #1 (Gate #3/#4 Hallway)",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -1.96,
+          "z": -5.84
+        },
+        "width": 28.35,
+        "depth": 20.22,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 3,
+        "z": -7
+      },
+      "height": 3,
+      "kind": "corridor",
+      "aliases": [
+        "broadway 1",
+        "gate 3/4 hallway",
+        "hallway near gate 3",
+        "hallway near gate 4"
+      ]
+    },
+    {
+      "id": "gate-3-4",
+      "name": "Gate #3/#4 Breakout & Fountain",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 18.68,
+          "z": -27.92
+        },
+        "width": 29.21,
+        "depth": 27.73,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 10,
+        "z": -24
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "gate 3",
+        "gate 4",
+        "breakout room",
+        "fountain",
+        "water station",
+        "north restrooms"
+      ]
+    },
+    {
+      "id": "broadway-2",
+      "name": "Broadway #2",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 30.58,
+          "z": -7.22
+        },
+        "width": 27.15,
+        "depth": 31.13,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 30,
+        "z": -3
+      },
+      "height": 3,
+      "kind": "corridor",
+      "aliases": [
+        "broadway 2",
+        "mentor tables"
+      ]
+    },
+    {
+      "id": "broadway-3",
+      "name": "Broadway #3 & Gate #6",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 49.99,
+          "z": 15.71
+        },
+        "width": 19.08,
+        "depth": 20.32,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 51,
+        "z": 13
+      },
+      "height": 3,
+      "kind": "corridor",
+      "aliases": [
+        "broadway 3",
+        "gate 6",
+        "claude's corner"
+      ]
+    },
+    {
+      "id": "food-court",
+      "name": "Food & Breakout #5",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 66.19,
+          "z": 5.04
+        },
+        "width": 10.77,
+        "depth": 17.11,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 68,
+        "z": 5
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "food",
+        "food line",
+        "breakout 5"
+      ]
+    },
+    {
+      "id": "east-lobby",
+      "name": "East Lobby (Luggage & Queue)",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 85.63,
+          "z": 5.67
+        },
+        "width": 19.1,
+        "depth": 15.96,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 86,
+        "z": 8
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "luggage",
+        "bag check",
+        "shower trailers",
+        "queue"
+      ]
+    },
+    {
+      "id": "box-office",
+      "name": "Box Office & Business Entrance",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 94.98,
+          "z": 31.54
+        },
+        "width": 17.24,
+        "depth": 17.13,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 90,
+        "z": 31
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "box office",
+        "check-in",
+        "business entrance"
+      ]
+    },
+    {
+      "id": "theater",
+      "name": "Theater",
+      "floor": "main",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 72.75,
+          "z": 40.72
+        },
+        "width": 9.41,
+        "depth": 15.81,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 70,
+        "z": 36
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "theater",
+        "theatre"
+      ]
+    },
+    {
+      "id": "mezz-north",
+      "name": "Mezzanine North (Hardware & 3D Printers)",
+      "floor": "mezz",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 23.45,
+          "z": -22
+        },
+        "width": 31.15,
+        "depth": 19.89,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 25,
+        "z": -24
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "hardware",
+        "3d printers",
+        "merch",
+        "upstairs"
+      ]
+    },
+    {
+      "id": "mezz-tables",
+      "name": "Mezzanine Tables",
+      "floor": "mezz",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 37.19,
+          "z": -8.13
+        },
+        "width": 31.69,
+        "depth": 17.78,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 35,
+        "z": -8
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "mezzanine",
+        "upstairs tables"
+      ]
+    },
+    {
+      "id": "mezz-breakout-5",
+      "name": "Mezzanine Breakout #5",
+      "floor": "mezz",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 63.13,
+          "z": -1.12
+        },
+        "width": 18.52,
+        "depth": 16.57,
+        "rotationDeg": 0
+      },
+      "center": {
+        "x": 63,
+        "z": -1
+      },
+      "height": 3,
+      "kind": "hall",
+      "aliases": [
+        "upstairs breakout 5"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "stage",
+      "to": "pavilion-north",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "stage",
+      "to": "pavilion-south",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "pavilion-north",
+      "to": "pavilion-south",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "pavilion-north",
+      "to": "atrium-west",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "pavilion-south",
+      "to": "atrium-west",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "atrium-west",
+      "to": "atrium-east",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "atrium-west",
+      "to": "public-entrance",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "atrium-west",
+      "to": "north-hall",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "atrium-east",
+      "to": "public-entrance",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "atrium-east",
+      "to": "north-hall",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "atrium-east",
+      "to": "broadway-1",
+      "kind": "walk",
+      "via": [
+        {
+          "x": -14,
+          "z": -11
+        }
+      ]
+    },
+    {
+      "from": "public-entrance",
+      "to": "broadway-1",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "north-hall",
+      "to": "gate-3-4",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 0,
+          "z": -35
+        }
+      ]
+    },
+    {
+      "from": "broadway-1",
+      "to": "gate-3-4",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 0,
+          "z": -15
+        }
+      ]
+    },
+    {
+      "from": "broadway-1",
+      "to": "broadway-2",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 16,
+          "z": -8
+        }
+      ]
+    },
+    {
+      "from": "broadway-2",
+      "to": "gate-3-4",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 19,
+          "z": -14
+        }
+      ]
+    },
+    {
+      "from": "broadway-2",
+      "to": "broadway-3",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 42,
+          "z": 4
+        }
+      ]
+    },
+    {
+      "from": "broadway-3",
+      "to": "food-court",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "broadway-3",
+      "to": "theater",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 58,
+          "z": 26
+        }
+      ]
+    },
+    {
+      "from": "food-court",
+      "to": "east-lobby",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "east-lobby",
+      "to": "box-office",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "box-office",
+      "to": "theater",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "mezz-north",
+      "to": "mezz-tables",
+      "kind": "walk",
+      "via": []
+    },
+    {
+      "from": "mezz-tables",
+      "to": "mezz-breakout-5",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 50,
+          "z": -9
+        }
+      ]
+    },
+    {
+      "from": "atrium-east",
+      "to": "mezz-north",
+      "kind": "stairs",
+      "via": [
+        {
+          "x": -10,
+          "z": -24
+        },
+        {
+          "x": -2,
+          "z": -24
+        }
+      ]
+    },
+    {
+      "from": "broadway-2",
+      "to": "mezz-tables",
+      "kind": "stairs",
+      "via": [
+        {
+          "x": 45,
+          "z": -3
+        },
+        {
+          "x": 50,
+          "z": -12
+        }
+      ]
+    },
+    {
+      "from": "food-court",
+      "to": "mezz-breakout-5",
+      "kind": "stairs",
+      "via": [
+        {
+          "x": 68.6,
+          "z": 10.6
+        }
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "id": "table:1",
+      "name": "Table 1",
+      "kind": "table",
+      "at": {
+        "x": -77.72,
+        "z": 1.62
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 1",
+        "table number 1"
+      ]
+    },
+    {
+      "id": "table:2",
+      "name": "Table 2",
+      "kind": "table",
+      "at": {
+        "x": -78.6,
+        "z": -0.76
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 2",
+        "table number 2"
+      ]
+    },
+    {
+      "id": "table:3",
+      "name": "Table 3",
+      "kind": "table",
+      "at": {
+        "x": -79.48,
+        "z": -3.15
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 3",
+        "table number 3"
+      ]
+    },
+    {
+      "id": "table:4",
+      "name": "Table 4",
+      "kind": "table",
+      "at": {
+        "x": -80.9,
+        "z": -7.11
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 4",
+        "table number 4"
+      ]
+    },
+    {
+      "id": "table:5",
+      "name": "Table 5",
+      "kind": "table",
+      "at": {
+        "x": -81.77,
+        "z": -9.5
+      },
+      "zone": "stage",
+      "floor": "main",
+      "aliases": [
+        "table 5",
+        "table number 5"
+      ]
+    },
+    {
+      "id": "table:6",
+      "name": "Table 6",
+      "kind": "table",
+      "at": {
+        "x": -82.64,
+        "z": -11.9
+      },
+      "zone": "stage",
+      "floor": "main",
+      "aliases": [
+        "table 6",
+        "table number 6"
+      ]
+    },
+    {
+      "id": "table:7",
+      "name": "Table 7",
+      "kind": "table",
+      "at": {
+        "x": -84.1,
+        "z": -15.87
+      },
+      "zone": "stage",
+      "floor": "main",
+      "aliases": [
+        "table 7",
+        "table number 7"
+      ]
+    },
+    {
+      "id": "table:8",
+      "name": "Table 8",
+      "kind": "table",
+      "at": {
+        "x": -84.98,
+        "z": -18.29
+      },
+      "zone": "stage",
+      "floor": "main",
+      "aliases": [
+        "table 8",
+        "table number 8"
+      ]
+    },
+    {
+      "id": "table:9",
+      "name": "Table 9",
+      "kind": "table",
+      "at": {
+        "x": -82.79,
+        "z": -19.11
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 9",
+        "table number 9"
+      ]
+    },
+    {
+      "id": "table:10",
+      "name": "Table 10",
+      "kind": "table",
+      "at": {
+        "x": -81.91,
+        "z": -16.69
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 10",
+        "table number 10"
+      ]
+    },
+    {
+      "id": "table:11",
+      "name": "Table 11",
+      "kind": "table",
+      "at": {
+        "x": -80.45,
+        "z": -12.7
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 11",
+        "table number 11"
+      ]
+    },
+    {
+      "id": "table:12",
+      "name": "Table 12",
+      "kind": "table",
+      "at": {
+        "x": -79.59,
+        "z": -10.3
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 12",
+        "table number 12"
+      ]
+    },
+    {
+      "id": "table:13",
+      "name": "Table 13",
+      "kind": "table",
+      "at": {
+        "x": -78.73,
+        "z": -7.9
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 13",
+        "table number 13"
+      ]
+    },
+    {
+      "id": "table:14",
+      "name": "Table 14",
+      "kind": "table",
+      "at": {
+        "x": -77.28,
+        "z": -3.93
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 14",
+        "table number 14"
+      ]
+    },
+    {
+      "id": "table:15",
+      "name": "Table 15",
+      "kind": "table",
+      "at": {
+        "x": -76.4,
+        "z": -1.55
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 15",
+        "table number 15"
+      ]
+    },
+    {
+      "id": "table:16",
+      "name": "Table 16",
+      "kind": "table",
+      "at": {
+        "x": -75.53,
+        "z": 0.83
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 16",
+        "table number 16"
+      ]
+    },
+    {
+      "id": "table:17",
+      "name": "Table 17",
+      "kind": "table",
+      "at": {
+        "x": -73.36,
+        "z": 0.04
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 17",
+        "table number 17"
+      ]
+    },
+    {
+      "id": "table:18",
+      "name": "Table 18",
+      "kind": "table",
+      "at": {
+        "x": -74.22,
+        "z": -2.35
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 18",
+        "table number 18"
+      ]
+    },
+    {
+      "id": "table:19",
+      "name": "Table 19",
+      "kind": "table",
+      "at": {
+        "x": -75.07,
+        "z": -4.75
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 19",
+        "table number 19"
+      ]
+    },
+    {
+      "id": "table:20",
+      "name": "Table 20",
+      "kind": "table",
+      "at": {
+        "x": -76.52,
+        "z": -8.71
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 20",
+        "table number 20"
+      ]
+    },
+    {
+      "id": "table:21",
+      "name": "Table 21",
+      "kind": "table",
+      "at": {
+        "x": -77.39,
+        "z": -11.09
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 21",
+        "table number 21"
+      ]
+    },
+    {
+      "id": "table:22",
+      "name": "Table 22",
+      "kind": "table",
+      "at": {
+        "x": -78.26,
+        "z": -13.48
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 22",
+        "table number 22"
+      ]
+    },
+    {
+      "id": "table:23",
+      "name": "Table 23",
+      "kind": "table",
+      "at": {
+        "x": -79.69,
+        "z": -17.47
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 23",
+        "table number 23"
+      ]
+    },
+    {
+      "id": "table:24",
+      "name": "Table 24",
+      "kind": "table",
+      "at": {
+        "x": -80.6,
+        "z": -19.89
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 24",
+        "table number 24"
+      ]
+    },
+    {
+      "id": "table:25",
+      "name": "Table 25",
+      "kind": "table",
+      "at": {
+        "x": -78.42,
+        "z": -20.69
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 25",
+        "table number 25"
+      ]
+    },
+    {
+      "id": "table:26",
+      "name": "Table 26",
+      "kind": "table",
+      "at": {
+        "x": -77.52,
+        "z": -18.28
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 26",
+        "table number 26"
+      ]
+    },
+    {
+      "id": "table:27",
+      "name": "Table 27",
+      "kind": "table",
+      "at": {
+        "x": -76.08,
+        "z": -14.3
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 27",
+        "table number 27"
+      ]
+    },
+    {
+      "id": "table:28",
+      "name": "Table 28",
+      "kind": "table",
+      "at": {
+        "x": -75.21,
+        "z": -11.92
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 28",
+        "table number 28"
+      ]
+    },
+    {
+      "id": "table:29",
+      "name": "Table 29",
+      "kind": "table",
+      "at": {
+        "x": -74.34,
+        "z": -9.53
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 29",
+        "table number 29"
+      ]
+    },
+    {
+      "id": "table:30",
+      "name": "Table 30",
+      "kind": "table",
+      "at": {
+        "x": -72.89,
+        "z": -5.53
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 30",
+        "table number 30"
+      ]
+    },
+    {
+      "id": "table:31",
+      "name": "Table 31",
+      "kind": "table",
+      "at": {
+        "x": -72.02,
+        "z": -3.13
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 31",
+        "table number 31"
+      ]
+    },
+    {
+      "id": "table:32",
+      "name": "Table 32",
+      "kind": "table",
+      "at": {
+        "x": -71.15,
+        "z": -0.74
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 32",
+        "table number 32"
+      ]
+    },
+    {
+      "id": "table:33",
+      "name": "Table 33",
+      "kind": "table",
+      "at": {
+        "x": -68.95,
+        "z": -1.53
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 33",
+        "table number 33"
+      ]
+    },
+    {
+      "id": "table:34",
+      "name": "Table 34",
+      "kind": "table",
+      "at": {
+        "x": -69.83,
+        "z": -3.9
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 34",
+        "table number 34"
+      ]
+    },
+    {
+      "id": "table:35",
+      "name": "Table 35",
+      "kind": "table",
+      "at": {
+        "x": -70.72,
+        "z": -6.27
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 35",
+        "table number 35"
+      ]
+    },
+    {
+      "id": "table:36",
+      "name": "Table 36",
+      "kind": "table",
+      "at": {
+        "x": -72.14,
+        "z": -10.32
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 36",
+        "table number 36"
+      ]
+    },
+    {
+      "id": "table:37",
+      "name": "Table 37",
+      "kind": "table",
+      "at": {
+        "x": -73.01,
+        "z": -12.7
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 37",
+        "table number 37"
+      ]
+    },
+    {
+      "id": "table:38",
+      "name": "Table 38",
+      "kind": "table",
+      "at": {
+        "x": -73.88,
+        "z": -15.09
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 38",
+        "table number 38"
+      ]
+    },
+    {
+      "id": "table:39",
+      "name": "Table 39",
+      "kind": "table",
+      "at": {
+        "x": -75.34,
+        "z": -19.04
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 39",
+        "table number 39"
+      ]
+    },
+    {
+      "id": "table:40",
+      "name": "Table 40",
+      "kind": "table",
+      "at": {
+        "x": -76.23,
+        "z": -21.47
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 40",
+        "table number 40"
+      ]
+    },
+    {
+      "id": "table:41",
+      "name": "Table 41",
+      "kind": "table",
+      "at": {
+        "x": -74.05,
+        "z": -22.27
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 41",
+        "table number 41"
+      ]
+    },
+    {
+      "id": "table:42",
+      "name": "Table 42",
+      "kind": "table",
+      "at": {
+        "x": -73.16,
+        "z": -19.86
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 42",
+        "table number 42"
+      ]
+    },
+    {
+      "id": "table:43",
+      "name": "Table 43",
+      "kind": "table",
+      "at": {
+        "x": -71.74,
+        "z": -15.88
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 43",
+        "table number 43"
+      ]
+    },
+    {
+      "id": "table:44",
+      "name": "Table 44",
+      "kind": "table",
+      "at": {
+        "x": -70.85,
+        "z": -13.5
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 44",
+        "table number 44"
+      ]
+    },
+    {
+      "id": "table:45",
+      "name": "Table 45",
+      "kind": "table",
+      "at": {
+        "x": -69.95,
+        "z": -11.12
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 45",
+        "table number 45"
+      ]
+    },
+    {
+      "id": "table:46",
+      "name": "Table 46",
+      "kind": "table",
+      "at": {
+        "x": -68.54,
+        "z": -7.15
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 46",
+        "table number 46"
+      ]
+    },
+    {
+      "id": "table:47",
+      "name": "Table 47",
+      "kind": "table",
+      "at": {
+        "x": -67.65,
+        "z": -4.76
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 47",
+        "table number 47"
+      ]
+    },
+    {
+      "id": "table:48",
+      "name": "Table 48",
+      "kind": "table",
+      "at": {
+        "x": -66.77,
+        "z": -2.37
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 48",
+        "table number 48"
+      ]
+    },
+    {
+      "id": "table:49",
+      "name": "Table 49",
+      "kind": "table",
+      "at": {
+        "x": -64.6,
+        "z": -3.16
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 49",
+        "table number 49"
+      ]
+    },
+    {
+      "id": "table:50",
+      "name": "Table 50",
+      "kind": "table",
+      "at": {
+        "x": -65.47,
+        "z": -5.56
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 50",
+        "table number 50"
+      ]
+    },
+    {
+      "id": "table:51",
+      "name": "Table 51",
+      "kind": "table",
+      "at": {
+        "x": -66.34,
+        "z": -7.96
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 51",
+        "table number 51"
+      ]
+    },
+    {
+      "id": "table:52",
+      "name": "Table 52",
+      "kind": "table",
+      "at": {
+        "x": -67.74,
+        "z": -11.9
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 52",
+        "table number 52"
+      ]
+    },
+    {
+      "id": "table:53",
+      "name": "Table 53",
+      "kind": "table",
+      "at": {
+        "x": -68.63,
+        "z": -14.28
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 53",
+        "table number 53"
+      ]
+    },
+    {
+      "id": "table:54",
+      "name": "Table 54",
+      "kind": "table",
+      "at": {
+        "x": -69.51,
+        "z": -16.66
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 54",
+        "table number 54"
+      ]
+    },
+    {
+      "id": "table:55",
+      "name": "Table 55",
+      "kind": "table",
+      "at": {
+        "x": -70.98,
+        "z": -20.65
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 55",
+        "table number 55"
+      ]
+    },
+    {
+      "id": "table:56",
+      "name": "Table 56",
+      "kind": "table",
+      "at": {
+        "x": -71.86,
+        "z": -23.08
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 56",
+        "table number 56"
+      ]
+    },
+    {
+      "id": "table:57",
+      "name": "Table 57",
+      "kind": "table",
+      "at": {
+        "x": -71.58,
+        "z": -33.19
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 57",
+        "table number 57"
+      ]
+    },
+    {
+      "id": "table:58",
+      "name": "Table 58",
+      "kind": "table",
+      "at": {
+        "x": -70.96,
+        "z": -30.69
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 58",
+        "table number 58"
+      ]
+    },
+    {
+      "id": "table:59",
+      "name": "Table 59",
+      "kind": "table",
+      "at": {
+        "x": -68.7,
+        "z": -31.25
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 59",
+        "table number 59"
+      ]
+    },
+    {
+      "id": "table:60",
+      "name": "Table 60",
+      "kind": "table",
+      "at": {
+        "x": -69.32,
+        "z": -33.76
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 60",
+        "table number 60"
+      ]
+    },
+    {
+      "id": "table:61",
+      "name": "Table 61",
+      "kind": "table",
+      "at": {
+        "x": -69.66,
+        "z": -23.86
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 61",
+        "table number 61"
+      ]
+    },
+    {
+      "id": "table:62",
+      "name": "Table 62",
+      "kind": "table",
+      "at": {
+        "x": -68.74,
+        "z": -21.46
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 62",
+        "table number 62"
+      ]
+    },
+    {
+      "id": "table:63",
+      "name": "Table 63",
+      "kind": "table",
+      "at": {
+        "x": -67.32,
+        "z": -17.46
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 63",
+        "table number 63"
+      ]
+    },
+    {
+      "id": "table:64",
+      "name": "Table 64",
+      "kind": "table",
+      "at": {
+        "x": -66.46,
+        "z": -15.08
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 64",
+        "table number 64"
+      ]
+    },
+    {
+      "id": "table:65",
+      "name": "Table 65",
+      "kind": "table",
+      "at": {
+        "x": -65.6,
+        "z": -12.69
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 65",
+        "table number 65"
+      ]
+    },
+    {
+      "id": "table:66",
+      "name": "Table 66",
+      "kind": "table",
+      "at": {
+        "x": -64.16,
+        "z": -8.71
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 66",
+        "table number 66"
+      ]
+    },
+    {
+      "id": "table:67",
+      "name": "Table 67",
+      "kind": "table",
+      "at": {
+        "x": -63.27,
+        "z": -6.33
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 67",
+        "table number 67"
+      ]
+    },
+    {
+      "id": "table:68",
+      "name": "Table 68",
+      "kind": "table",
+      "at": {
+        "x": -62.38,
+        "z": -3.96
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 68",
+        "table number 68"
+      ]
+    },
+    {
+      "id": "table:69",
+      "name": "Table 69",
+      "kind": "table",
+      "at": {
+        "x": -66.44,
+        "z": -31.81
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 69",
+        "table number 69"
+      ]
+    },
+    {
+      "id": "table:70",
+      "name": "Table 70",
+      "kind": "table",
+      "at": {
+        "x": -67.05,
+        "z": -34.32
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 70",
+        "table number 70"
+      ]
+    },
+    {
+      "id": "table:71",
+      "name": "Table 71",
+      "kind": "table",
+      "at": {
+        "x": -67.48,
+        "z": -24.67
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 71",
+        "table number 71"
+      ]
+    },
+    {
+      "id": "table:72",
+      "name": "Table 72",
+      "kind": "table",
+      "at": {
+        "x": -66.62,
+        "z": -22.25
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 72",
+        "table number 72"
+      ]
+    },
+    {
+      "id": "table:73",
+      "name": "Table 73",
+      "kind": "table",
+      "at": {
+        "x": -65.16,
+        "z": -18.25
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 73",
+        "table number 73"
+      ]
+    },
+    {
+      "id": "table:74",
+      "name": "Table 74",
+      "kind": "table",
+      "at": {
+        "x": -64.28,
+        "z": -15.86
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 74",
+        "table number 74"
+      ]
+    },
+    {
+      "id": "table:75",
+      "name": "Table 75",
+      "kind": "table",
+      "at": {
+        "x": -63.4,
+        "z": -13.48
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 75",
+        "table number 75"
+      ]
+    },
+    {
+      "id": "table:76",
+      "name": "Table 76",
+      "kind": "table",
+      "at": {
+        "x": -61.97,
+        "z": -9.52
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 76",
+        "table number 76"
+      ]
+    },
+    {
+      "id": "table:77",
+      "name": "Table 77",
+      "kind": "table",
+      "at": {
+        "x": -61.07,
+        "z": -7.14
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 77",
+        "table number 77"
+      ]
+    },
+    {
+      "id": "table:78",
+      "name": "Table 78",
+      "kind": "table",
+      "at": {
+        "x": -60.18,
+        "z": -4.76
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 78",
+        "table number 78"
+      ]
+    },
+    {
+      "id": "table:79",
+      "name": "Table 79",
+      "kind": "table",
+      "at": {
+        "x": -57.25,
+        "z": -5.47
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 79",
+        "table number 79"
+      ]
+    },
+    {
+      "id": "table:80",
+      "name": "Table 80",
+      "kind": "table",
+      "at": {
+        "x": -57.65,
+        "z": -7.98
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "table 80",
+        "table number 80"
+      ]
+    },
+    {
+      "id": "table:81",
+      "name": "Table 81",
+      "kind": "table",
+      "at": {
+        "x": -58.06,
+        "z": -10.49
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 81",
+        "table number 81"
+      ]
+    },
+    {
+      "id": "table:82",
+      "name": "Table 82",
+      "kind": "table",
+      "at": {
+        "x": -58.71,
+        "z": -14.7
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 82",
+        "table number 82"
+      ]
+    },
+    {
+      "id": "table:83",
+      "name": "Table 83",
+      "kind": "table",
+      "at": {
+        "x": -59.11,
+        "z": -17.21
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 83",
+        "table number 83"
+      ]
+    },
+    {
+      "id": "table:84",
+      "name": "Table 84",
+      "kind": "table",
+      "at": {
+        "x": -59.5,
+        "z": -19.73
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 84",
+        "table number 84"
+      ]
+    },
+    {
+      "id": "table:85",
+      "name": "Table 85",
+      "kind": "table",
+      "at": {
+        "x": -60.15,
+        "z": -23.89
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 85",
+        "table number 85"
+      ]
+    },
+    {
+      "id": "table:86",
+      "name": "Table 86",
+      "kind": "table",
+      "at": {
+        "x": -60.55,
+        "z": -26.39
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 86",
+        "table number 86"
+      ]
+    },
+    {
+      "id": "table:87",
+      "name": "Table 87",
+      "kind": "table",
+      "at": {
+        "x": -60.95,
+        "z": -28.89
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 87",
+        "table number 87"
+      ]
+    },
+    {
+      "id": "table:88",
+      "name": "Table 88",
+      "kind": "table",
+      "at": {
+        "x": -61.92,
+        "z": -32.92
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 88",
+        "table number 88"
+      ]
+    },
+    {
+      "id": "table:89",
+      "name": "Table 89",
+      "kind": "table",
+      "at": {
+        "x": -62.54,
+        "z": -35.38
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 89",
+        "table number 89"
+      ]
+    },
+    {
+      "id": "table:90",
+      "name": "Table 90",
+      "kind": "table",
+      "at": {
+        "x": -64.8,
+        "z": -34.86
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 90",
+        "table number 90"
+      ]
+    },
+    {
+      "id": "table:91",
+      "name": "Table 91",
+      "kind": "table",
+      "at": {
+        "x": -64.18,
+        "z": -32.36
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 91",
+        "table number 91"
+      ]
+    },
+    {
+      "id": "table:92",
+      "name": "Table 92",
+      "kind": "table",
+      "at": {
+        "x": -54.99,
+        "z": -5.86
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 92",
+        "table number 92"
+      ]
+    },
+    {
+      "id": "table:93",
+      "name": "Table 93",
+      "kind": "table",
+      "at": {
+        "x": -55.36,
+        "z": -8.37
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 93",
+        "table number 93"
+      ]
+    },
+    {
+      "id": "table:94",
+      "name": "Table 94",
+      "kind": "table",
+      "at": {
+        "x": -55.73,
+        "z": -10.87
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 94",
+        "table number 94"
+      ]
+    },
+    {
+      "id": "table:95",
+      "name": "Table 95",
+      "kind": "table",
+      "at": {
+        "x": -56.39,
+        "z": -15.06
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 95",
+        "table number 95"
+      ]
+    },
+    {
+      "id": "table:96",
+      "name": "Table 96",
+      "kind": "table",
+      "at": {
+        "x": -56.8,
+        "z": -17.57
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 96",
+        "table number 96"
+      ]
+    },
+    {
+      "id": "table:97",
+      "name": "Table 97",
+      "kind": "table",
+      "at": {
+        "x": -57.2,
+        "z": -20.08
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 97",
+        "table number 97"
+      ]
+    },
+    {
+      "id": "table:98",
+      "name": "Table 98",
+      "kind": "table",
+      "at": {
+        "x": -57.86,
+        "z": -24.25
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 98",
+        "table number 98"
+      ]
+    },
+    {
+      "id": "table:99",
+      "name": "Table 99",
+      "kind": "table",
+      "at": {
+        "x": -58.27,
+        "z": -26.76
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 99",
+        "table number 99"
+      ]
+    },
+    {
+      "id": "table:100",
+      "name": "Table 100",
+      "kind": "table",
+      "at": {
+        "x": -58.69,
+        "z": -29.26
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 100",
+        "table number 100"
+      ]
+    },
+    {
+      "id": "table:101",
+      "name": "Table 101",
+      "kind": "table",
+      "at": {
+        "x": -59.66,
+        "z": -33.49
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 101",
+        "table number 101"
+      ]
+    },
+    {
+      "id": "table:102",
+      "name": "Table 102",
+      "kind": "table",
+      "at": {
+        "x": -60.28,
+        "z": -35.97
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 102",
+        "table number 102"
+      ]
+    },
+    {
+      "id": "table:103",
+      "name": "Table 103",
+      "kind": "table",
+      "at": {
+        "x": -58.02,
+        "z": -36.56
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 103",
+        "table number 103"
+      ]
+    },
+    {
+      "id": "table:104",
+      "name": "Table 104",
+      "kind": "table",
+      "at": {
+        "x": -57.39,
+        "z": -34.05
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 104",
+        "table number 104"
+      ]
+    },
+    {
+      "id": "table:105",
+      "name": "Table 105",
+      "kind": "table",
+      "at": {
+        "x": -56.34,
+        "z": -29.63
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 105",
+        "table number 105"
+      ]
+    },
+    {
+      "id": "table:106",
+      "name": "Table 106",
+      "kind": "table",
+      "at": {
+        "x": -55.96,
+        "z": -27.12
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 106",
+        "table number 106"
+      ]
+    },
+    {
+      "id": "table:107",
+      "name": "Table 107",
+      "kind": "table",
+      "at": {
+        "x": -55.57,
+        "z": -24.62
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 107",
+        "table number 107"
+      ]
+    },
+    {
+      "id": "table:108",
+      "name": "Table 108",
+      "kind": "table",
+      "at": {
+        "x": -54.88,
+        "z": -20.46
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 108",
+        "table number 108"
+      ]
+    },
+    {
+      "id": "table:109",
+      "name": "Table 109",
+      "kind": "table",
+      "at": {
+        "x": -54.49,
+        "z": -17.94
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 109",
+        "table number 109"
+      ]
+    },
+    {
+      "id": "table:110",
+      "name": "Table 110",
+      "kind": "table",
+      "at": {
+        "x": -54.11,
+        "z": -15.41
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 110",
+        "table number 110"
+      ]
+    },
+    {
+      "id": "table:111",
+      "name": "Table 111",
+      "kind": "table",
+      "at": {
+        "x": -53.46,
+        "z": -11.24
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 111",
+        "table number 111"
+      ]
+    },
+    {
+      "id": "table:112",
+      "name": "Table 112",
+      "kind": "table",
+      "at": {
+        "x": -53.06,
+        "z": -8.73
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 112",
+        "table number 112"
+      ]
+    },
+    {
+      "id": "table:113",
+      "name": "Table 113",
+      "kind": "table",
+      "at": {
+        "x": -52.66,
+        "z": -6.23
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 113",
+        "table number 113"
+      ]
+    },
+    {
+      "id": "table:114",
+      "name": "Table 114",
+      "kind": "table",
+      "at": {
+        "x": -50.35,
+        "z": -6.6
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 114",
+        "table number 114"
+      ]
+    },
+    {
+      "id": "table:115",
+      "name": "Table 115",
+      "kind": "table",
+      "at": {
+        "x": -50.74,
+        "z": -9.1
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 115",
+        "table number 115"
+      ]
+    },
+    {
+      "id": "table:116",
+      "name": "Table 116",
+      "kind": "table",
+      "at": {
+        "x": -51.13,
+        "z": -11.6
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 116",
+        "table number 116"
+      ]
+    },
+    {
+      "id": "table:117",
+      "name": "Table 117",
+      "kind": "table",
+      "at": {
+        "x": -51.82,
+        "z": -15.81
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 117",
+        "table number 117"
+      ]
+    },
+    {
+      "id": "table:118",
+      "name": "Table 118",
+      "kind": "table",
+      "at": {
+        "x": -52.22,
+        "z": -18.31
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 118",
+        "table number 118"
+      ]
+    },
+    {
+      "id": "table:119",
+      "name": "Table 119",
+      "kind": "table",
+      "at": {
+        "x": -52.62,
+        "z": -20.82
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 119",
+        "table number 119"
+      ]
+    },
+    {
+      "id": "table:120",
+      "name": "Table 120",
+      "kind": "table",
+      "at": {
+        "x": -53.28,
+        "z": -24.97
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 120",
+        "table number 120"
+      ]
+    },
+    {
+      "id": "table:121",
+      "name": "Table 121",
+      "kind": "table",
+      "at": {
+        "x": -53.67,
+        "z": -27.47
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 121",
+        "table number 121"
+      ]
+    },
+    {
+      "id": "table:122",
+      "name": "Table 122",
+      "kind": "table",
+      "at": {
+        "x": -54.07,
+        "z": -29.98
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 122",
+        "table number 122"
+      ]
+    },
+    {
+      "id": "table:123",
+      "name": "Table 123",
+      "kind": "table",
+      "at": {
+        "x": -55.13,
+        "z": -34.64
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 123",
+        "table number 123"
+      ]
+    },
+    {
+      "id": "table:124",
+      "name": "Table 124",
+      "kind": "table",
+      "at": {
+        "x": -55.75,
+        "z": -37.12
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "table 124",
+        "table number 124"
+      ]
+    },
+    {
+      "id": "table:125",
+      "name": "Table 125",
+      "kind": "table",
+      "at": {
+        "x": -51.77,
+        "z": -30.36
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 125",
+        "table number 125"
+      ]
+    },
+    {
+      "id": "table:126",
+      "name": "Table 126",
+      "kind": "table",
+      "at": {
+        "x": -51.37,
+        "z": -27.84
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 126",
+        "table number 126"
+      ]
+    },
+    {
+      "id": "table:127",
+      "name": "Table 127",
+      "kind": "table",
+      "at": {
+        "x": -50.97,
+        "z": -25.33
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 127",
+        "table number 127"
+      ]
+    },
+    {
+      "id": "table:128",
+      "name": "Table 128",
+      "kind": "table",
+      "at": {
+        "x": -50.31,
+        "z": -21.19
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 128",
+        "table number 128"
+      ]
+    },
+    {
+      "id": "table:129",
+      "name": "Table 129",
+      "kind": "table",
+      "at": {
+        "x": -49.91,
+        "z": -18.68
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 129",
+        "table number 129"
+      ]
+    },
+    {
+      "id": "table:130",
+      "name": "Table 130",
+      "kind": "table",
+      "at": {
+        "x": -49.51,
+        "z": -16.17
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 130",
+        "table number 130"
+      ]
+    },
+    {
+      "id": "table:131",
+      "name": "Table 131",
+      "kind": "table",
+      "at": {
+        "x": -48.84,
+        "z": -11.99
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 131",
+        "table number 131"
+      ]
+    },
+    {
+      "id": "table:132",
+      "name": "Table 132",
+      "kind": "table",
+      "at": {
+        "x": -48.43,
+        "z": -9.48
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 132",
+        "table number 132"
+      ]
+    },
+    {
+      "id": "table:133",
+      "name": "Table 133",
+      "kind": "table",
+      "at": {
+        "x": -48.02,
+        "z": -6.96
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 133",
+        "table number 133"
+      ]
+    },
+    {
+      "id": "table:134",
+      "name": "Table 134",
+      "kind": "table",
+      "at": {
+        "x": -45.75,
+        "z": -7.31
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 134",
+        "table number 134"
+      ]
+    },
+    {
+      "id": "table:135",
+      "name": "Table 135",
+      "kind": "table",
+      "at": {
+        "x": -46.16,
+        "z": -9.83
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 135",
+        "table number 135"
+      ]
+    },
+    {
+      "id": "table:136",
+      "name": "Table 136",
+      "kind": "table",
+      "at": {
+        "x": -46.58,
+        "z": -12.34
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 136",
+        "table number 136"
+      ]
+    },
+    {
+      "id": "table:137",
+      "name": "Table 137",
+      "kind": "table",
+      "at": {
+        "x": -47.22,
+        "z": -16.53
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 137",
+        "table number 137"
+      ]
+    },
+    {
+      "id": "table:138",
+      "name": "Table 138",
+      "kind": "table",
+      "at": {
+        "x": -47.61,
+        "z": -19.04
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 138",
+        "table number 138"
+      ]
+    },
+    {
+      "id": "table:139",
+      "name": "Table 139",
+      "kind": "table",
+      "at": {
+        "x": -48,
+        "z": -21.55
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 139",
+        "table number 139"
+      ]
+    },
+    {
+      "id": "table:140",
+      "name": "Table 140",
+      "kind": "table",
+      "at": {
+        "x": -48.65,
+        "z": -25.69
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 140",
+        "table number 140"
+      ]
+    },
+    {
+      "id": "table:141",
+      "name": "Table 141",
+      "kind": "table",
+      "at": {
+        "x": -49.04,
+        "z": -28.19
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 141",
+        "table number 141"
+      ]
+    },
+    {
+      "id": "table:142",
+      "name": "Table 142",
+      "kind": "table",
+      "at": {
+        "x": -49.44,
+        "z": -30.7
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 142",
+        "table number 142"
+      ]
+    },
+    {
+      "id": "table:143",
+      "name": "Table 143",
+      "kind": "table",
+      "at": {
+        "x": -47.18,
+        "z": -31.1
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 143",
+        "table number 143"
+      ]
+    },
+    {
+      "id": "table:144",
+      "name": "Table 144",
+      "kind": "table",
+      "at": {
+        "x": -46.79,
+        "z": -28.59
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 144",
+        "table number 144"
+      ]
+    },
+    {
+      "id": "table:145",
+      "name": "Table 145",
+      "kind": "table",
+      "at": {
+        "x": -46.4,
+        "z": -26.07
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 145",
+        "table number 145"
+      ]
+    },
+    {
+      "id": "table:146",
+      "name": "Table 146",
+      "kind": "table",
+      "at": {
+        "x": -45.71,
+        "z": -21.91
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 146",
+        "table number 146"
+      ]
+    },
+    {
+      "id": "table:147",
+      "name": "Table 147",
+      "kind": "table",
+      "at": {
+        "x": -45.31,
+        "z": -19.4
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 147",
+        "table number 147"
+      ]
+    },
+    {
+      "id": "table:148",
+      "name": "Table 148",
+      "kind": "table",
+      "at": {
+        "x": -44.91,
+        "z": -16.88
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 148",
+        "table number 148"
+      ]
+    },
+    {
+      "id": "table:149",
+      "name": "Table 149",
+      "kind": "table",
+      "at": {
+        "x": -44.26,
+        "z": -12.71
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 149",
+        "table number 149"
+      ]
+    },
+    {
+      "id": "table:150",
+      "name": "Table 150",
+      "kind": "table",
+      "at": {
+        "x": -43.85,
+        "z": -10.19
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 150",
+        "table number 150"
+      ]
+    },
+    {
+      "id": "table:151",
+      "name": "Table 151",
+      "kind": "table",
+      "at": {
+        "x": -43.45,
+        "z": -7.68
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 151",
+        "table number 151"
+      ]
+    },
+    {
+      "id": "table:152",
+      "name": "Table 152",
+      "kind": "table",
+      "at": {
+        "x": -41.17,
+        "z": -8.05
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 152",
+        "table number 152"
+      ]
+    },
+    {
+      "id": "table:153",
+      "name": "Table 153",
+      "kind": "table",
+      "at": {
+        "x": -41.55,
+        "z": -10.57
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 153",
+        "table number 153"
+      ]
+    },
+    {
+      "id": "table:154",
+      "name": "Table 154",
+      "kind": "table",
+      "at": {
+        "x": -41.94,
+        "z": -13.09
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 154",
+        "table number 154"
+      ]
+    },
+    {
+      "id": "table:155",
+      "name": "Table 155",
+      "kind": "table",
+      "at": {
+        "x": -42.59,
+        "z": -17.26
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 155",
+        "table number 155"
+      ]
+    },
+    {
+      "id": "table:156",
+      "name": "Table 156",
+      "kind": "table",
+      "at": {
+        "x": -42.99,
+        "z": -19.77
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 156",
+        "table number 156"
+      ]
+    },
+    {
+      "id": "table:157",
+      "name": "Table 157",
+      "kind": "table",
+      "at": {
+        "x": -43.39,
+        "z": -22.29
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 157",
+        "table number 157"
+      ]
+    },
+    {
+      "id": "table:158",
+      "name": "Table 158",
+      "kind": "table",
+      "at": {
+        "x": -44.07,
+        "z": -26.44
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 158",
+        "table number 158"
+      ]
+    },
+    {
+      "id": "table:159",
+      "name": "Table 159",
+      "kind": "table",
+      "at": {
+        "x": -44.48,
+        "z": -28.94
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 159",
+        "table number 159"
+      ]
+    },
+    {
+      "id": "table:160",
+      "name": "Table 160",
+      "kind": "table",
+      "at": {
+        "x": -44.88,
+        "z": -31.45
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 160",
+        "table number 160"
+      ]
+    },
+    {
+      "id": "table:161",
+      "name": "Table 161",
+      "kind": "table",
+      "at": {
+        "x": -42.56,
+        "z": -31.82
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 161",
+        "table number 161"
+      ]
+    },
+    {
+      "id": "table:162",
+      "name": "Table 162",
+      "kind": "table",
+      "at": {
+        "x": -42.17,
+        "z": -29.3
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 162",
+        "table number 162"
+      ]
+    },
+    {
+      "id": "table:163",
+      "name": "Table 163",
+      "kind": "table",
+      "at": {
+        "x": -41.77,
+        "z": -26.79
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 163",
+        "table number 163"
+      ]
+    },
+    {
+      "id": "table:164",
+      "name": "Table 164",
+      "kind": "table",
+      "at": {
+        "x": -41.09,
+        "z": -22.63
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 164",
+        "table number 164"
+      ]
+    },
+    {
+      "id": "table:165",
+      "name": "Table 165",
+      "kind": "table",
+      "at": {
+        "x": -40.7,
+        "z": -20.13
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 165",
+        "table number 165"
+      ]
+    },
+    {
+      "id": "table:166",
+      "name": "Table 166",
+      "kind": "table",
+      "at": {
+        "x": -40.32,
+        "z": -17.63
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 166",
+        "table number 166"
+      ]
+    },
+    {
+      "id": "table:167",
+      "name": "Table 167",
+      "kind": "table",
+      "at": {
+        "x": -39.66,
+        "z": -13.45
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 167",
+        "table number 167"
+      ]
+    },
+    {
+      "id": "table:168",
+      "name": "Table 168",
+      "kind": "table",
+      "at": {
+        "x": -39.28,
+        "z": -10.93
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 168",
+        "table number 168"
+      ]
+    },
+    {
+      "id": "table:169",
+      "name": "Table 169",
+      "kind": "table",
+      "at": {
+        "x": -38.89,
+        "z": -8.41
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 169",
+        "table number 169"
+      ]
+    },
+    {
+      "id": "table:170",
+      "name": "Table 170",
+      "kind": "table",
+      "at": {
+        "x": -36.55,
+        "z": -8.79
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 170",
+        "table number 170"
+      ]
+    },
+    {
+      "id": "table:171",
+      "name": "Table 171",
+      "kind": "table",
+      "at": {
+        "x": -36.95,
+        "z": -11.3
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 171",
+        "table number 171"
+      ]
+    },
+    {
+      "id": "table:172",
+      "name": "Table 172",
+      "kind": "table",
+      "at": {
+        "x": -37.35,
+        "z": -13.82
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 172",
+        "table number 172"
+      ]
+    },
+    {
+      "id": "table:173",
+      "name": "Table 173",
+      "kind": "table",
+      "at": {
+        "x": -38,
+        "z": -17.99
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 173",
+        "table number 173"
+      ]
+    },
+    {
+      "id": "table:174",
+      "name": "Table 174",
+      "kind": "table",
+      "at": {
+        "x": -38.43,
+        "z": -20.48
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 174",
+        "table number 174"
+      ]
+    },
+    {
+      "id": "table:175",
+      "name": "Table 175",
+      "kind": "table",
+      "at": {
+        "x": -38.86,
+        "z": -22.98
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 175",
+        "table number 175"
+      ]
+    },
+    {
+      "id": "table:176",
+      "name": "Table 176",
+      "kind": "table",
+      "at": {
+        "x": -39.48,
+        "z": -27.16
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 176",
+        "table number 176"
+      ]
+    },
+    {
+      "id": "table:177",
+      "name": "Table 177",
+      "kind": "table",
+      "at": {
+        "x": -39.87,
+        "z": -29.67
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 177",
+        "table number 177"
+      ]
+    },
+    {
+      "id": "table:178",
+      "name": "Table 178",
+      "kind": "table",
+      "at": {
+        "x": -40.27,
+        "z": -32.19
+      },
+      "zone": "atrium-west",
+      "floor": "main",
+      "aliases": [
+        "table 178",
+        "table number 178"
+      ]
+    },
+    {
+      "id": "table:179",
+      "name": "Table 179",
+      "kind": "table",
+      "at": {
+        "x": -33.19,
+        "z": -33.15
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 179",
+        "table number 179"
+      ]
+    },
+    {
+      "id": "table:180",
+      "name": "Table 180",
+      "kind": "table",
+      "at": {
+        "x": -33.24,
+        "z": -30.62
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 180",
+        "table number 180"
+      ]
+    },
+    {
+      "id": "table:181",
+      "name": "Table 181",
+      "kind": "table",
+      "at": {
+        "x": -33.29,
+        "z": -28.08
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 181",
+        "table number 181"
+      ]
+    },
+    {
+      "id": "table:182",
+      "name": "Table 182",
+      "kind": "table",
+      "at": {
+        "x": -33.41,
+        "z": -23.81
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 182",
+        "table number 182"
+      ]
+    },
+    {
+      "id": "table:183",
+      "name": "Table 183",
+      "kind": "table",
+      "at": {
+        "x": -33.41,
+        "z": -21.28
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 183",
+        "table number 183"
+      ]
+    },
+    {
+      "id": "table:184",
+      "name": "Table 184",
+      "kind": "table",
+      "at": {
+        "x": -33.41,
+        "z": -18.75
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 184",
+        "table number 184"
+      ]
+    },
+    {
+      "id": "table:185",
+      "name": "Table 185",
+      "kind": "table",
+      "at": {
+        "x": -33.52,
+        "z": -14.49
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 185",
+        "table number 185"
+      ]
+    },
+    {
+      "id": "table:186",
+      "name": "Table 186",
+      "kind": "table",
+      "at": {
+        "x": -33.56,
+        "z": -11.98
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 186",
+        "table number 186"
+      ]
+    },
+    {
+      "id": "table:187",
+      "name": "Table 187",
+      "kind": "table",
+      "at": {
+        "x": -33.59,
+        "z": -9.46
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 187",
+        "table number 187"
+      ]
+    },
+    {
+      "id": "table:188",
+      "name": "Table 188",
+      "kind": "table",
+      "at": {
+        "x": -31.3,
+        "z": -9.46
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 188",
+        "table number 188"
+      ]
+    },
+    {
+      "id": "table:189",
+      "name": "Table 189",
+      "kind": "table",
+      "at": {
+        "x": -31.23,
+        "z": -11.98
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 189",
+        "table number 189"
+      ]
+    },
+    {
+      "id": "table:190",
+      "name": "Table 190",
+      "kind": "table",
+      "at": {
+        "x": -31.16,
+        "z": -14.49
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 190",
+        "table number 190"
+      ]
+    },
+    {
+      "id": "table:191",
+      "name": "Table 191",
+      "kind": "table",
+      "at": {
+        "x": -31.09,
+        "z": -18.75
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 191",
+        "table number 191"
+      ]
+    },
+    {
+      "id": "table:192",
+      "name": "Table 192",
+      "kind": "table",
+      "at": {
+        "x": -31.04,
+        "z": -21.28
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 192",
+        "table number 192"
+      ]
+    },
+    {
+      "id": "table:193",
+      "name": "Table 193",
+      "kind": "table",
+      "at": {
+        "x": -31,
+        "z": -23.81
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 193",
+        "table number 193"
+      ]
+    },
+    {
+      "id": "table:194",
+      "name": "Table 194",
+      "kind": "table",
+      "at": {
+        "x": -30.88,
+        "z": -28.01
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 194",
+        "table number 194"
+      ]
+    },
+    {
+      "id": "table:195",
+      "name": "Table 195",
+      "kind": "table",
+      "at": {
+        "x": -30.88,
+        "z": -30.55
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 195",
+        "table number 195"
+      ]
+    },
+    {
+      "id": "table:196",
+      "name": "Table 196",
+      "kind": "table",
+      "at": {
+        "x": -30.88,
+        "z": -33.08
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 196",
+        "table number 196"
+      ]
+    },
+    {
+      "id": "table:197",
+      "name": "Table 197",
+      "kind": "table",
+      "at": {
+        "x": -28.55,
+        "z": -33.03
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 197",
+        "table number 197"
+      ]
+    },
+    {
+      "id": "table:198",
+      "name": "Table 198",
+      "kind": "table",
+      "at": {
+        "x": -28.59,
+        "z": -30.51
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 198",
+        "table number 198"
+      ]
+    },
+    {
+      "id": "table:199",
+      "name": "Table 199",
+      "kind": "table",
+      "at": {
+        "x": -28.62,
+        "z": -28
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 199",
+        "table number 199"
+      ]
+    },
+    {
+      "id": "table:200",
+      "name": "Table 200",
+      "kind": "table",
+      "at": {
+        "x": -28.67,
+        "z": -23.69
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 200",
+        "table number 200"
+      ]
+    },
+    {
+      "id": "table:201",
+      "name": "Table 201",
+      "kind": "table",
+      "at": {
+        "x": -28.72,
+        "z": -21.17
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 201",
+        "table number 201"
+      ]
+    },
+    {
+      "id": "table:202",
+      "name": "Table 202",
+      "kind": "table",
+      "at": {
+        "x": -28.77,
+        "z": -18.66
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 202",
+        "table number 202"
+      ]
+    },
+    {
+      "id": "table:203",
+      "name": "Table 203",
+      "kind": "table",
+      "at": {
+        "x": -28.84,
+        "z": -14.48
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 203",
+        "table number 203"
+      ]
+    },
+    {
+      "id": "table:204",
+      "name": "Table 204",
+      "kind": "table",
+      "at": {
+        "x": -28.88,
+        "z": -11.94
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 204",
+        "table number 204"
+      ]
+    },
+    {
+      "id": "table:205",
+      "name": "Table 205",
+      "kind": "table",
+      "at": {
+        "x": -28.92,
+        "z": -9.41
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 205",
+        "table number 205"
+      ]
+    },
+    {
+      "id": "table:206",
+      "name": "Table 206",
+      "kind": "table",
+      "at": {
+        "x": -26.58,
+        "z": -9.34
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 206",
+        "table number 206"
+      ]
+    },
+    {
+      "id": "table:207",
+      "name": "Table 207",
+      "kind": "table",
+      "at": {
+        "x": -26.56,
+        "z": -11.87
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 207",
+        "table number 207"
+      ]
+    },
+    {
+      "id": "table:208",
+      "name": "Table 208",
+      "kind": "table",
+      "at": {
+        "x": -26.53,
+        "z": -14.41
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 208",
+        "table number 208"
+      ]
+    },
+    {
+      "id": "table:209",
+      "name": "Table 209",
+      "kind": "table",
+      "at": {
+        "x": -26.47,
+        "z": -18.66
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 209",
+        "table number 209"
+      ]
+    },
+    {
+      "id": "table:210",
+      "name": "Table 210",
+      "kind": "table",
+      "at": {
+        "x": -26.43,
+        "z": -21.17
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 210",
+        "table number 210"
+      ]
+    },
+    {
+      "id": "table:211",
+      "name": "Table 211",
+      "kind": "table",
+      "at": {
+        "x": -26.39,
+        "z": -23.69
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 211",
+        "table number 211"
+      ]
+    },
+    {
+      "id": "table:212",
+      "name": "Table 212",
+      "kind": "table",
+      "at": {
+        "x": -26.3,
+        "z": -28
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 212",
+        "table number 212"
+      ]
+    },
+    {
+      "id": "table:213",
+      "name": "Table 213",
+      "kind": "table",
+      "at": {
+        "x": -26.25,
+        "z": -30.51
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 213",
+        "table number 213"
+      ]
+    },
+    {
+      "id": "table:214",
+      "name": "Table 214",
+      "kind": "table",
+      "at": {
+        "x": -26.2,
+        "z": -33.02
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 214",
+        "table number 214"
+      ]
+    },
+    {
+      "id": "table:215",
+      "name": "Table 215",
+      "kind": "table",
+      "at": {
+        "x": -23.87,
+        "z": -33.01
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 215",
+        "table number 215"
+      ]
+    },
+    {
+      "id": "table:216",
+      "name": "Table 216",
+      "kind": "table",
+      "at": {
+        "x": -23.92,
+        "z": -30.48
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 216",
+        "table number 216"
+      ]
+    },
+    {
+      "id": "table:217",
+      "name": "Table 217",
+      "kind": "table",
+      "at": {
+        "x": -23.97,
+        "z": -27.94
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 217",
+        "table number 217"
+      ]
+    },
+    {
+      "id": "table:218",
+      "name": "Table 218",
+      "kind": "table",
+      "at": {
+        "x": -24.02,
+        "z": -23.68
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 218",
+        "table number 218"
+      ]
+    },
+    {
+      "id": "table:219",
+      "name": "Table 219",
+      "kind": "table",
+      "at": {
+        "x": -24.07,
+        "z": -21.14
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 219",
+        "table number 219"
+      ]
+    },
+    {
+      "id": "table:220",
+      "name": "Table 220",
+      "kind": "table",
+      "at": {
+        "x": -24.12,
+        "z": -18.6
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 220",
+        "table number 220"
+      ]
+    },
+    {
+      "id": "table:221",
+      "name": "Table 221",
+      "kind": "table",
+      "at": {
+        "x": -24.17,
+        "z": -14.36
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 221",
+        "table number 221"
+      ]
+    },
+    {
+      "id": "table:222",
+      "name": "Table 222",
+      "kind": "table",
+      "at": {
+        "x": -24.23,
+        "z": -11.84
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 222",
+        "table number 222"
+      ]
+    },
+    {
+      "id": "table:223",
+      "name": "Table 223",
+      "kind": "table",
+      "at": {
+        "x": -24.29,
+        "z": -9.32
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 223",
+        "table number 223"
+      ]
+    },
+    {
+      "id": "table:224",
+      "name": "Table 224",
+      "kind": "table",
+      "at": {
+        "x": -21.97,
+        "z": -9.27
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "table 224",
+        "table number 224"
+      ]
+    },
+    {
+      "id": "table:225",
+      "name": "Table 225",
+      "kind": "table",
+      "at": {
+        "x": -21.93,
+        "z": -11.8
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 225",
+        "table number 225"
+      ]
+    },
+    {
+      "id": "table:226",
+      "name": "Table 226",
+      "kind": "table",
+      "at": {
+        "x": -21.89,
+        "z": -14.34
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 226",
+        "table number 226"
+      ]
+    },
+    {
+      "id": "table:227",
+      "name": "Table 227",
+      "kind": "table",
+      "at": {
+        "x": -21.75,
+        "z": -18.6
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 227",
+        "table number 227"
+      ]
+    },
+    {
+      "id": "table:228",
+      "name": "Table 228",
+      "kind": "table",
+      "at": {
+        "x": -21.75,
+        "z": -21.1
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 228",
+        "table number 228"
+      ]
+    },
+    {
+      "id": "table:229",
+      "name": "Table 229",
+      "kind": "table",
+      "at": {
+        "x": -21.75,
+        "z": -23.61
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 229",
+        "table number 229"
+      ]
+    },
+    {
+      "id": "table:230",
+      "name": "Table 230",
+      "kind": "table",
+      "at": {
+        "x": -21.61,
+        "z": -27.87
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 230",
+        "table number 230"
+      ]
+    },
+    {
+      "id": "table:231",
+      "name": "Table 231",
+      "kind": "table",
+      "at": {
+        "x": -21.58,
+        "z": -30.41
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 231",
+        "table number 231"
+      ]
+    },
+    {
+      "id": "table:232",
+      "name": "Table 232",
+      "kind": "table",
+      "at": {
+        "x": -21.54,
+        "z": -32.94
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 232",
+        "table number 232"
+      ]
+    },
+    {
+      "id": "table:233",
+      "name": "Table 233",
+      "kind": "table",
+      "at": {
+        "x": -19.24,
+        "z": -32.89
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 233",
+        "table number 233"
+      ]
+    },
+    {
+      "id": "table:234",
+      "name": "Table 234",
+      "kind": "table",
+      "at": {
+        "x": -19.27,
+        "z": -30.37
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 234",
+        "table number 234"
+      ]
+    },
+    {
+      "id": "table:235",
+      "name": "Table 235",
+      "kind": "table",
+      "at": {
+        "x": -19.3,
+        "z": -27.86
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 235",
+        "table number 235"
+      ]
+    },
+    {
+      "id": "table:236",
+      "name": "Table 236",
+      "kind": "table",
+      "at": {
+        "x": -19.39,
+        "z": -23.55
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 236",
+        "table number 236"
+      ]
+    },
+    {
+      "id": "table:237",
+      "name": "Table 237",
+      "kind": "table",
+      "at": {
+        "x": -19.42,
+        "z": -21.03
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 237",
+        "table number 237"
+      ]
+    },
+    {
+      "id": "table:238",
+      "name": "Table 238",
+      "kind": "table",
+      "at": {
+        "x": -19.46,
+        "z": -18.52
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 238",
+        "table number 238"
+      ]
+    },
+    {
+      "id": "table:239",
+      "name": "Table 239",
+      "kind": "table",
+      "at": {
+        "x": -19.58,
+        "z": -14.28
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 239",
+        "table number 239"
+      ]
+    },
+    {
+      "id": "table:240",
+      "name": "Table 240",
+      "kind": "table",
+      "at": {
+        "x": -19.58,
+        "z": -11.77
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 240",
+        "table number 240"
+      ]
+    },
+    {
+      "id": "table:241",
+      "name": "Table 241",
+      "kind": "table",
+      "at": {
+        "x": -19.58,
+        "z": -9.26
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 241",
+        "table number 241"
+      ]
+    },
+    {
+      "id": "table:242",
+      "name": "Table 242",
+      "kind": "table",
+      "at": {
+        "x": -17.28,
+        "z": -9.2
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 242",
+        "table number 242"
+      ]
+    },
+    {
+      "id": "table:243",
+      "name": "Table 243",
+      "kind": "table",
+      "at": {
+        "x": -17.24,
+        "z": -11.73
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 243",
+        "table number 243"
+      ]
+    },
+    {
+      "id": "table:244",
+      "name": "Table 244",
+      "kind": "table",
+      "at": {
+        "x": -17.19,
+        "z": -14.27
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 244",
+        "table number 244"
+      ]
+    },
+    {
+      "id": "table:245",
+      "name": "Table 245",
+      "kind": "table",
+      "at": {
+        "x": -17.12,
+        "z": -18.47
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 245",
+        "table number 245"
+      ]
+    },
+    {
+      "id": "table:246",
+      "name": "Table 246",
+      "kind": "table",
+      "at": {
+        "x": -17.08,
+        "z": -21
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 246",
+        "table number 246"
+      ]
+    },
+    {
+      "id": "table:247",
+      "name": "Table 247",
+      "kind": "table",
+      "at": {
+        "x": -17.04,
+        "z": -23.53
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 247",
+        "table number 247"
+      ]
+    },
+    {
+      "id": "table:248",
+      "name": "Table 248",
+      "kind": "table",
+      "at": {
+        "x": -16.9,
+        "z": -27.86
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "table 248",
+        "table number 248"
+      ]
+    },
+    {
+      "id": "table:249",
+      "name": "Table 249",
+      "kind": "table",
+      "at": {
+        "x": -16.9,
+        "z": -30.37
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 249",
+        "table number 249"
+      ]
+    },
+    {
+      "id": "table:250",
+      "name": "Table 250",
+      "kind": "table",
+      "at": {
+        "x": -16.9,
+        "z": -32.88
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "table 250",
+        "table number 250"
+      ]
+    },
+    {
+      "id": "table:251",
+      "name": "Table 251",
+      "kind": "table",
+      "at": {
+        "x": 20,
+        "z": -8.79
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 251",
+        "table number 251"
+      ]
+    },
+    {
+      "id": "table:252",
+      "name": "Table 252",
+      "kind": "table",
+      "at": {
+        "x": 22.11,
+        "z": -7.8
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 252",
+        "table number 252"
+      ]
+    },
+    {
+      "id": "table:253",
+      "name": "Table 253",
+      "kind": "table",
+      "at": {
+        "x": 24.22,
+        "z": -6.82
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 253",
+        "table number 253"
+      ]
+    },
+    {
+      "id": "table:254",
+      "name": "Table 254",
+      "kind": "table",
+      "at": {
+        "x": 26.33,
+        "z": -5.84
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 254",
+        "table number 254"
+      ]
+    },
+    {
+      "id": "table:255",
+      "name": "Table 255",
+      "kind": "table",
+      "at": {
+        "x": 28.44,
+        "z": -4.86
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 255",
+        "table number 255"
+      ]
+    },
+    {
+      "id": "table:256",
+      "name": "Table 256",
+      "kind": "table",
+      "at": {
+        "x": 30.55,
+        "z": -3.88
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 256",
+        "table number 256"
+      ]
+    },
+    {
+      "id": "table:257",
+      "name": "Table 257",
+      "kind": "table",
+      "at": {
+        "x": 32.66,
+        "z": -2.89
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 257",
+        "table number 257"
+      ]
+    },
+    {
+      "id": "table:258",
+      "name": "Table 258",
+      "kind": "table",
+      "at": {
+        "x": 34.76,
+        "z": -1.91
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 258",
+        "table number 258"
+      ]
+    },
+    {
+      "id": "table:259",
+      "name": "Table 259",
+      "kind": "table",
+      "at": {
+        "x": 36.87,
+        "z": -0.92
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 259",
+        "table number 259"
+      ]
+    },
+    {
+      "id": "table:260",
+      "name": "Table 260",
+      "kind": "table",
+      "at": {
+        "x": 38.98,
+        "z": 0.06
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 260",
+        "table number 260"
+      ]
+    },
+    {
+      "id": "table:261",
+      "name": "Table 261",
+      "kind": "table",
+      "at": {
+        "x": 41.09,
+        "z": 1.04
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "table 261",
+        "table number 261"
+      ]
+    },
+    {
+      "id": "table:262",
+      "name": "Table 262",
+      "kind": "table",
+      "at": {
+        "x": 45.07,
+        "z": 10.96
+      },
+      "zone": "broadway-3",
+      "floor": "main",
+      "aliases": [
+        "table 262",
+        "table number 262"
+      ]
+    },
+    {
+      "id": "table:263",
+      "name": "Table 263",
+      "kind": "table",
+      "at": {
+        "x": 45.77,
+        "z": 8.55
+      },
+      "zone": "broadway-3",
+      "floor": "main",
+      "aliases": [
+        "table 263",
+        "table number 263"
+      ]
+    },
+    {
+      "id": "table:264",
+      "name": "Table 264",
+      "kind": "table",
+      "at": {
+        "x": 26.57,
+        "z": -15.06
+      },
+      "zone": "mezz-north",
+      "floor": "mezz",
+      "aliases": [
+        "table 264",
+        "table number 264"
+      ]
+    },
+    {
+      "id": "table:265",
+      "name": "Table 265",
+      "kind": "table",
+      "at": {
+        "x": 25.45,
+        "z": -12.83
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 265",
+        "table number 265"
+      ]
+    },
+    {
+      "id": "table:266",
+      "name": "Table 266",
+      "kind": "table",
+      "at": {
+        "x": 24.34,
+        "z": -10.6
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 266",
+        "table number 266"
+      ]
+    },
+    {
+      "id": "table:267",
+      "name": "Table 267",
+      "kind": "table",
+      "at": {
+        "x": 26.42,
+        "z": -9.55
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 267",
+        "table number 267"
+      ]
+    },
+    {
+      "id": "table:268",
+      "name": "Table 268",
+      "kind": "table",
+      "at": {
+        "x": 27.54,
+        "z": -11.78
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 268",
+        "table number 268"
+      ]
+    },
+    {
+      "id": "table:269",
+      "name": "Table 269",
+      "kind": "table",
+      "at": {
+        "x": 28.65,
+        "z": -14.02
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 269",
+        "table number 269"
+      ]
+    },
+    {
+      "id": "table:270",
+      "name": "Table 270",
+      "kind": "table",
+      "at": {
+        "x": 30.73,
+        "z": -12.97
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 270",
+        "table number 270"
+      ]
+    },
+    {
+      "id": "table:271",
+      "name": "Table 271",
+      "kind": "table",
+      "at": {
+        "x": 29.61,
+        "z": -10.74
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 271",
+        "table number 271"
+      ]
+    },
+    {
+      "id": "table:272",
+      "name": "Table 272",
+      "kind": "table",
+      "at": {
+        "x": 28.5,
+        "z": -8.5
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 272",
+        "table number 272"
+      ]
+    },
+    {
+      "id": "table:273",
+      "name": "Table 273",
+      "kind": "table",
+      "at": {
+        "x": 30.57,
+        "z": -7.46
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 273",
+        "table number 273"
+      ]
+    },
+    {
+      "id": "table:274",
+      "name": "Table 274",
+      "kind": "table",
+      "at": {
+        "x": 31.69,
+        "z": -9.69
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 274",
+        "table number 274"
+      ]
+    },
+    {
+      "id": "table:275",
+      "name": "Table 275",
+      "kind": "table",
+      "at": {
+        "x": 32.8,
+        "z": -11.93
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 275",
+        "table number 275"
+      ]
+    },
+    {
+      "id": "table:276",
+      "name": "Table 276",
+      "kind": "table",
+      "at": {
+        "x": 34.89,
+        "z": -10.88
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 276",
+        "table number 276"
+      ]
+    },
+    {
+      "id": "table:277",
+      "name": "Table 277",
+      "kind": "table",
+      "at": {
+        "x": 33.77,
+        "z": -8.64
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 277",
+        "table number 277"
+      ]
+    },
+    {
+      "id": "table:278",
+      "name": "Table 278",
+      "kind": "table",
+      "at": {
+        "x": 32.65,
+        "z": -6.41
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 278",
+        "table number 278"
+      ]
+    },
+    {
+      "id": "table:279",
+      "name": "Table 279",
+      "kind": "table",
+      "at": {
+        "x": 34.73,
+        "z": -5.37
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 279",
+        "table number 279"
+      ]
+    },
+    {
+      "id": "table:280",
+      "name": "Table 280",
+      "kind": "table",
+      "at": {
+        "x": 35.84,
+        "z": -7.6
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 280",
+        "table number 280"
+      ]
+    },
+    {
+      "id": "table:281",
+      "name": "Table 281",
+      "kind": "table",
+      "at": {
+        "x": 36.96,
+        "z": -9.83
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 281",
+        "table number 281"
+      ]
+    },
+    {
+      "id": "table:282",
+      "name": "Table 282",
+      "kind": "table",
+      "at": {
+        "x": 39.03,
+        "z": -8.79
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 282",
+        "table number 282"
+      ]
+    },
+    {
+      "id": "table:283",
+      "name": "Table 283",
+      "kind": "table",
+      "at": {
+        "x": 37.92,
+        "z": -6.56
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 283",
+        "table number 283"
+      ]
+    },
+    {
+      "id": "table:284",
+      "name": "Table 284",
+      "kind": "table",
+      "at": {
+        "x": 36.8,
+        "z": -4.32
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 284",
+        "table number 284"
+      ]
+    },
+    {
+      "id": "table:285",
+      "name": "Table 285",
+      "kind": "table",
+      "at": {
+        "x": 38.89,
+        "z": -3.28
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 285",
+        "table number 285"
+      ]
+    },
+    {
+      "id": "table:286",
+      "name": "Table 286",
+      "kind": "table",
+      "at": {
+        "x": 40,
+        "z": -5.51
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 286",
+        "table number 286"
+      ]
+    },
+    {
+      "id": "table:287",
+      "name": "Table 287",
+      "kind": "table",
+      "at": {
+        "x": 41.12,
+        "z": -7.74
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 287",
+        "table number 287"
+      ]
+    },
+    {
+      "id": "table:288",
+      "name": "Table 288",
+      "kind": "table",
+      "at": {
+        "x": 43.19,
+        "z": -6.7
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 288",
+        "table number 288"
+      ]
+    },
+    {
+      "id": "table:289",
+      "name": "Table 289",
+      "kind": "table",
+      "at": {
+        "x": 42.08,
+        "z": -4.47
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 289",
+        "table number 289"
+      ]
+    },
+    {
+      "id": "table:290",
+      "name": "Table 290",
+      "kind": "table",
+      "at": {
+        "x": 40.96,
+        "z": -2.24
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "table 290",
+        "table number 290"
+      ]
+    },
+    {
+      "id": "table:291",
+      "name": "Table 291",
+      "kind": "table",
+      "at": {
+        "x": 56.87,
+        "z": -4.45
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 291",
+        "table number 291"
+      ]
+    },
+    {
+      "id": "table:292",
+      "name": "Table 292",
+      "kind": "table",
+      "at": {
+        "x": 58.4,
+        "z": -6.41
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 292",
+        "table number 292"
+      ]
+    },
+    {
+      "id": "table:293",
+      "name": "Table 293",
+      "kind": "table",
+      "at": {
+        "x": 60.24,
+        "z": -4.98
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 293",
+        "table number 293"
+      ]
+    },
+    {
+      "id": "table:294",
+      "name": "Table 294",
+      "kind": "table",
+      "at": {
+        "x": 58.7,
+        "z": -3.02
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 294",
+        "table number 294"
+      ]
+    },
+    {
+      "id": "table:295",
+      "name": "Table 295",
+      "kind": "table",
+      "at": {
+        "x": 60.53,
+        "z": -1.58
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 295",
+        "table number 295"
+      ]
+    },
+    {
+      "id": "table:296",
+      "name": "Table 296",
+      "kind": "table",
+      "at": {
+        "x": 62.06,
+        "z": -3.54
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 296",
+        "table number 296"
+      ]
+    },
+    {
+      "id": "table:297",
+      "name": "Table 297",
+      "kind": "table",
+      "at": {
+        "x": 63.89,
+        "z": -2.11
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 297",
+        "table number 297"
+      ]
+    },
+    {
+      "id": "table:298",
+      "name": "Table 298",
+      "kind": "table",
+      "at": {
+        "x": 62.37,
+        "z": -0.15
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 298",
+        "table number 298"
+      ]
+    },
+    {
+      "id": "table:299",
+      "name": "Table 299",
+      "kind": "table",
+      "at": {
+        "x": 64.2,
+        "z": 1.29
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 299",
+        "table number 299"
+      ]
+    },
+    {
+      "id": "table:300",
+      "name": "Table 300",
+      "kind": "table",
+      "at": {
+        "x": 65.73,
+        "z": -0.67
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 300",
+        "table number 300"
+      ]
+    },
+    {
+      "id": "table:301",
+      "name": "Table 301",
+      "kind": "table",
+      "at": {
+        "x": 67.56,
+        "z": 0.76
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 301",
+        "table number 301"
+      ]
+    },
+    {
+      "id": "table:302",
+      "name": "Table 302",
+      "kind": "table",
+      "at": {
+        "x": 66.03,
+        "z": 2.72
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 302",
+        "table number 302"
+      ]
+    },
+    {
+      "id": "table:303",
+      "name": "Table 303",
+      "kind": "table",
+      "at": {
+        "x": 67.86,
+        "z": 4.16
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 303",
+        "table number 303"
+      ]
+    },
+    {
+      "id": "table:304",
+      "name": "Table 304",
+      "kind": "table",
+      "at": {
+        "x": 69.39,
+        "z": 2.2
+      },
+      "zone": "mezz-breakout-5",
+      "floor": "mezz",
+      "aliases": [
+        "table 304",
+        "table number 304"
+      ]
+    },
+    {
+      "id": "booth:1",
+      "name": "Visa booth",
+      "kind": "booth",
+      "at": {
+        "x": -75.84,
+        "z": -34.83
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "visa",
+        "visa booth",
+        "booth 1"
+      ]
+    },
+    {
+      "id": "booth:2",
+      "name": "Fetch booth",
+      "kind": "booth",
+      "at": {
+        "x": -70.72,
+        "z": -36.39
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "fetch",
+        "fetch booth",
+        "booth 2"
+      ]
+    },
+    {
+      "id": "booth:3",
+      "name": "Microsoft booth",
+      "kind": "booth",
+      "at": {
+        "x": -65.34,
+        "z": -37.84
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "microsoft",
+        "microsoft booth",
+        "booth 3"
+      ]
+    },
+    {
+      "id": "booth:4",
+      "name": "Supercell booth",
+      "kind": "booth",
+      "at": {
+        "x": -56.95,
+        "z": -39.38
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": [
+        "supercell",
+        "supercell booth",
+        "booth 4"
+      ]
+    },
+    {
+      "id": "booth:5",
+      "name": "Red Bull booth",
+      "kind": "booth",
+      "at": {
+        "x": -33.57,
+        "z": -41.25
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "red bull",
+        "red bull booth",
+        "booth 5"
+      ]
+    },
+    {
+      "id": "booth:6",
+      "name": "Meta booth",
+      "kind": "booth",
+      "at": {
+        "x": -25.66,
+        "z": -39.1
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "meta",
+        "meta booth",
+        "booth 6"
+      ]
+    },
+    {
+      "id": "booth:7",
+      "name": "SpaceX AI booth",
+      "kind": "booth",
+      "at": {
+        "x": -23.27,
+        "z": -39.03
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "spacex ai",
+        "spacex ai booth",
+        "booth 7"
+      ]
+    },
+    {
+      "id": "booth:8",
+      "name": "Context.dev booth",
+      "kind": "booth",
+      "at": {
+        "x": -20.87,
+        "z": -38.96
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "context.dev",
+        "context.dev booth",
+        "booth 8"
+      ]
+    },
+    {
+      "id": "booth:9",
+      "name": "Bitdeer booth",
+      "kind": "booth",
+      "at": {
+        "x": -12.98,
+        "z": -35.67
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "bitdeer",
+        "bitdeer booth",
+        "booth 9"
+      ]
+    },
+    {
+      "id": "booth:10",
+      "name": "After Query booth",
+      "kind": "booth",
+      "at": {
+        "x": -10.58,
+        "z": -35.63
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "after query",
+        "after query booth",
+        "booth 10"
+      ]
+    },
+    {
+      "id": "booth:11",
+      "name": "Cartesia booth",
+      "kind": "booth",
+      "at": {
+        "x": -8.18,
+        "z": -35.59
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": [
+        "cartesia",
+        "cartesia booth",
+        "booth 11"
+      ]
+    },
+    {
+      "id": "booth:12",
+      "name": "Annapurna booth",
+      "kind": "booth",
+      "at": {
+        "x": -47.45,
+        "z": -4.32
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "annapurna",
+        "annapurna booth",
+        "booth 12"
+      ]
+    },
+    {
+      "id": "booth:13",
+      "name": "Anthropic booth",
+      "kind": "booth",
+      "at": {
+        "x": -63.99,
+        "z": -0.17
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "anthropic",
+        "anthropic booth",
+        "booth 13"
+      ]
+    },
+    {
+      "id": "booth:14",
+      "name": "SpacetimeDB booth",
+      "kind": "booth",
+      "at": {
+        "x": -56.1,
+        "z": -2.41
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "spacetimedb",
+        "spacetimedb booth",
+        "booth 14"
+      ]
+    },
+    {
+      "id": "booth:15",
+      "name": "Creao booth (Pavilion North)",
+      "kind": "booth",
+      "at": {
+        "x": -71.93,
+        "z": 2.8
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "creao",
+        "creao booth",
+        "booth 15"
+      ]
+    },
+    {
+      "id": "booth:16",
+      "name": "Elastic booth",
+      "kind": "booth",
+      "at": {
+        "x": -69.73,
+        "z": 1.96
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": [
+        "elastic",
+        "elastic booth",
+        "booth 16"
+      ]
+    },
+    {
+      "id": "booth:17",
+      "name": "Apify booth",
+      "kind": "booth",
+      "at": {
+        "x": -39.33,
+        "z": -6.52
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "apify",
+        "apify booth",
+        "booth 17"
+      ]
+    },
+    {
+      "id": "booth:18",
+      "name": "Armadin booth",
+      "kind": "booth",
+      "at": {
+        "x": -36.94,
+        "z": -6.75
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "armadin",
+        "armadin booth",
+        "booth 18"
+      ]
+    },
+    {
+      "id": "booth:19",
+      "name": "CRS Credit API booth",
+      "kind": "booth",
+      "at": {
+        "x": -34.55,
+        "z": -6.97
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "crs credit api",
+        "crs credit api booth",
+        "booth 19"
+      ]
+    },
+    {
+      "id": "booth:20",
+      "name": "Bright Data booth",
+      "kind": "booth",
+      "at": {
+        "x": -31.38,
+        "z": -7.16
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "bright data",
+        "bright data booth",
+        "booth 20"
+      ]
+    },
+    {
+      "id": "booth:21",
+      "name": "Convex booth",
+      "kind": "booth",
+      "at": {
+        "x": -29.01,
+        "z": -7.08
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "convex",
+        "convex booth",
+        "booth 21"
+      ]
+    },
+    {
+      "id": "booth:22",
+      "name": "Factory AI booth",
+      "kind": "booth",
+      "at": {
+        "x": -26.63,
+        "z": -7
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": [
+        "factory ai",
+        "factory ai booth",
+        "booth 22"
+      ]
+    },
+    {
+      "id": "booth:23",
+      "name": "Creao booth (Broadway #2)",
+      "kind": "booth",
+      "at": {
+        "x": 37.69,
+        "z": -3.29
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "creao",
+        "creao booth",
+        "booth 23"
+      ]
+    },
+    {
+      "id": "booth:25",
+      "name": "Capital One booth (Broadway #2)",
+      "kind": "booth",
+      "at": {
+        "x": 41.15,
+        "z": -1.98
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "capital one",
+        "capital one booth",
+        "booth 25"
+      ]
+    },
+    {
+      "id": "booth:26",
+      "name": "Moonpay booth",
+      "kind": "booth",
+      "at": {
+        "x": -7.19,
+        "z": -3.96
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "moonpay",
+        "moonpay booth",
+        "booth 26"
+      ]
+    },
+    {
+      "id": "booth:27",
+      "name": "Moss booth",
+      "kind": "booth",
+      "at": {
+        "x": -3.35,
+        "z": -3.01
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "moss",
+        "moss booth",
+        "booth 27"
+      ]
+    },
+    {
+      "id": "booth:28",
+      "name": "Coinbase booth",
+      "kind": "booth",
+      "at": {
+        "x": 4.66,
+        "z": -0.24
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "coinbase",
+        "coinbase booth",
+        "booth 28"
+      ]
+    },
+    {
+      "id": "booth:29",
+      "name": "Savvy booth",
+      "kind": "booth",
+      "at": {
+        "x": 6.94,
+        "z": 0.52
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "savvy",
+        "savvy booth",
+        "booth 29"
+      ]
+    },
+    {
+      "id": "booth:30",
+      "name": "a16z booth",
+      "kind": "booth",
+      "at": {
+        "x": 9.21,
+        "z": 1.27
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "a16z",
+        "a16z booth",
+        "booth 30"
+      ]
+    },
+    {
+      "id": "booth:31",
+      "name": "Atlassian booth",
+      "kind": "booth",
+      "at": {
+        "x": 20.73,
+        "z": -11.07
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "atlassian",
+        "atlassian booth",
+        "booth 31"
+      ]
+    },
+    {
+      "id": "booth:32",
+      "name": "Engramme AI booth",
+      "kind": "booth",
+      "at": {
+        "x": 22.99,
+        "z": -10.32
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "engramme ai",
+        "engramme ai booth",
+        "booth 32"
+      ]
+    },
+    {
+      "id": "booth:33",
+      "name": "Greptile booth",
+      "kind": "booth",
+      "at": {
+        "x": 25.26,
+        "z": -9.56
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "greptile",
+        "greptile booth",
+        "booth 33"
+      ]
+    },
+    {
+      "id": "booth:34",
+      "name": "Fung booth",
+      "kind": "booth",
+      "at": {
+        "x": 28.74,
+        "z": -7.68
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "fung",
+        "fung booth",
+        "booth 34"
+      ]
+    },
+    {
+      "id": "booth:35",
+      "name": "Figma booth",
+      "kind": "booth",
+      "at": {
+        "x": 30.95,
+        "z": -6.74
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "figma",
+        "figma booth",
+        "booth 35"
+      ]
+    },
+    {
+      "id": "booth:36",
+      "name": "YC booth",
+      "kind": "booth",
+      "at": {
+        "x": 33.16,
+        "z": -5.79
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "yc",
+        "yc booth",
+        "booth 36"
+      ]
+    },
+    {
+      "id": "booth:37",
+      "name": "Capital One booth (Broadway #1)",
+      "kind": "booth",
+      "at": {
+        "x": -8.62,
+        "z": -12.95
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "capital one",
+        "capital one booth",
+        "booth 37"
+      ]
+    },
+    {
+      "id": "booth:38",
+      "name": "Listen Labs booth",
+      "kind": "booth",
+      "at": {
+        "x": -6.3,
+        "z": -12.69
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "listen labs",
+        "listen labs booth",
+        "booth 38"
+      ]
+    },
+    {
+      "id": "booth:39",
+      "name": "Notability booth",
+      "kind": "booth",
+      "at": {
+        "x": -3.46,
+        "z": -12.56
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "notability",
+        "notability booth",
+        "booth 39"
+      ]
+    },
+    {
+      "id": "booth:40",
+      "name": "Runpod booth",
+      "kind": "booth",
+      "at": {
+        "x": 1.5,
+        "z": -11.93
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "runpod",
+        "runpod booth",
+        "booth 40"
+      ]
+    },
+    {
+      "id": "booth:41",
+      "name": "Scale booth",
+      "kind": "booth",
+      "at": {
+        "x": 4.53,
+        "z": -11.23
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "scale",
+        "scale booth",
+        "booth 41"
+      ]
+    },
+    {
+      "id": "booth:42",
+      "name": "Decagon booth",
+      "kind": "booth",
+      "at": {
+        "x": 7.3,
+        "z": -10.25
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "decagon",
+        "decagon booth",
+        "booth 42"
+      ]
+    },
+    {
+      "id": "booth:43",
+      "name": "Mentor Tables",
+      "kind": "booth",
+      "at": {
+        "x": 28.57,
+        "z": 5.35
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": [
+        "mentor tables",
+        "mentor tables booth",
+        "booth 43"
+      ]
+    },
+    {
+      "id": "booth:44",
+      "name": "Asus booth",
+      "kind": "booth",
+      "at": {
+        "x": 10.87,
+        "z": -28.95
+      },
+      "zone": "mezz-north",
+      "floor": "mezz",
+      "aliases": [
+        "asus",
+        "asus booth",
+        "booth 44"
+      ]
+    },
+    {
+      "id": "booth:45",
+      "name": "Hyphenate booth",
+      "kind": "booth",
+      "at": {
+        "x": -13.14,
+        "z": -4.36
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": [
+        "hyphenate",
+        "hyphenate booth",
+        "booth 45"
+      ]
+    },
+    {
+      "id": "booth:46",
+      "name": "MLH booth",
+      "kind": "booth",
+      "at": {
+        "x": 48.95,
+        "z": -10.09
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": [
+        "mlh",
+        "mlh booth",
+        "booth 46"
+      ]
+    },
+    {
+      "id": "booth:47",
+      "name": "Seeed booth",
+      "kind": "booth",
+      "at": {
+        "x": 13.48,
+        "z": -28.14
+      },
+      "zone": "mezz-north",
+      "floor": "mezz",
+      "aliases": [
+        "seeed",
+        "seeed booth",
+        "booth 47"
+      ]
+    },
+    {
+      "id": "amenity:stage",
+      "name": "Stage",
+      "kind": "amenity",
+      "at": {
+        "x": -87.83,
+        "z": -7.27
+      },
+      "zone": "stage",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "amenity:fountain",
+      "name": "Fountain",
+      "kind": "amenity",
+      "at": {
+        "x": 16.17,
+        "z": -29.79
+      },
+      "zone": "gate-3-4",
+      "floor": "main",
+      "aliases": [
+        "water station",
+        "water fountain",
+        "cups"
+      ]
+    },
+    {
+      "id": "amenity:food",
+      "name": "Food",
+      "kind": "amenity",
+      "at": {
+        "x": 66.55,
+        "z": 5.22
+      },
+      "zone": "food-court",
+      "floor": "main",
+      "aliases": [
+        "food line",
+        "meals"
+      ]
+    },
+    {
+      "id": "amenity:luggage-storage",
+      "name": "Luggage storage",
+      "kind": "amenity",
+      "at": {
+        "x": 81.75,
+        "z": 2.04
+      },
+      "zone": "east-lobby",
+      "floor": "main",
+      "aliases": [
+        "bag check",
+        "luggage"
+      ]
+    },
+    {
+      "id": "amenity:stanchion-queue",
+      "name": "Stanchion queue",
+      "kind": "amenity",
+      "at": {
+        "x": 88.63,
+        "z": 10.65
+      },
+      "zone": "east-lobby",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "amenity:hardware-merch",
+      "name": "Hardware + merch",
+      "kind": "amenity",
+      "at": {
+        "x": 36.02,
+        "z": -20.48
+      },
+      "zone": "mezz-north",
+      "floor": "mezz",
+      "aliases": [
+        "hardware",
+        "merch",
+        "swag"
+      ]
+    },
+    {
+      "id": "amenity:3d-printers",
+      "name": "3D printers",
+      "kind": "amenity",
+      "at": {
+        "x": 32.59,
+        "z": -18.44
+      },
+      "zone": "mezz-north",
+      "floor": "mezz",
+      "aliases": [
+        "3d printer",
+        "printers"
+      ]
+    },
+    {
+      "id": "amenity:shower-trailers-go-from-outside",
+      "name": "Shower Trailers (Go From Outside)",
+      "kind": "amenity",
+      "at": {
+        "x": 92.18,
+        "z": 0.69
+      },
+      "zone": "east-lobby",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "amenity:gate-6",
+      "name": "Gate #6",
+      "kind": "amenity",
+      "at": {
+        "x": 48.33,
+        "z": 13.5
+      },
+      "zone": "broadway-3",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "amenity:claudes-corner",
+      "name": "Claude's Corner",
+      "kind": "amenity",
+      "at": {
+        "x": 54.1,
+        "z": 22.87
+      },
+      "zone": "broadway-3",
+      "floor": "main",
+      "aliases": [
+        "claude corner",
+        "anthropic corner"
+      ]
+    },
+    {
+      "id": "room:west-storage",
+      "name": "West Storage",
+      "kind": "room",
+      "at": {
+        "x": -90.12,
+        "z": -25.65
+      },
+      "zone": "pavilion-south",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:green-rooms",
+      "name": "Green Rooms",
+      "kind": "room",
+      "at": {
+        "x": -92.03,
+        "z": -2.6
+      },
+      "zone": "stage",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:loading-office",
+      "name": "Loading Office",
+      "kind": "room",
+      "at": {
+        "x": -46.32,
+        "z": -40.32
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:catering",
+      "name": "Catering Prep",
+      "kind": "room",
+      "at": {
+        "x": -10.34,
+        "z": -40.73
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:restrooms-north",
+      "name": "North Restrooms",
+      "kind": "room",
+      "at": {
+        "x": 7.07,
+        "z": -38.79
+      },
+      "zone": "gate-3-4",
+      "floor": "main",
+      "aliases": [
+        "restrooms",
+        "bathroom"
+      ]
+    },
+    {
+      "id": "room:breakout-3-4",
+      "name": "Gate #3/#4 Breakout Room",
+      "kind": "room",
+      "at": {
+        "x": 11,
+        "z": -23.28
+      },
+      "zone": "gate-3-4",
+      "floor": "main",
+      "aliases": [
+        "gate 3",
+        "gate 4",
+        "gate three",
+        "gate four"
+      ]
+    },
+    {
+      "id": "room:venue-offices",
+      "name": "Venue Staff Office",
+      "kind": "room",
+      "at": {
+        "x": 40.33,
+        "z": -19.78
+      },
+      "zone": "broadway-2",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:breakout-5",
+      "name": "Breakout #5",
+      "kind": "room",
+      "at": {
+        "x": 63.81,
+        "z": -0.52
+      },
+      "zone": "food-court",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:east-room",
+      "name": "Luggage Room",
+      "kind": "room",
+      "at": {
+        "x": 79.08,
+        "z": 1.88
+      },
+      "zone": "east-lobby",
+      "floor": "main",
+      "aliases": [
+        "bag check"
+      ]
+    },
+    {
+      "id": "room:stair-43",
+      "name": "Stairs near Food",
+      "kind": "room",
+      "at": {
+        "x": 68.58,
+        "z": 10.59
+      },
+      "zone": "food-court",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:box-office",
+      "name": "Box Office",
+      "kind": "room",
+      "at": {
+        "x": 89.36,
+        "z": 25.97
+      },
+      "zone": "box-office",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:east-restroom",
+      "name": "East Restrooms",
+      "kind": "room",
+      "at": {
+        "x": 100.6,
+        "z": 27.13
+      },
+      "zone": "box-office",
+      "floor": "main",
+      "aliases": [
+        "restrooms",
+        "bathroom"
+      ]
+    },
+    {
+      "id": "room:theater",
+      "name": "Theater",
+      "kind": "room",
+      "at": {
+        "x": 71.04,
+        "z": 35.81
+      },
+      "zone": "theater",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:theater-annex",
+      "name": "Theater Restrooms",
+      "kind": "room",
+      "at": {
+        "x": 74.45,
+        "z": 45.62
+      },
+      "zone": "theater",
+      "floor": "main",
+      "aliases": [
+        "restrooms",
+        "bathroom"
+      ]
+    },
+    {
+      "id": "room:bleachers",
+      "name": "Bleachers",
+      "kind": "room",
+      "at": {
+        "x": -6.04,
+        "z": -23.49
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": [
+        "bleacher stairs"
+      ]
+    },
+    {
+      "id": "room:sw-lobby",
+      "name": "Southwest Lobby",
+      "kind": "room",
+      "at": {
+        "x": -83.78,
+        "z": 7.29
+      },
+      "zone": "stage",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "room:stair-m5",
+      "name": "Mezzanine Stairs (MLH)",
+      "kind": "room",
+      "at": {
+        "x": 50.03,
+        "z": -12.1
+      },
+      "zone": "mezz-tables",
+      "floor": "mezz",
+      "aliases": []
+    },
+    {
+      "id": "entrance:public-entrance",
+      "name": "Public Entrance",
+      "kind": "entrance",
+      "at": {
+        "x": -31.28,
+        "z": -3.5
+      },
+      "zone": "public-entrance",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "entrance:business-entrance",
+      "name": "Business Entrance",
+      "kind": "entrance",
+      "at": {
+        "x": 89.69,
+        "z": 37.1
+      },
+      "zone": "box-office",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "entrance:loading-doors-north",
+      "name": "Loading Doors North",
+      "kind": "entrance",
+      "at": {
+        "x": -34.56,
+        "z": -44.31
+      },
+      "zone": "north-hall",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "entrance:loading-doors-south",
+      "name": "Loading Doors South",
+      "kind": "entrance",
+      "at": {
+        "x": 43.45,
+        "z": 19.25
+      },
+      "zone": "broadway-3",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "area:pavilion",
+      "name": "Pavilion",
+      "kind": "area",
+      "at": {
+        "x": -67.2,
+        "z": -14.7
+      },
+      "zone": "pavilion-north",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "area:atrium",
+      "name": "Atrium",
+      "kind": "area",
+      "at": {
+        "x": -30.45,
+        "z": -21.52
+      },
+      "zone": "atrium-east",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "area:gate-3",
+      "name": "Gate #3",
+      "kind": "area",
+      "at": {
+        "x": 9.71,
+        "z": -25.37
+      },
+      "zone": "gate-3-4",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "area:gate-4",
+      "name": "Gate #4",
+      "kind": "area",
+      "at": {
+        "x": 8.75,
+        "z": -17.06
+      },
+      "zone": "gate-3-4",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "area:broadway-1",
+      "name": "Broadway #1",
+      "kind": "area",
+      "at": {
+        "x": 5.16,
+        "z": -7.79
+      },
+      "zone": "broadway-1",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "area:broadway-3",
+      "name": "Broadway #3",
+      "kind": "area",
+      "at": {
+        "x": 56.53,
+        "z": 14.7
+      },
+      "zone": "broadway-3",
+      "floor": "main",
+      "aliases": []
+    },
+    {
+      "id": "area:palace-games",
+      "name": "Palace Games",
+      "kind": "area",
+      "at": {
+        "x": 30.28,
+        "z": -29.66
+      },
+      "zone": "gate-3-4",
+      "floor": "main",
+      "aliases": []
+    }
+  ],
+  "staff": [
+    {
+      "name": "Maya Chen",
+      "role": "network",
+      "startZone": "atrium-east",
+      "status": "available"
+    },
+    {
+      "name": "Diego Ramirez",
+      "role": "network",
+      "startZone": "mezz-tables",
+      "status": "available"
+    },
+    {
+      "name": "Priya Patel",
+      "role": "facilities",
+      "startZone": "broadway-2",
+      "status": "available"
+    },
+    {
+      "name": "Jordan Kim",
+      "role": "facilities",
+      "startZone": "mezz-north",
+      "status": "available"
+    },
+    {
+      "name": "Sam Okafor",
+      "role": "facilities",
+      "startZone": "pavilion-north",
+      "status": "off_duty"
+    },
+    {
+      "name": "Lena Novak",
+      "role": "supplies",
+      "startZone": "north-hall",
+      "status": "available"
+    },
+    {
+      "name": "Theo Park",
+      "role": "guest_services",
+      "startZone": "east-lobby",
+      "status": "available"
+    },
+    {
+      "name": "Alex Morgan",
+      "role": "ops_lead",
+      "startZone": "public-entrance",
+      "status": "available"
+    }
+  ],
+  "knowledge": [
+    {
+      "id": "sleeping-area",
+      "title": "Sleeping Area",
+      "text": "The Sleeping Area opened Friday night at 11 PM in the area where the food was served. It is open floor space covered with a tarp. Bring your own sleeping bag and a yoga mat or air mattress. Annapurna Labs (Sleep Labs) handed out sleep masks.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "showers",
+      "title": "Showers",
+      "text": "The shower trailers are outside the venue on Palace Drive, behind the building. They reopened Saturday morning. On the map they are listed as Shower Trailers (Go From Outside).",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "merch",
+      "title": "Merch distribution",
+      "text": "Merch (t-shirts, tote bags, stickers, postcards) is handed out at the Annapurna (Sleep) Labs. Saturday distribution was 10 AM and 4 to 5:30 PM, no app reservation needed. Stickers and postcards are also at the Info Desk. Earlier merch pickup was at Gate 7, where the food was served.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "souvenir-shop",
+      "title": "Souvenir Shop",
+      "text": "The Souvenir Shop opened Saturday at 4:15 PM. Redeem points earned in Terminal Tasks for merch. Tap Check for Updates in the Cal Hacks app first so the correct screen shows.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "badge",
+      "title": "Badges",
+      "text": "You need your badge to get into the venue. Organizers are not handing out extra badges.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "meals",
+      "title": "Meals and food groups",
+      "text": "Meals are served by boarding group A, B, C, or D, shown in your digital wallet pass. Do not line up until your group is called. Saturday dinner started at 6 PM with order Group C at 6:00, Group B at 6:20, Group A at 6:40, Group D at 7:00. Vegetarian, vegan, and gluten-free options are available. Saturday lunch order was D, A, B, C. Breakfast was bagels and hard boiled eggs. Seconds are announced in Slack.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "midnight-snack",
+      "title": "Midnight snack",
+      "text": "Friday midnight snack was onigiri, served by group at Gate 6.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "wifi-policy",
+      "title": "Wi-Fi policy",
+      "text": "Personal hotspots, routers, and any broadcasting equipment are prohibited in the venue, and organizers can detect them. Do not unplug any access points, switches, or network gear. If there are not enough outlets, use another table. Unplugging network gear is a Code of Conduct violation and can get you removed.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "wifi-tips",
+      "title": "Wi-Fi tips",
+      "text": "Wi-Fi 6 works much better than Wi-Fi 5. The only area that supports 2.4 GHz is the Mezzanine.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "ethernet",
+      "title": "Wired ethernet",
+      "text": "There is a hardline switch every 3 tables. Ethernet cables and patch cables can be checked out from the Airline Adventures and Hardware Checkout window on the Mezzanine. Request one in the Cal Hacks app first and you get moved to the front of the queue. You need your own Ethernet to USB-C adapter if your device has no Ethernet port.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "hardware-checkout",
+      "title": "Hardware checkout",
+      "text": "Hardware checkout is on the Mezzanine. Order in the Cal Hacks app or at hive.hackberkeley.org/hardware. Do not line up around the checkout area unless you have an order submitted. ASUS Ascent GX10 units are at the ASUS table on the second floor (mezzanine), first come first served.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "mentors",
+      "title": "Mentor queue",
+      "text": "Join the mentor queue at hive.hackberkeley.org/mentorship-queue. Mentors cover frontend, backend, API integration, agentic tooling, ideation, and pitching. In person, find the Mentor Tables.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "info-desk",
+      "title": "Info desk and check-in",
+      "text": "The Info Desk and Cal Hacks sign-in are near the top of the stairs. Lost items and general questions go to the Info Desk or the concierge desk. Box Office is the check-in area.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "lost-found",
+      "title": "Lost and found",
+      "text": "Return found items to the concierge desk. For lost items, ask at the Info Desk or the concierge desk.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "workshops-sat",
+      "title": "Saturday workshops",
+      "text": "Saturday workshops: Microsoft at 10 AM in the Theater (System Design for Deployed Agents); Bright Data at 10 AM in Gate 4; Moss at about 10 AM in Gate 4; Apify at 11 AM in Gate 3; Creao at about 11 AM at Gate 4; Capital One Smash tournament at noon (Gate 4); Anthropic workshop at about 1 PM in the Theater (Claude's Corner); Bitdeer AI workshop 1 to 2 PM at Gate 4, Breakout Room 4; Meta workshop 2 to 3 PM at Gate 4; Fetch.ai workshop 3 to 4 PM at Gate 4; SpacetimeDB workshop around 4 PM in the Theater. Times may have shifted.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "scrabblebot",
+      "title": "Scrabblebot tournament",
+      "text": "The SpacetimeDB Scrabblebot Tournament is Saturday at 11:59 PM (midnight) in the Theater. Sign up your bot at scrabblebot.spacetimedb.com.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "activities",
+      "title": "Fun activities",
+      "text": "Face painting was scheduled in Gate 3 Saturday evening, pushed back an hour. Caricatures were moved back an hour with the location to be announced. Paper airplane making happened at the top of the stairs near the Cal Hacks sign-in. Candy corn and MLH merch are at the MLH table.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "meta",
+      "title": "Meta",
+      "text": "Meta was on site until 5 PM Saturday for questions about tracks, recruiting, and engineering. Top submissions in the Meta track advance to Round 2 at Meta in Menlo Park with travel paid.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "restrooms",
+      "title": "Restrooms",
+      "text": "Restrooms: North Restrooms, East Restrooms, and Theater Restrooms on the main floor. Please put all trash in the toilet, not on the floor, in the restrooms.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "catering",
+      "title": "Catering",
+      "text": "Catering prep is in the North Hall. Food is served in the Food area, with the Food and Breakout 5 area nearby.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "luggage",
+      "title": "Luggage",
+      "text": "Luggage storage and the Luggage Room are by the East Lobby (Luggage and Queue).",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "submissions",
+      "title": "Devpost submissions",
+      "text": "Submit on Devpost and join the Cal Hacks 13.0 Devpost first. You can opt in to multiple prize categories at submission. The deadline has not been confirmed in the sources used here, so ask the Info Desk.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "emergency",
+      "title": "Emergencies",
+      "text": "For injuries, medical problems, fire, smoke, or anyone feeling unsafe, tell the nearest staff member and call 911 if life is in danger. The PeopleOS line alerts a human operator for these.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    },
+    {
+      "id": "poker",
+      "title": "Poker prize",
+      "text": "AirPods Pro 3 meant as a poker tournament prize went missing. If you have an unexplained box, return it to the concierge desk, no questions asked.",
+      "asOf": "2026-10-24T19:08-07:00",
+      "source": "Cal Hacks Slack #0-announcements"
+    }
+  ],
+  "escalation": {
+    "contacts": [
+      {
+        "role": "ops_lead"
+      }
+    ]
+  },
+  "geometry": {
+    "detailed": "palace-of-fine-arts",
+    "source": "https://palace-interior.vercel.app (organizers' map), extracted to data/palace-venue.json",
+    "notes": "Zone shapes are padded bounding boxes of each zone's places; the real room polygons, tables, chairs and stairs come from the built-in detailed model."
+  }
+}

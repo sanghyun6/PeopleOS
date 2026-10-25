@@ -5,25 +5,13 @@ import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import type { Id, TableNames } from "./_generated/dataModel";
 import { EDGES, ZONES, buildLocations, edgeGeometry } from "./lib/zoning";
-import type { StaffRole, StaffStatus } from "./lib/validators";
+import { SEED_STAFF } from "./lib/seedStaff";
 
-// Fake names. Positions are chosen for the demo script in CLAUDE.md:
-// Table 142 -> Priya (Broadway #2) wins via Broadway #1; once Broadway #1 is
-// blocked, Jordan (mezzanine, via the bleacher stairs) becomes closer.
-// Sam is off duty to show the availability filter.
-const STAFF: { name: string; role: StaffRole; zone: string; status?: StaffStatus }[] = [
-  { name: "Maya Chen", role: "network", zone: "atrium-east" },
-  { name: "Diego Ramirez", role: "network", zone: "mezz-tables" },
-  { name: "Priya Patel", role: "facilities", zone: "broadway-2" },
-  { name: "Jordan Kim", role: "facilities", zone: "mezz-north" },
-  { name: "Sam Okafor", role: "facilities", zone: "pavilion-north", status: "off_duty" },
-  { name: "Lena Novak", role: "supplies", zone: "north-hall" },
-  { name: "Theo Park", role: "guest_services", zone: "east-lobby" },
-  { name: "Alex Morgan", role: "ops_lead", zone: "public-entrance" },
-];
+const STAFF = SEED_STAFF;
 
 // Children before parents so references never dangle mid-reset.
-const ALL_TABLES: TableNames[] = ["assignments", "incidents", "staff", "locations", "edges", "zones"];
+// venueMeta too: a reseed returns the deployment to the built-in Cal Hacks venue.
+const ALL_TABLES: TableNames[] = ["assignments", "incidents", "staff", "locations", "edges", "zones", "venueMeta"];
 
 export const seedAll = internalMutation({
   args: { reset: v.optional(v.boolean()) },

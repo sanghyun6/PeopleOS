@@ -103,3 +103,24 @@ export const CATEGORY_ROLE: Record<IncidentCategory, StaffRole> = {
   safety: "ops_lead",
   other: "ops_lead",
 };
+
+/** venueMeta row: a loaded Venue Pack's metadata (lib/venuePack.ts VenueMeta). Absent = built-in Cal Hacks venue. */
+export const venueMetaFields = {
+  eventName: v.string(),
+  venueName: v.string(),
+  city: v.optional(v.string()),
+  timezone: v.string(),
+  helpDeskKey: v.optional(v.string()),
+  keyterms: v.array(v.string()),
+  floors: v.array(v.object({ level, id: v.string(), name: v.string(), elevation: v.number() })),
+  outline: v.array(point),
+  zoneShapes: v.array(
+    v.object({ key: v.string(), level, polygon: v.array(point), height: v.number(), kind: v.string() }),
+  ),
+  knowledge: v.array(
+    v.object({ id: v.string(), title: v.string(), text: v.string(), asOf: v.optional(v.string()), source: v.optional(v.string()) }),
+  ),
+  escalation: v.array(v.object({ role: v.optional(staffRole), name: v.optional(v.string()), phone: v.optional(v.string()) })),
+  operatorPasscode: v.optional(v.string()),
+  detailedGeometry: v.optional(v.string()),
+};

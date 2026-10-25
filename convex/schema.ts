@@ -12,6 +12,7 @@ import {
   priority,
   staffRole,
   staffStatus,
+  venueMetaFields,
 } from "./lib/validators";
 
 export default defineSchema({
@@ -105,6 +106,10 @@ export default defineSchema({
     .index("by_incident", ["incidentId"])
     .index("by_status", ["status"])
     .index("by_staff_status", ["staffId", "status"]),
+
+  // At most one row: the Venue Pack loaded by scripts/venue-load.ts (venuePack.ts).
+  // No row means the built-in Cal Hacks venue (seed.ts), drawn with the detailed 3D model.
+  venueMeta: defineTable({ ...venueMetaFields, loadedAt: v.number() }),
 
   // One row per venue_search call: how long retrieval took and which path answered.
   retrievals: defineTable({
