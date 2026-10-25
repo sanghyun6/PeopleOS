@@ -16,12 +16,34 @@ npx tsx agent/export.ts            # default site: https://resolute-horse-290.co
 
 1. Pick a shared secret and set it on Convex: `npx convex env set CARTESIA_TOOL_SECRET <secret>`.
    If it is unset, the webhooks accept any request.
-2. Register the four webhook tools (Playground "Tools", or the API with
+2. Register the five webhook tools (Playground "Tools", or the API with
    `Authorization: Bearer $CARTESIA_API_KEY` and a `Cartesia-Version` header),
    replacing `<CARTESIA_TOOL_SECRET>` with the secret. Attach their ids in `config.tools`.
 3. Paste `system-prompt.md` into the agent's instructions. Model: a Claude model from
    `GET /v1/agents/models`.
 4. Enable the `end_call` system tool.
+
+## Event questions: `venue_search` (Moss)
+
+Schedule/FAQ/policy facts do not fit in the prompt and change during the event, so the
+agent calls `venue_search` (POST `/cartesia/venue_search`, body `{ query, call_id }`). It
+queries the Moss cloud index `calhacks-venue` (top 3, hybrid search) and answers
+`{ ok, outcome, message, latencyMs }`; outcome is `found`, `no_match`, or `fallback`
+(Moss failed or took over 2 s, so a keyword match over `event-kb.json` answered). Every
+call's latency is logged in the `retrievals` table and shown on `/ops`.
+
+- `event-kb.json`: event facts (id, title, text, asOf). Edit it, then refresh the index.
+- Index: one document per fact plus one per area line of `venue-guide.md`.
+
+```bash
+npx tsx scripts/moss-index.ts   # creates the index, or upserts in place and drops removed ids
+```
+
+Credentials: `MOSS_PROJECT_ID` and `MOSS_PROJECT_KEY` in `.env.local` for the script, and on the
+deployment with `npx convex env set MOSS_PROJECT_ID <id>` / `npx convex env set MOSS_PROJECT_KEY <key>`.
+`convex.json` marks `@moss-js/moss` as an external (native) package. The first call in a fresh
+Convex container loads the index (about 7 s locally), so it falls back to keywords while
+the load finishes in the background; warm queries take a few ms.
 
 ## Webhook contract
 

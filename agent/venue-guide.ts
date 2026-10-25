@@ -39,6 +39,6 @@ export function buildVenueGuide(eventFacts: string): string {
 Event facts (edited by organizers):
 ${eventFacts.trim()}
 
-Not in this guide, so answer that you are not sure: wifi names and passwords, food and meal times, the schedule, parking, shower hours, exact opening hours, anything about places that are not named above.
+Not in this guide, so call venue_search instead of guessing: wifi rules, food and meal times, the schedule, workshops, shower hours, merch, mentors, hardware checkout. Parking, and anything about places that are not named above: say you are not sure.
 `;
 }

@@ -147,6 +147,41 @@
   },
   {
     "type": "webhook",
+    "name": "venue_search",
+    "description": "Look up event information: schedules, food and meal times, wifi rules, workshops, merch, showers, sleeping, hardware checkout, mentors, and any other question about the event that is not a location lookup or directions. Returns a message with the facts to tell the caller in your own words.",
+    "pre_tool_speech": "auto",
+    "execution_mode": "immediate",
+    "response_timeout_secs": 15,
+    "api_schema": {
+      "url": "https://resolute-horse-290.convex.site/cartesia/venue_search",
+      "method": "POST",
+      "request_body_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The caller's question in a short phrase, e.g. \"when is lunch\", \"where do I check out hardware\"."
+          },
+          "call_id": {
+            "type": "string",
+            "dynamic_variable": "system__conversation_id"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "authentication": {
+        "mode": "bearer",
+        "token": {
+          "type": "secret",
+          "secret_value": "<CARTESIA_TOOL_SECRET>"
+        }
+      }
+    }
+  },
+  {
+    "type": "webhook",
     "name": "escalate_to_human",
     "description": "Immediately hand off to a human operator. Use for any injury, medical, fire, smoke, or safety report (no location confirmation needed), when the caller asks for a person, or when the location cannot be pinned down.",
     "pre_tool_speech": "auto",

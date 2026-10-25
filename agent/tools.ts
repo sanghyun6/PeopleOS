@@ -70,6 +70,18 @@ export const TOOLS: ToolDefinition[] = [
     },
   },
   {
+    name: "venue_search",
+    description:
+      "Look up event information: schedules, food and meal times, wifi rules, workshops, merch, showers, sleeping, hardware checkout, mentors, and any other question about the event that is not a location lookup or directions. Returns a message with the facts to tell the caller in your own words.",
+    parameters: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "The caller's question in a short phrase, e.g. \"when is lunch\", \"where do I check out hardware\"." },
+      },
+      required: ["query"],
+    },
+  },
+  {
     name: "escalate_to_human",
     description:
       "Immediately hand off to a human operator. Use for any injury, medical, fire, smoke, or safety report (no location confirmation needed), when the caller asks for a person, or when the location cannot be pinned down.",
