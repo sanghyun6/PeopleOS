@@ -2,11 +2,11 @@
 
 import type { ReactNode } from "react";
 import { formatDuration } from "@/components/ui/format";
-import { useStats } from "@/components/ui/hooks";
+import { useRetrievalStats, useStats } from "@/components/ui/hooks";
 
-function Card({ title, value, accent }: { title: string; value: string; accent?: boolean }) {
+function Card({ title, value, accent, hint }: { title: string; value: string; accent?: boolean; hint?: string }) {
   return (
-    <div className="min-w-28 rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-1.5">
+    <div title={hint} className="min-w-28 rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-1.5">
       <div className="text-[11px] uppercase tracking-wide text-neutral-500">{title}</div>
       <div className={`text-lg font-semibold tabular-nums ${accent ? "text-yellow-400" : ""}`}>{value}</div>
     </div>
@@ -16,6 +16,7 @@ function Card({ title, value, accent }: { title: string; value: string; accent?:
 /** Top bar: open incidents, avg time-to-acknowledge (incidents.stats, step 7). */
 export function MetricsBar({ zoneCount, edgeCount, children }: { zoneCount?: number; edgeCount?: number; children?: ReactNode }) {
   const stats = useStats();
+  const retrieval = useRetrievalStats();
   return (
     <header className="flex flex-wrap items-center gap-4 border-b border-neutral-800 px-4 py-2 text-sm">
       <div>
@@ -30,6 +31,15 @@ export function MetricsBar({ zoneCount, edgeCount, children }: { zoneCount?: num
         <Card title="Resolved" value={stats ? String(stats.resolved) : "…"} />
         <Card title="Avg time-to-ack" value={stats ? formatDuration(stats.avgAckMs) : "…"} accent />
         <Card title="Avg time-to-resolve" value={stats ? formatDuration(stats.avgResolveMs) : "…"} />
+        <Card
+          title="Avg retrieval (Moss)"
+          value={retrieval ? (retrieval.avgMs === null ? "–" : `${retrieval.avgMs} ms`) : "…"}
+          hint={
+            retrieval && retrieval.count > 0
+              ? `${retrieval.count} lookups, warm avg ${retrieval.avgWarmMs ?? "–"} ms, ${retrieval.fallbacks} fallbacks`
+              : undefined
+          }
+        />
       </div>
     </header>
   );
