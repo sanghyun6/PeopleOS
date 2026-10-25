@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
-import { useQuery } from "convex/react";
+import { useConvex, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Avatar, RoleChip } from "@/components/ui/badges";
 import { Brand } from "@/components/ui/Brand";
@@ -23,6 +24,7 @@ function WhoAreYouPage() {
   const router = useRouter();
   const expired = useSearchParams().get("expired") === "1";
   const staff = useQuery(api.staff.list);
+  const convex = useConvex();
   const saved = useSavedIdentity();
   const [askPasscode, setAskPasscode] = useState(false);
   const [passcode, setPasscode] = useState("");
@@ -42,9 +44,11 @@ function WhoAreYouPage() {
     router.push(`/staff/${id}`);
   };
 
-  const submitPasscode = (e: React.FormEvent) => {
+  const submitPasscode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode !== OPS_PASSCODE) return setWrong(true);
+    // A loaded Venue Pack may set its own passcode (null: none set, or a deployment without venuePack).
+    const packAnswer = await convex.query(api.venuePack.checkPasscode, { passcode }).catch(() => null);
+    if (!(packAnswer ?? passcode === OPS_PASSCODE)) return setWrong(true);
     saveIdentity({ kind: "ops" });
     router.push("/ops");
   };
@@ -134,6 +138,12 @@ function WhoAreYouPage() {
           <ChevronIcon size={16} className="text-faint transition group-hover:translate-x-0.5 group-hover:text-fg" />
         </button>
       )}
+
+      <p className="mt-10 text-center text-sm">
+        <Link href="/onboard" className="text-muted transition hover:text-fg">
+          Bring your own venue →
+        </Link>
+      </p>
     </main>
   );
 }
