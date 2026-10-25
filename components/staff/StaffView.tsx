@@ -1,19 +1,31 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { Id } from "@/convex/_generated/dataModel";
 import { label } from "@/components/ui/format";
 import { SwitchUser } from "@/components/ui/SwitchUser";
+import { EXPIRED_PATH, clearIdentity } from "@/components/ui/identity";
 import { useStaff, useStaffAssignments } from "@/components/ui/hooks";
 import { AssignmentCard } from "./AssignmentCard";
 import { useAssignmentAlert } from "./useAssignmentAlert";
 
 /** One staff member's phone screen. `embedded` fills its parent (phone frames) instead of the page. */
 export function StaffView({ staffId, embedded = false }: { staffId: Id<"staff">; embedded?: boolean }) {
+  const router = useRouter();
   const staff = useStaff(staffId);
   const { assignments, actions } = useStaffAssignments(staffId);
 
   const latestOffered = assignments?.filter((a) => a.assignment.status === "offered").at(-1);
   useAssignmentAlert(assignments === undefined ? undefined : (latestOffered?.assignment._id ?? null));
+
+  // The id no longer exists (e.g. after a reseed): forget it and let them pick again.
+  const missing = staff === null;
+  useEffect(() => {
+    if (!missing || embedded) return;
+    clearIdentity();
+    router.replace(EXPIRED_PATH);
+  }, [missing, embedded, router]);
 
   if (staff === undefined) return <main className="p-6 text-neutral-400">Loading…</main>;
   if (staff === null) return <main className="p-6 text-neutral-400">Unknown staff member.</main>;
