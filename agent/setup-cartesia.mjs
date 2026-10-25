@@ -1,6 +1,9 @@
 // One-shot Cartesia setup: webhook tools -> agent (Claude + system prompt) -> phone number.
 // Usage: CARTESIA_API_KEY=... CARTESIA_TOOL_SECRET=... node agent/setup-cartesia.mjs
 // Never commit the API key. It is only read from the environment.
+// Other venues (scripts/venue-load.ts) override: AGENT_NAME, AGENT_DESCRIPTION,
+// INITIAL_MESSAGE, KEYTERMS (comma list), PROMPT_FILE, TOOLS_FILE, and SKIP_PHONE=1,
+// which leaves every phone number alone (step 5 would otherwise re-point an existing number).
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +12,10 @@ const dir = dirname(fileURLToPath(import.meta.url));
 const KEY = process.env.CARTESIA_API_KEY;
 const SECRET = process.env.CARTESIA_TOOL_SECRET;
 const PHONE_LABEL = process.env.PHONE_LABEL || "PeopleOS";
+const AGENT_NAME = process.env.AGENT_NAME || "PeopleOS";
+const PROMPT_FILE = process.env.PROMPT_FILE || join(dir, "system-prompt.md");
+const TOOLS_FILE = process.env.TOOLS_FILE || join(dir, "cartesia-tools.json");
+const SKIP_PHONE = process.env.SKIP_PHONE === "1";
 if (!KEY || !SECRET) {
   console.error("Set CARTESIA_API_KEY and CARTESIA_TOOL_SECRET first.");
   process.exit(1);
@@ -60,7 +67,7 @@ for (const id of (process.env.OLD_TOOL_IDS || "").split(",").filter(Boolean)) {
   try { await api("DELETE", `/v1/agents/tools/${id}`); console.log("deleted old tool", id); }
   catch (e) { console.log("could not delete", id, "-", e.message); }
 }
-const toolDefs = JSON.parse(readFileSync(join(dir, "cartesia-tools.json"), "utf8"));
+const toolDefs = JSON.parse(readFileSync(TOOLS_FILE, "utf8"));
 const toolIds = [];
 for (const def of toolDefs) {
   const body = JSON.parse(JSON.stringify(def).replaceAll("<CARTESIA_TOOL_SECRET>", SECRET));
@@ -71,15 +78,15 @@ for (const def of toolDefs) {
 
 // 4. Agent
 const agent = await api("POST", "/v1/agents", {
-  name: "PeopleOS",
-  description: "Cal Hacks 13.0 venue help line",
+  name: AGENT_NAME,
+  description: process.env.AGENT_DESCRIPTION || "Cal Hacks 13.0 venue help line",
   config: {
-    instructions: readFileSync(join(dir, "system-prompt.md"), "utf8"),
-    initial_message: "Hi, this is the Cal Hacks venue help line. What's the problem?",
+    instructions: readFileSync(PROMPT_FILE, "utf8"),
+    initial_message: process.env.INITIAL_MESSAGE || "Hi, this is the Cal Hacks venue help line. What's the problem?",
     language: { primary: "en" },
     model: { id: pick, fallback_strategy: { type: "auto" }, max_output_tokens: 512 },
     audio: {
-      input: { keyterms: ["mezzanine", "Broadway", "atrium", "Cal Hacks"], noise_suppression: "auto" },
+      input: { keyterms: process.env.KEYTERMS ? process.env.KEYTERMS.split(",").filter(Boolean) : ["mezzanine", "Broadway", "atrium", "Cal Hacks"], noise_suppression: "auto" },
       output: { voice_id: voiceId },
     },
     tools: toolIds.map((id) => ({ id })),
@@ -88,6 +95,10 @@ const agent = await api("POST", "/v1/agents", {
   },
 });
 console.log("agent ->", agent.id);
+if (SKIP_PHONE) {
+  console.log("SKIP_PHONE=1: no phone number was provisioned or re-pointed. Connect one by hand (see README).");
+  process.exit(0);
+}
 
 // 5. Phone number: reuse an existing one, else provision.
 let numbers = [];

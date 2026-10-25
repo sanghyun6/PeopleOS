@@ -1,0 +1,782 @@
+{
+  "format": "peopleos.venue-pack",
+  "version": 1,
+  "event": {
+    "name": "Harbor Builders Summit",
+    "venueName": "Harborview Convention Center",
+    "city": "Oakland",
+    "timezone": "America/Los_Angeles",
+    "startsAt": "2026-11-14T09:00:00-08:00",
+    "endsAt": "2026-11-14T18:00:00-08:00",
+    "helpDesk": "amenity:registration-desk",
+    "keyterms": [
+      "Harborview",
+      "expo hall",
+      "upper foyer",
+      "workshop room"
+    ]
+  },
+  "floors": [
+    {
+      "id": "ground",
+      "name": "Ground floor",
+      "elevation": 0
+    },
+    {
+      "id": "upper",
+      "name": "Upper level",
+      "elevation": 6
+    }
+  ],
+  "zones": [
+    {
+      "id": "lobby",
+      "name": "Main Lobby",
+      "floor": "ground",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 0,
+          "z": 15
+        },
+        "width": 24,
+        "depth": 10
+      },
+      "height": 4,
+      "kind": "entrance",
+      "aliases": [
+        "lobby",
+        "entrance",
+        "front"
+      ]
+    },
+    {
+      "id": "expo-hall",
+      "name": "Expo Hall",
+      "floor": "ground",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 0,
+          "z": -5
+        },
+        "width": 40,
+        "depth": 24
+      },
+      "height": 5,
+      "kind": "hall",
+      "aliases": [
+        "expo",
+        "main hall",
+        "tables"
+      ]
+    },
+    {
+      "id": "cafe",
+      "name": "Harbor Cafe",
+      "floor": "ground",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 28,
+          "z": 10
+        },
+        "width": 14,
+        "depth": 14
+      },
+      "height": 3.5,
+      "kind": "room",
+      "aliases": [
+        "cafe",
+        "coffee"
+      ]
+    },
+    {
+      "id": "east-stairs",
+      "name": "East Stairwell",
+      "floor": "ground",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 28,
+          "z": -8
+        },
+        "width": 8,
+        "depth": 10
+      },
+      "height": 3,
+      "kind": "stairs",
+      "aliases": [
+        "east stairs",
+        "back stairs"
+      ]
+    },
+    {
+      "id": "upper-foyer",
+      "name": "Upper Foyer",
+      "floor": "upper",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 2,
+          "z": 8
+        },
+        "width": 40,
+        "depth": 10
+      },
+      "height": 3.5,
+      "kind": "corridor",
+      "aliases": [
+        "foyer",
+        "upstairs",
+        "upper level"
+      ]
+    },
+    {
+      "id": "workshop-a",
+      "name": "Workshop Room A",
+      "floor": "upper",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": -10,
+          "z": -8
+        },
+        "width": 20,
+        "depth": 16
+      },
+      "height": 3.5,
+      "kind": "room",
+      "aliases": [
+        "room a",
+        "workshop a"
+      ]
+    },
+    {
+      "id": "workshop-b",
+      "name": "Workshop Room B",
+      "floor": "upper",
+      "shape": {
+        "type": "rect",
+        "center": {
+          "x": 12,
+          "z": -8
+        },
+        "width": 18,
+        "depth": 16
+      },
+      "height": 3.5,
+      "kind": "room",
+      "aliases": [
+        "room b",
+        "workshop b"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "lobby",
+      "to": "expo-hall",
+      "kind": "walk"
+    },
+    {
+      "from": "lobby",
+      "to": "cafe",
+      "kind": "walk"
+    },
+    {
+      "from": "expo-hall",
+      "to": "east-stairs",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 22,
+          "z": -6
+        }
+      ]
+    },
+    {
+      "from": "cafe",
+      "to": "east-stairs",
+      "kind": "walk"
+    },
+    {
+      "from": "lobby",
+      "to": "upper-foyer",
+      "kind": "stairs",
+      "via": [
+        {
+          "x": -8,
+          "z": 13
+        },
+        {
+          "x": -8,
+          "z": 9
+        }
+      ]
+    },
+    {
+      "from": "east-stairs",
+      "to": "upper-foyer",
+      "kind": "stairs",
+      "via": [
+        {
+          "x": 28,
+          "z": 2
+        },
+        {
+          "x": 22,
+          "z": 8
+        }
+      ]
+    },
+    {
+      "from": "upper-foyer",
+      "to": "workshop-a",
+      "kind": "walk",
+      "via": [
+        {
+          "x": -10,
+          "z": 2
+        }
+      ]
+    },
+    {
+      "from": "upper-foyer",
+      "to": "workshop-b",
+      "kind": "walk",
+      "via": [
+        {
+          "x": 12,
+          "z": 2
+        }
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "id": "table:1",
+      "name": "Table 1",
+      "kind": "table",
+      "at": {
+        "x": -15,
+        "z": -14
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 1"
+      ]
+    },
+    {
+      "id": "table:2",
+      "name": "Table 2",
+      "kind": "table",
+      "at": {
+        "x": -9,
+        "z": -14
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 2"
+      ]
+    },
+    {
+      "id": "table:3",
+      "name": "Table 3",
+      "kind": "table",
+      "at": {
+        "x": -3,
+        "z": -14
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 3"
+      ]
+    },
+    {
+      "id": "table:4",
+      "name": "Table 4",
+      "kind": "table",
+      "at": {
+        "x": 3,
+        "z": -14
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 4"
+      ]
+    },
+    {
+      "id": "table:5",
+      "name": "Table 5",
+      "kind": "table",
+      "at": {
+        "x": 9,
+        "z": -14
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 5"
+      ]
+    },
+    {
+      "id": "table:6",
+      "name": "Table 6",
+      "kind": "table",
+      "at": {
+        "x": 15,
+        "z": -14
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 6"
+      ]
+    },
+    {
+      "id": "table:7",
+      "name": "Table 7",
+      "kind": "table",
+      "at": {
+        "x": -15,
+        "z": -9
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 7"
+      ]
+    },
+    {
+      "id": "table:8",
+      "name": "Table 8",
+      "kind": "table",
+      "at": {
+        "x": -9,
+        "z": -9
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 8"
+      ]
+    },
+    {
+      "id": "table:9",
+      "name": "Table 9",
+      "kind": "table",
+      "at": {
+        "x": -3,
+        "z": -9
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 9"
+      ]
+    },
+    {
+      "id": "table:10",
+      "name": "Table 10",
+      "kind": "table",
+      "at": {
+        "x": 3,
+        "z": -9
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 10"
+      ]
+    },
+    {
+      "id": "table:11",
+      "name": "Table 11",
+      "kind": "table",
+      "at": {
+        "x": 9,
+        "z": -9
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 11"
+      ]
+    },
+    {
+      "id": "table:12",
+      "name": "Table 12",
+      "kind": "table",
+      "at": {
+        "x": 15,
+        "z": -9
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 12"
+      ]
+    },
+    {
+      "id": "table:13",
+      "name": "Table 13",
+      "kind": "table",
+      "at": {
+        "x": -15,
+        "z": -4
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 13"
+      ]
+    },
+    {
+      "id": "table:14",
+      "name": "Table 14",
+      "kind": "table",
+      "at": {
+        "x": -9,
+        "z": -4
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 14"
+      ]
+    },
+    {
+      "id": "table:15",
+      "name": "Table 15",
+      "kind": "table",
+      "at": {
+        "x": -3,
+        "z": -4
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 15"
+      ]
+    },
+    {
+      "id": "table:16",
+      "name": "Table 16",
+      "kind": "table",
+      "at": {
+        "x": 3,
+        "z": -4
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 16"
+      ]
+    },
+    {
+      "id": "table:17",
+      "name": "Table 17",
+      "kind": "table",
+      "at": {
+        "x": 9,
+        "z": -4
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 17"
+      ]
+    },
+    {
+      "id": "table:18",
+      "name": "Table 18",
+      "kind": "table",
+      "at": {
+        "x": 15,
+        "z": -4
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 18"
+      ]
+    },
+    {
+      "id": "table:19",
+      "name": "Table 19",
+      "kind": "table",
+      "at": {
+        "x": -15,
+        "z": 1
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 19"
+      ]
+    },
+    {
+      "id": "table:20",
+      "name": "Table 20",
+      "kind": "table",
+      "at": {
+        "x": -9,
+        "z": 1
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 20"
+      ]
+    },
+    {
+      "id": "table:21",
+      "name": "Table 21",
+      "kind": "table",
+      "at": {
+        "x": -3,
+        "z": 1
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 21"
+      ]
+    },
+    {
+      "id": "table:22",
+      "name": "Table 22",
+      "kind": "table",
+      "at": {
+        "x": 3,
+        "z": 1
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 22"
+      ]
+    },
+    {
+      "id": "table:23",
+      "name": "Table 23",
+      "kind": "table",
+      "at": {
+        "x": 9,
+        "z": 1
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 23"
+      ]
+    },
+    {
+      "id": "table:24",
+      "name": "Table 24",
+      "kind": "table",
+      "at": {
+        "x": 15,
+        "z": 1
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "table 24"
+      ]
+    },
+    {
+      "id": "booth:acme-robotics",
+      "name": "Acme Robotics booth",
+      "kind": "booth",
+      "at": {
+        "x": -17,
+        "z": 5
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "acme",
+        "acme robotics"
+      ]
+    },
+    {
+      "id": "booth:northwind-cloud",
+      "name": "Northwind Cloud booth",
+      "kind": "booth",
+      "at": {
+        "x": 17,
+        "z": 5
+      },
+      "zone": "expo-hall",
+      "aliases": [
+        "northwind",
+        "northwind cloud"
+      ]
+    },
+    {
+      "id": "amenity:registration-desk",
+      "name": "Registration Desk",
+      "kind": "amenity",
+      "at": {
+        "x": 6,
+        "z": 17
+      },
+      "zone": "lobby",
+      "aliases": [
+        "registration",
+        "check-in",
+        "info desk",
+        "help desk"
+      ]
+    },
+    {
+      "id": "amenity:water-station",
+      "name": "Water Station",
+      "kind": "amenity",
+      "at": {
+        "x": -8,
+        "z": 17
+      },
+      "zone": "lobby",
+      "aliases": [
+        "water",
+        "water fountain",
+        "cups"
+      ]
+    },
+    {
+      "id": "amenity:coffee-bar",
+      "name": "Coffee Bar",
+      "kind": "amenity",
+      "at": {
+        "x": 30,
+        "z": 12
+      },
+      "zone": "cafe",
+      "aliases": [
+        "coffee",
+        "espresso"
+      ]
+    },
+    {
+      "id": "room:ground-restrooms",
+      "name": "Ground Floor Restrooms",
+      "kind": "room",
+      "at": {
+        "x": 32,
+        "z": 4
+      },
+      "zone": "cafe",
+      "aliases": [
+        "restrooms",
+        "bathroom"
+      ]
+    },
+    {
+      "id": "room:upper-restrooms",
+      "name": "Upper Level Restrooms",
+      "kind": "room",
+      "at": {
+        "x": 19,
+        "z": 9
+      },
+      "zone": "upper-foyer",
+      "aliases": [
+        "upstairs restrooms",
+        "upstairs bathroom"
+      ]
+    },
+    {
+      "id": "room:quiet-room",
+      "name": "Quiet Room",
+      "kind": "room",
+      "at": {
+        "x": -16,
+        "z": 9
+      },
+      "zone": "upper-foyer",
+      "aliases": [
+        "prayer room",
+        "nursing room"
+      ]
+    },
+    {
+      "id": "entrance:front-doors",
+      "name": "Front Doors",
+      "kind": "entrance",
+      "at": {
+        "x": 0,
+        "z": 20
+      },
+      "zone": "lobby",
+      "aliases": [
+        "main doors"
+      ]
+    },
+    {
+      "id": "entrance:loading-dock",
+      "name": "Loading Dock",
+      "kind": "entrance",
+      "at": {
+        "x": 32,
+        "z": -12
+      },
+      "zone": "east-stairs",
+      "aliases": [
+        "dock",
+        "service entrance"
+      ]
+    }
+  ],
+  "staff": [
+    {
+      "name": "Rosa Delgado",
+      "role": "facilities",
+      "startZone": "expo-hall",
+      "status": "available"
+    },
+    {
+      "name": "Kenji Watanabe",
+      "role": "facilities",
+      "startZone": "upper-foyer",
+      "status": "available"
+    },
+    {
+      "name": "Amara Okoye",
+      "role": "network",
+      "startZone": "workshop-b",
+      "status": "available"
+    },
+    {
+      "name": "Ben Carter",
+      "role": "ops_lead",
+      "startZone": "lobby",
+      "status": "available"
+    }
+  ],
+  "knowledge": [
+    {
+      "id": "wifi",
+      "title": "Wi-Fi",
+      "text": "The Wi-Fi network is HarborGuest. The password is printed on the back of your badge.",
+      "source": "Sample pack (fictional)"
+    },
+    {
+      "id": "lunch",
+      "title": "Lunch",
+      "text": "Lunch is served in the Harbor Cafe from 12 to 1:30 PM. Vegetarian and gluten-free boxes are at the left end of the counter.",
+      "source": "Sample pack (fictional)"
+    },
+    {
+      "id": "workshops",
+      "title": "Workshops",
+      "text": "Workshops run upstairs in Workshop Room A and Workshop Room B every hour from 10 AM to 4 PM.",
+      "source": "Sample pack (fictional)"
+    },
+    {
+      "id": "lost-and-found",
+      "title": "Lost and found",
+      "text": "Lost and found is at the Registration Desk in the Main Lobby.",
+      "source": "Sample pack (fictional)"
+    },
+    {
+      "id": "parking",
+      "title": "Parking",
+      "text": "The venue garage is on Water Street. Validate your ticket at the Registration Desk.",
+      "source": "Sample pack (fictional)"
+    }
+  ],
+  "escalation": {
+    "contacts": [
+      {
+        "role": "ops_lead",
+        "name": "Ben Carter"
+      }
+    ]
+  },
+  "operatorPasscode": "harbor-ops",
+  "geometry": {
+    "notes": "Fictional sample venue for testing Bring your own venue. Zones are rectangles; no detailed 3D model."
+  }
+}

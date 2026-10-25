@@ -252,7 +252,13 @@ export function unreachableZones(pack: VenuePack): string[] {
   }
   const seen = new Set([pack.zones[0].id]);
   const queue = [pack.zones[0].id];
-  while (queue.length) for (const n of adj.get(queue.shift()!) ?? []) if (!seen.has(n)) (seen.add(n), queue.push(n));
+  while (queue.length) {
+    for (const n of adj.get(queue.shift()!) ?? []) {
+      if (seen.has(n)) continue;
+      seen.add(n);
+      queue.push(n);
+    }
+  }
   return pack.zones.map((z) => z.id).filter((id) => !seen.has(id));
 }
 

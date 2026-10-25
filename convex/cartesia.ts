@@ -30,8 +30,19 @@ const json = (status: number, body: ToolResult) =>
 const CATEGORIES = new Set<string>(incidentCategory.members.map((m) => m.value));
 const PRIORITIES = new Set<string>(priority.members.map((m) => m.value));
 
-/** Where an escalation lands on the map when the caller could not say where they are. */
+/** Where an escalation lands on the map when the caller could not say where they are (Cal Hacks). */
 const ESCALATION_FALLBACK_LOCATION = "zone:box-office";
+
+type VenueContext = { eventName: string; fallbackKey: string; helpDeskLabel?: string } | null;
+
+/** A loaded Venue Pack's wording, or null for the built-in Cal Hacks venue. Never throws. */
+async function venueContext(ctx: ActionCtx): Promise<VenueContext> {
+  try {
+    return await ctx.runQuery(internal.venuePack.agentContext, {});
+  } catch {
+    return null;
+  }
+}
 
 export class ToolCallError extends Error {}
 
@@ -125,10 +136,12 @@ function toolHandler<N extends ToolName>(tool: N, run: (ctx: ActionCtx, call: To
       return json(200, await run(ctx, call));
     } catch (error) {
       console.error(`[cartesia] ${tool} failed`, error);
+      const venue = await venueContext(ctx);
       return json(500, {
         ok: false,
-        message:
-          "The report could not be logged. Tell the caller to find the nearest Cal Hacks staff member or the check-in desk at the Box Office.",
+        message: venue
+          ? `The report could not be logged. Tell the caller to find the nearest ${venue.eventName} staff member${venue.helpDeskLabel ? ` or go to ${venue.helpDeskLabel}` : ""}.`
+          : "The report could not be logged. Tell the caller to find the nearest Cal Hacks staff member or the check-in desk at the Box Office.",
       });
     }
   });
@@ -183,15 +196,16 @@ export const escalateToHuman = toolHandler("escalate_to_human", async (ctx, { ar
     callId,
   };
 
+  const fallbackLocation = (await venueContext(ctx))?.fallbackKey ?? ESCALATION_FALLBACK_LOCATION;
   let outcome: ReportOutcome = await ctx.runAction(internal.incidents.createFromReport, {
     ...report,
-    location: args.location ?? ESCALATION_FALLBACK_LOCATION,
+    location: args.location ?? fallbackLocation,
   });
   // Never drop an escalation because the location did not resolve.
   if (outcome.outcome === "unknown_location") {
     outcome = await ctx.runAction(internal.incidents.createFromReport, {
       ...report,
-      location: ESCALATION_FALLBACK_LOCATION,
+      location: fallbackLocation,
       description: `[location unclear: "${args.location}"] ${report.description}`,
     });
   }
@@ -223,7 +237,8 @@ const withTimeout = <T,>(work: Promise<T>, ms: number): Promise<T> =>
   });
 
 /**
- * venue_search -> Moss top 3 (2 s limit), else keyword match over agent/event-kb.json.
+ * venue_search -> Moss top 3 (2 s limit), else keyword match over agent/event-kb.json
+ * (or the loaded Venue Pack's knowledge).
  * Never fails: a slow or broken Moss only changes outcome to "fallback".
  */
 export const venueSearch = toolHandler("venue_search", async (ctx, { args, callId }): Promise<ToolResult> => {
@@ -236,7 +251,8 @@ export const venueSearch = toolHandler("venue_search", async (ctx, { args, callI
     outcome = facts.length > 0 ? "found" : "no_match";
   } catch (error) {
     console.error("[cartesia] venue_search: Moss failed, using keyword fallback:", error instanceof Error ? error.message : error);
-    facts = keywordSearch(eventKb as KbEntry[], args.query);
+    const packKb: KbEntry[] | null = await ctx.runQuery(internal.venuePack.knowledge, {});
+    facts = keywordSearch((packKb ?? eventKb) as KbEntry[], args.query);
     outcome = "fallback";
   }
   const latencyMs = Date.now() - started;
@@ -245,5 +261,9 @@ export const venueSearch = toolHandler("venue_search", async (ctx, { args, callI
   } catch (error) {
     console.error("[cartesia] venue_search: could not log retrieval", error);
   }
-  return { ok: true, outcome, message: buildMessage(facts), latencyMs };
+  const venue = facts.length === 0 ? await venueContext(ctx) : null;
+  const noMatch = venue
+    ? `No relevant event information found. Tell the caller you are not sure, and suggest ${venue.helpDeskLabel ? `${venue.helpDeskLabel}` : `asking the nearest ${venue.eventName} staff member`}.`
+    : undefined;
+  return { ok: true, outcome, message: buildMessage(facts, noMatch), latencyMs };
 });

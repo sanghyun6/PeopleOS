@@ -51,8 +51,10 @@ const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(
 export function areaDocuments(guide: string): KbEntry[] {
   const entries: KbEntry[] = [];
   for (const line of guide.split("\n")) {
+    if (line.startsWith("Where things are.")) continue; // header line describing the format
     const parts = line.split(" | ").map((p) => p.trim());
-    const head = /^(.+) \((main floor|mezzanine)\)$/.exec(parts[0] ?? "");
+    // "Area (floor name)"; Cal Hacks floors are "main floor" / "mezzanine", packs name their own.
+    const head = /^(.+) \(([^()]+)\)$/.exec(parts[0] ?? "");
     if (!head || parts.length < 2) continue;
     const [, name, level] = head;
     const details = parts.slice(1).join(". ");
@@ -145,8 +147,8 @@ const RELATED_RATIO = 0.6; // a lower-ranked fact is only added when it scores c
  * Spoken-friendly answer: at most three short sentences from the best facts, plus
  * when we last confirmed it if any used fact is time-sensitive. Facts are ordered best first.
  */
-export function buildMessage(facts: Fact[]): string {
-  if (facts.length === 0) return NO_MATCH_MESSAGE;
+export function buildMessage(facts: Fact[], noMatchMessage = NO_MATCH_MESSAGE): string {
+  if (facts.length === 0) return noMatchMessage;
   const best = facts[0].score;
   const used: Fact[] = [];
   const spoken: string[] = [];

@@ -2,6 +2,8 @@
 // venue_search tool: one document per event fact (agent/event-kb.json) and one per
 // area line of agent/venue-guide.md. Re-run after editing either file.
 // Run: npx tsx scripts/moss-index.ts
+// Other venues: npx tsx scripts/moss-index.ts --index <name> --kb <facts.json> --guide <guide.md>
+// (scripts/venue-load.ts does this with a new index name; it never touches calhacks-venue).
 // Needs MOSS_PROJECT_ID and MOSS_PROJECT_KEY in .env.local (never printed).
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -19,24 +21,29 @@ if (!credentials[0] || !credentials[1]) {
   process.exit(1);
 }
 
+const arg = (name: string) => {
+  const i = process.argv.indexOf(`--${name}`);
+  return i >= 0 ? process.argv[i + 1] : undefined;
+};
 const dir = join(process.cwd(), "agent");
-const kb = JSON.parse(readFileSync(join(dir, "event-kb.json"), "utf8")) as KbEntry[];
-const docs = buildMossDocuments(kb, readFileSync(join(dir, "venue-guide.md"), "utf8"));
+const indexName = arg("index") ?? MOSS_INDEX_NAME;
+const kb = JSON.parse(readFileSync(arg("kb") ?? join(dir, "event-kb.json"), "utf8")) as KbEntry[];
+const docs = buildMossDocuments(kb, readFileSync(arg("guide") ?? join(dir, "venue-guide.md"), "utf8"));
 
 async function main() {
   const client = new MossClient(credentials[0]!, credentials[1]!);
   try {
-    const exists = (await client.listIndexes()).some((i) => i.name === MOSS_INDEX_NAME);
+    const exists = (await client.listIndexes()).some((i) => i.name === indexName);
     if (!exists) {
-      await client.createIndex(MOSS_INDEX_NAME, docs);
-      console.log(`created ${MOSS_INDEX_NAME} with ${docs.length} documents`);
+      await client.createIndex(indexName, docs);
+      console.log(`created ${indexName} with ${docs.length} documents`);
     } else {
       // Refresh in place so live calls keep working: upsert everything, then drop removed ids.
-      await client.addDocs(MOSS_INDEX_NAME, docs, { upsert: true });
+      await client.addDocs(indexName, docs, { upsert: true });
       const keep = new Set(docs.map((d) => d.id));
-      const stale = (await client.getDocs(MOSS_INDEX_NAME)).map((d) => d.id).filter((id) => !keep.has(id));
-      if (stale.length > 0) await client.deleteDocs(MOSS_INDEX_NAME, stale);
-      console.log(`refreshed ${MOSS_INDEX_NAME}: ${docs.length} documents, ${stale.length} removed`);
+      const stale = (await client.getDocs(indexName)).map((d) => d.id).filter((id) => !keep.has(id));
+      if (stale.length > 0) await client.deleteDocs(indexName, stale);
+      console.log(`refreshed ${indexName}: ${docs.length} documents, ${stale.length} removed`);
     }
   } finally {
     await client.close();

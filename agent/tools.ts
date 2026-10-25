@@ -24,10 +24,12 @@ const AGENT_EXCLUDED = new Set(["blockage", "medical", "safety"]);
 const CATEGORIES = incidentCategory.members.map((m) => m.value).filter((c) => !AGENT_EXCLUDED.has(c));
 const PRIORITIES = priority.members.map((m) => m.value);
 
-const LOCATION_DESCRIPTION =
-  'Exactly one location label from the location list in your instructions, e.g. "Table 142", "Cartesia booth", "Fountain".';
+export const CAL_HACKS_LOCATION_EXAMPLES = '"Table 142", "Cartesia booth", "Fountain"';
 
-export const TOOLS: ToolDefinition[] = [
+/** Tool definitions; `locationExamples` are venue labels quoted in the location descriptions. */
+export function buildTools(locationExamples = CAL_HACKS_LOCATION_EXAMPLES): ToolDefinition[] {
+  const LOCATION_DESCRIPTION = `Exactly one location label from the location list in your instructions, e.g. ${locationExamples}.`;
+  return [
   {
     name: "create_incident",
     description:
@@ -95,7 +97,10 @@ export const TOOLS: ToolDefinition[] = [
       required: ["reason"],
     },
   },
-];
+  ];
+}
+
+export const TOOLS: ToolDefinition[] = buildTools();
 
 export const toolWebhookUrl = (convexSiteUrl: string, tool: ToolName) =>
   `${convexSiteUrl.replace(/\/$/, "")}/cartesia/${tool}`;

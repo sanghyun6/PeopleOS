@@ -112,10 +112,17 @@ export const knowledge = internalQuery({
   handler: async (ctx) => (await ctx.db.query("venueMeta").first())?.knowledge ?? null,
 });
 
-/** What the voice webhooks need to phrase fallbacks. Null = Cal Hacks defaults. */
+/**
+ * What the voice webhooks need to phrase fallbacks. Null = Cal Hacks defaults.
+ * `fallbackKey`: where an escalation lands when the caller's location is unknown
+ * (the pack's help desk, else the first zone).
+ */
 export const agentContext = internalQuery({
   args: {},
-  returns: v.union(v.null(), v.object({ eventName: v.string(), helpDeskKey: v.optional(v.string()), helpDeskLabel: v.optional(v.string()) })),
+  returns: v.union(
+    v.null(),
+    v.object({ eventName: v.string(), fallbackKey: v.string(), helpDeskLabel: v.optional(v.string()) }),
+  ),
   handler: async (ctx) => {
     const meta = await ctx.db.query("venueMeta").first();
     if (!meta) return null;
@@ -126,6 +133,11 @@ export const agentContext = internalQuery({
           .withIndex("by_key", (q) => q.eq("key", key))
           .unique()
       : null;
-    return { eventName: meta.eventName, helpDeskKey: desk?.key, helpDeskLabel: desk?.label };
+    const firstZone = await ctx.db.query("zones").first();
+    return {
+      eventName: meta.eventName,
+      fallbackKey: desk?.key ?? `zone:${firstZone?.key ?? ""}`,
+      helpDeskLabel: desk?.label,
+    };
   },
 });
