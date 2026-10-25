@@ -6,6 +6,7 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import { Avatar, RoleChip } from "@/components/ui/badges";
 import { useStaffList } from "@/components/ui/hooks";
 import { PhoneIcon } from "@/components/ui/icons";
+import { TabBar } from "@/components/ui/TabBar";
 import { OpsView } from "@/app/ops/OpsView";
 
 const PHONE_W = 390;
@@ -56,32 +57,35 @@ export default function DemoPage() {
   const phones = scripted.every(Boolean) ? scripted : [0, 1].map((i) => facilities[i] ?? staff?.[i]);
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-ink text-fg">
-      <section className="min-w-0 basis-[64%] border-r border-line">
-        <OpsView embedded />
-      </section>
-      <section className="flex min-w-0 basis-[36%] flex-col bg-surface/40">
-        <header className="flex items-center gap-2 border-b border-line px-6 py-4">
-          <PhoneIcon size={16} className="text-accent" />
-          <h2 className="text-sm font-medium">Staff phones</h2>
-          <span className="text-xs text-faint">Live, same data as the dashboard</span>
-        </header>
-        <div className="flex min-h-0 flex-1 gap-4 p-6">
-          {staff === undefined ? (
-            <p className="m-auto text-muted">Loading…</p>
-          ) : (
-            phones.map((s, i) =>
-              s ? (
-                <Phone key={s._id} staff={s}>
-                  <StaffView staffId={s._id} embedded />
-                </Phone>
-              ) : (
-                <p key={i} className="m-auto text-sm text-muted">Seed staff missing.</p>
+    <div className="flex h-dvh flex-col overflow-hidden bg-ink text-fg">
+      <TabBar dense />
+      <div className="flex min-h-0 flex-1">
+        <section className="min-w-0 basis-[64%] border-r border-line">
+          <OpsView embedded />
+        </section>
+        <section className="flex min-w-0 basis-[36%] flex-col bg-surface/40">
+          <header className="flex items-center gap-2 border-b border-line px-6 py-4">
+            <PhoneIcon size={16} className="text-accent" />
+            <h2 className="text-sm font-medium">Staff phones</h2>
+            <span className="text-xs text-faint">Live, same data as the dashboard</span>
+          </header>
+          <div className="flex min-h-0 flex-1 gap-4 p-6">
+            {staff === undefined ? (
+              <p className="m-auto text-muted">Loading…</p>
+            ) : (
+              phones.map((s, i) =>
+                s ? (
+                  <Phone key={s._id} staff={s}>
+                    <StaffView staffId={s._id} embedded />
+                  </Phone>
+                ) : (
+                  <p key={i} className="m-auto text-sm text-muted">Seed staff missing.</p>
+                )
               )
-            )
-          )}
-        </div>
-      </section>
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

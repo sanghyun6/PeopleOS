@@ -11,7 +11,7 @@ import { MetricsBar } from "./MetricsBar";
 import { StaffPanel } from "./StaffPanel";
 import { VenueMap } from "./VenueMap";
 
-/** The ops dashboard. `embedded` fills its parent (the /demo split) instead of the viewport. */
+/** The ops dashboard. `embedded` fills its parent (the /demo split); otherwise it fills the space under the page's tab bar. */
 export function OpsView({ embedded = false }: { embedded?: boolean }) {
   const graph = useGraph();
   const staff = useStaffList();
@@ -19,7 +19,7 @@ export function OpsView({ embedded = false }: { embedded?: boolean }) {
   const [selectedId, setSelectedId] = useState<Id<"incidents"> | null>(null);
 
   return (
-    <div className={`flex ${embedded ? "h-full" : "min-h-dvh md:h-dvh"} flex-col bg-ink text-fg`}>
+    <div className={`flex ${embedded ? "h-full" : "min-h-0 flex-1"} flex-col bg-ink text-fg`}>
       <MetricsBar zoneCount={graph?.zones.length} edgeCount={graph?.edges.length}>
         {!embedded && <SwitchUser />}
       </MetricsBar>
