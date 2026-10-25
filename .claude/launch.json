@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "web-mock",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["NEXT_PUBLIC_UI_MOCK=1", "npx", "next", "dev", "-p", "3002"],
+      "port": 3002
     }
   ]
 }

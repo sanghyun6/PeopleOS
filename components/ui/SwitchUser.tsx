@@ -12,7 +12,7 @@ export function SwitchUser({ className = "" }: { className?: string }) {
         clearIdentity();
         router.push("/");
       }}
-      className={`text-xs text-neutral-400 underline underline-offset-2 hover:text-neutral-200 ${className}`}
+      className={`rounded-md text-xs text-faint transition-colors hover:text-fg ${className}`}
     >
       Switch user
     </button>

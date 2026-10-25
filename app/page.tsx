@@ -5,13 +5,15 @@ import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { label } from "@/components/ui/format";
+import { Avatar, RoleChip } from "@/components/ui/badges";
+import { Brand } from "@/components/ui/Brand";
+import { ChevronIcon, LockIcon } from "@/components/ui/icons";
 import { OPS_PASSCODE, clearIdentity, identityPath, isIdentityValid, useSavedIdentity, saveIdentity } from "@/components/ui/identity";
 
 /** Single entry: pick who you are once; later visits go straight to your view. */
 export default function Page() {
   return (
-    <Suspense fallback={<main className="p-8 text-neutral-500">Loading…</main>}>
+    <Suspense fallback={<main className="p-8 text-muted">Loading…</main>}>
       <WhoAreYouPage />
     </Suspense>
   );
@@ -37,7 +39,7 @@ function WhoAreYouPage() {
     }
   }, [saved, staff, stale, router]);
 
-  if (saved !== null && !stale) return <main className="p-8 text-neutral-500">Loading…</main>;
+  if (saved !== null && !stale) return <main className="p-8 text-muted">Loading…</main>;
 
   const pickStaff = (id: string) => {
     saveIdentity({ kind: "staff", id });
@@ -52,57 +54,90 @@ function WhoAreYouPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-md flex-1 p-6">
-      <h1 className="text-3xl font-semibold">Who are you?</h1>
-      <p className="mb-5 text-neutral-500">PeopleOS · Every call changes the venue.</p>
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-8 sm:px-6 sm:py-16">
+      <header className="mb-8 sm:mb-12">
+        <Brand />
+        <p className="mt-2 text-sm text-muted">Every call changes the venue.</p>
+      </header>
+
+      <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Who are you?</h1>
+      <p className="mt-2 text-muted">Pick your name once. This device remembers it.</p>
+
       {expired && (
-        <p role="status" className="mb-4 rounded-lg border border-yellow-500 bg-yellow-500/10 px-3 py-2 text-sm">
+        <p role="status" className="mt-6 rounded-xl bg-amber/10 px-4 py-3 text-sm text-amber ring-1 ring-inset ring-amber/30">
           Session expired, pick your name again.
         </p>
       )}
-      <ul className="space-y-2">
-        {staff === undefined && <li className="text-neutral-500">Loading staff…</li>}
+
+      <h2 className="mt-8 mb-2 text-sm font-medium text-muted">Staff</h2>
+      <ul className="grid gap-2 sm:grid-cols-2">
+        {staff === undefined &&
+          Array.from({ length: 6 }, (_, i) => (
+            <li key={i} className="h-[72px] animate-pulse rounded-xl bg-surface ring-1 ring-inset ring-line" />
+          ))}
         {staff?.map((s) => (
           <li key={s._id}>
-            <button className="block w-full rounded-lg border px-4 py-3 text-left" onClick={() => pickStaff(s._id)}>
-              {s.name} <span className="text-neutral-500">· {label(s.role)}</span>
+            <button
+              className="group flex w-full items-center gap-4 rounded-xl bg-surface p-4 text-left ring-1 ring-inset ring-line transition hover:bg-raised hover:ring-line-strong"
+              onClick={() => pickStaff(s._id)}
+            >
+              <Avatar staff={s} size={40} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-medium">{s.name}</span>
+                <span className="mt-1 block">
+                  <RoleChip role={s.role} />
+                </span>
+              </span>
+              <ChevronIcon size={16} className="text-faint transition group-hover:translate-x-0.5 group-hover:text-fg" />
             </button>
           </li>
         ))}
-        <li>
-          {askPasscode ? (
-            <form onSubmit={submitPasscode} className="space-y-2 rounded-lg border border-foreground px-4 py-3">
-              <label className="block text-sm font-medium" htmlFor="passcode">
-                Operator passcode
-              </label>
-              <div className="flex gap-2">
-                <input
-                  id="passcode"
-                  type="password"
-                  autoFocus
-                  value={passcode}
-                  onChange={(e) => {
-                    setPasscode(e.target.value);
-                    setWrong(false);
-                  }}
-                  className="min-w-0 flex-1 rounded-md border bg-transparent px-3 py-2"
-                />
-                <button type="submit" className="rounded-md bg-foreground px-4 py-2 text-background">
-                  Enter
-                </button>
-              </div>
-              {wrong && <p className="text-sm text-red-500">Wrong passcode.</p>}
-            </form>
-          ) : (
-            <button
-              className="block w-full rounded-lg bg-foreground px-4 py-3 text-left text-background"
-              onClick={() => setAskPasscode(true)}
-            >
-              Operator <span className="opacity-60">· ops dashboard</span>
-            </button>
-          )}
-        </li>
       </ul>
+
+      <h2 className="mt-8 mb-2 text-sm font-medium text-muted">Control room</h2>
+      {askPasscode ? (
+        <form onSubmit={submitPasscode} className="rounded-xl bg-surface p-4 ring-1 ring-inset ring-accent/50">
+          <label className="mb-2 flex items-center gap-2 text-sm font-medium" htmlFor="passcode">
+            <LockIcon size={16} className="text-accent" />
+            Operator passcode
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="passcode"
+              type="password"
+              autoFocus
+              value={passcode}
+              onChange={(e) => {
+                setPasscode(e.target.value);
+                setWrong(false);
+              }}
+              aria-invalid={wrong}
+              className="h-11 min-w-0 flex-1 rounded-lg bg-ink px-3 ring-1 ring-inset ring-line-strong outline-none transition focus:ring-2 focus:ring-accent"
+            />
+            <button
+              type="submit"
+              className="h-11 rounded-lg bg-accent px-5 font-semibold text-accent-ink transition hover:brightness-110"
+            >
+              Open dashboard
+            </button>
+          </div>
+          {wrong && <p className="mt-2 text-sm text-red">Wrong passcode. Try again.</p>}
+        </form>
+      ) : (
+        <button
+          className="group flex w-full items-center gap-4 rounded-xl bg-surface p-4 text-left ring-1 ring-inset ring-line transition hover:bg-raised hover:ring-accent/50"
+          onClick={() => setAskPasscode(true)}
+        >
+          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent/15 text-accent ring-1 ring-inset ring-accent/40">
+            <LockIcon size={18} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-medium">Operator</span>
+            <span className="block text-sm text-muted">Live venue map and dispatch. Passcode required.</span>
+          </span>
+          <ChevronIcon size={16} className="text-faint transition group-hover:translate-x-0.5 group-hover:text-fg" />
+        </button>
+      )}
     </main>
   );
 }

@@ -15,9 +15,9 @@ export const STATUS_COLOR: Record<IncidentStatus, MarkerColor> = {
 };
 
 export const COLOR_HEX: Record<MarkerColor, string> = {
-  red: "#ef4444",
-  yellow: "#eab308",
-  green: "#22c55e",
+  red: "#f0605d",
+  yellow: "#f2b23e",
+  green: "#3ccb8a",
 };
 
 export type IncidentMarkerProps = {
@@ -43,12 +43,15 @@ export type LevelView = "all" | "main" | "mezz";
 export const isLevelVisible = (view: LevelView, level: "main" | "mezz") => view === "all" || view === level;
 
 export const ROLE_HEX: Record<Doc<"staff">["role"], string> = {
-  network: "#38bdf8",
-  facilities: "#fb923c",
-  supplies: "#a78bfa",
-  guest_services: "#f472b6",
-  ops_lead: "#f8fafc",
+  network: "#4cc2e8",
+  facilities: "#c792ea",
+  supplies: "#5ed4c0",
+  guest_services: "#f28cc4",
+  ops_lead: "#d7dde8",
 };
+
+/** The one UI accent (matches --accent in globals.css). */
+export const ACCENT_HEX = "#7f9bff";
 
 export type VenueSceneProps = {
   incidents?: Doc<"incidents">[];
