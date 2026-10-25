@@ -18,7 +18,7 @@ Built at Cal Hacks 13.0 (Palace of Fine Arts, SF).
 | `/demo` | one screen: `/ops` on the left, two staff phones (Priya, Jordan) on the right, all live |
 | `/ops` 3D view | live markers, staff dots, assignment routes, incident list, metrics |
 | `/staff/[id]` | accept / decline / complete, sound + vibration |
-| Dedup judgment | Bitdeer first (`BITDEER_API_KEY`): bge-m3 embeddings rank the candidates, a Bitdeer chat model rules on the top one (3 s budget). Any failure or no key falls back to Claude (`ANTHROPIC_API_KEY`), then to "same table/booth = same problem" |
+| Dedup judgment | Bitdeer first (`BITDEER_API_KEY`): bge-m3 embeddings rank the candidates, a Bitdeer chat model rules on the top one (3 s budget, 4 s cap on the whole judgment). Any failure, timeout, or missing key falls back to "same table/booth = same problem"; there is no Claude call |
 | Staff brief | after an incident is created, a scheduled action asks a Bitdeer chat model for a one-line (<= 12 words) instruction, stored as `incident.staffBrief` and shown on the staff card and ops detail; falls back to the caller's description |
 
 ## Setup
@@ -34,7 +34,7 @@ npm run dev             # http://localhost:3000/ops
 `npm run typecheck` checks both the Next app and `convex/`. `npm test` runs the vitest unit tests.
 
 Convex deployment env vars (`npx convex env set`): `CARTESIA_TOOL_SECRET` (Bearer token
-Cartesia tools send), `ANTHROPIC_API_KEY` (dedup fallback judge), `BITDEER_API_KEY`
+Cartesia tools send), `BITDEER_API_KEY`
 (dedup judgment + staff briefs; optional `BITDEER_CHAT_MODEL`, default
 `deepseek-ai/DeepSeek-V4.1-Flash`; embeddings use `BAAI/bge-m3`).
 
@@ -55,7 +55,7 @@ convex/            backend
   dispatch.ts      role -> availability -> workload -> path distance
   assignments.ts   accept / decline / complete
   blockages.ts     auto-applied blockages (+ undo) -> reroute
-  dedup.ts         same zone + category within 15 min -> Bitdeer (Claude fallback) judges
+  dedup.ts         same zone + category within 15 min -> Bitdeer judges (same-table heuristic fallback)
   bitdeer.ts       Bitdeer call log + ops stat, staff-brief action
   lib/bitdeer.ts   Bitdeer client, cosine ranking, verdict/brief parsers (pure)
   cartesia.ts      HTTP actions for agent tools (routed in http.ts)

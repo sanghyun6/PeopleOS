@@ -9,6 +9,8 @@ export const DEFAULT_CHAT_MODEL = "deepseek-ai/DeepSeek-V4.1-Flash";
 
 /** Voice callers are waiting: embedding + verdict must finish inside this budget. */
 export const DEDUP_BUDGET_MS = 3_000;
+/** Hard cap on the whole duplicate judgment, Bitdeer calls included. */
+export const DEDUP_TOTAL_MS = 4_000;
 /** bge-m3 cosine below this means "clearly a different problem": no chat call is made. */
 export const SIMILARITY_THRESHOLD = 0.55;
 export const BRIEF_MAX_WORDS = 12;
@@ -167,6 +169,26 @@ export function verdictMessages(report: DuplicateReport, candidate: { text: stri
   ];
 }
 
+/** Cheap judge used when Bitdeer is unavailable: the same table/booth in the same zone is the same problem. */
+export function sameLocationDuplicate<Id extends string>(
+  candidates: { id: Id; sameLocation: boolean }[],
+): Id | null {
+  return candidates.find((c) => c.sameLocation)?.id ?? null;
+}
+
+/** Resolves with `work`, or with `onTimeout()` once `ms` have passed. Never rejects on a late `work`. */
+export async function withTotalTimeout<T>(work: Promise<T>, ms: number, onTimeout: () => T): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<T>((resolve) => {
+    timer = setTimeout(() => resolve(onTimeout()), ms);
+  });
+  try {
+    return await Promise.race([work, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /**
  * bge-m3 ranks the candidates; only the top one at or above `threshold` goes to the chat
  * model. Returns that candidate's id when the model says "same", else null.
@@ -194,7 +216,7 @@ export async function judgeDuplicateWithBitdeer<Id extends string>(
     if (!verdict) return fallback();
     return verdict.same ? top.item.id : null;
   } catch (error) {
-    console.error("[bitdeer] duplicate judgment failed, using previous judge:", error instanceof Error ? error.message : error);
+    console.error("[bitdeer] duplicate judgment failed, using the same-location heuristic:", error instanceof Error ? error.message : error);
     return fallback();
   }
 }

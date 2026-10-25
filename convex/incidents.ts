@@ -206,7 +206,7 @@ type ReportInput = {
   callId?: string;
 };
 
-/** The report pipeline. An action, because the dedup judgment calls Bitdeer/Claude. */
+/** The report pipeline. An action, because the dedup judgment calls Bitdeer. */
 async function runReport(ctx: ActionCtx, args: ReportInput): Promise<ReportOutcome> {
   const prep = await ctx.runQuery(internal.incidents.prepareReport, { ...args, now: Date.now() });
   if (!prep.location) {
@@ -230,7 +230,7 @@ async function runReport(ctx: ActionCtx, args: ReportInput): Promise<ReportOutco
 /**
  * Single entry point for new reports:
  * resolve location -> emergency rule -> dedup (same zone + category, last 15 min,
- * Claude judges) -> insert incident -> dispatch.
+ * Bitdeer judges) -> insert incident -> dispatch.
  */
 export const createFromReport = internalAction({
   args: reportArgs,

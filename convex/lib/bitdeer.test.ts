@@ -11,6 +11,8 @@ import {
   parseEmbeddings,
   parseVerdict,
   rankBySimilarity,
+  sameLocationDuplicate,
+  withTotalTimeout,
   type BitdeerCall,
   type BitdeerClient,
 } from "./bitdeer";
@@ -283,5 +285,48 @@ describe("createBitdeerClient (fetch injected, no network)", () => {
     await expect(client.embed(["a"])).rejects.toThrow("budget");
     expect(fetchImpl).not.toHaveBeenCalled();
     expect(calls[0].ok).toBe(false);
+  });
+});
+
+describe("sameLocationDuplicate", () => {
+  test("picks the first candidate at the same table/booth", () => {
+    expect(
+      sameLocationDuplicate([
+        { id: "a", sameLocation: false },
+        { id: "b", sameLocation: true },
+        { id: "c", sameLocation: true },
+      ]),
+    ).toBe("b");
+  });
+
+  test("null when nothing shares the location, or there are no candidates", () => {
+    expect(sameLocationDuplicate([{ id: "a", sameLocation: false }])).toBeNull();
+    expect(sameLocationDuplicate([])).toBeNull();
+  });
+});
+
+describe("withTotalTimeout", () => {
+  afterEach(() => vi.useRealTimers());
+
+  test("returns the work result when it finishes in time", async () => {
+    const onTimeout = vi.fn(() => "late");
+    expect(await withTotalTimeout(Promise.resolve("done"), 50, onTimeout)).toBe("done");
+    expect(onTimeout).not.toHaveBeenCalled();
+  });
+
+  test("returns the timeout value when the work is still pending", async () => {
+    vi.useFakeTimers();
+    const never = new Promise<string>(() => {});
+    const result = withTotalTimeout(never, 4_000, () => "heuristic");
+    await vi.advanceTimersByTimeAsync(4_000);
+    expect(await result).toBe("heuristic");
+  });
+
+  test("a slow Bitdeer judgment loses to the cap and the heuristic answer is used", async () => {
+    vi.useFakeTimers();
+    const slow = new Promise<string | null>((resolve) => setTimeout(() => resolve("bitdeer"), 9_000));
+    const result = withTotalTimeout(slow, 4_000, () => sameLocationDuplicate([{ id: "same-table", sameLocation: true }]));
+    await vi.advanceTimersByTimeAsync(4_000);
+    expect(await result).toBe("same-table");
   });
 });
