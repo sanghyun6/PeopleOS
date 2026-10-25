@@ -43,22 +43,6 @@ export function useStats(): Stats | undefined {
   return LIVE.stats ? live : mockStats;
 }
 
-export type RetrievalStats = { count: number; avgMs: number | null; fallbacks: number };
-
-/** Moss retrieval latency for the voice agent's venue_search tool. Mock mode shows none. */
-export function useRetrievalStats(): RetrievalStats | undefined {
-  const live = useQuery(api.retrievals.stats, LIVE.stats ? {} : "skip");
-  return LIVE.stats ? live : { count: 0, avgMs: null, fallbacks: 0 };
-}
-
-export type BitdeerStats = { count: number; avgMs: number | null; failed: number };
-
-/** Bitdeer AI Model Studio calls (dedup embeddings + verdicts, staff briefs). Mock mode shows none. */
-export function useBitdeerStats(): BitdeerStats | undefined {
-  const live = useQuery(api.bitdeer.stats, LIVE.stats ? {} : "skip");
-  return LIVE.stats ? live : { count: 0, avgMs: null, failed: 0 };
-}
-
 /** Offered + accepted assignments with routes (3D route lines). Mock mode draws none. */
 export function useActiveAssignments(): Doc<"assignments">[] | undefined {
   const live = useQuery(api.assignments.listActive, LIVE.assignments ? {} : "skip");
