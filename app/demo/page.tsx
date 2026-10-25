@@ -50,7 +50,10 @@ function Phone({ staff, children }: { staff: Doc<"staff">; children: React.React
 /** One screen, whole flow: ops dashboard on the left, two staff phones on the right. */
 export default function DemoPage() {
   const staff = useStaffList();
-  const phones = ["Priya", "Jordan"].map((first) => staff?.find((s) => s.name.startsWith(first)));
+  // Cal Hacks demo script: Priya and Jordan. Other venues (Venue Pack): the first two facilities staff.
+  const scripted = ["Priya", "Jordan"].map((first) => staff?.find((s) => s.name.startsWith(first)));
+  const facilities = staff?.filter((s) => s.role === "facilities") ?? [];
+  const phones = scripted.every(Boolean) ? scripted : [0, 1].map((i) => facilities[i] ?? staff?.[i]);
 
   return (
     <div className="flex h-dvh overflow-hidden bg-ink text-fg">

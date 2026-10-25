@@ -20,23 +20,26 @@ export const useCloseZoom = () => useContext(ZoomContext) >= 2;
 
 const ORIGIN = new Vector3(0, 0, 5);
 
-function tierFor(d: number, current: ZoomTier): ZoomTier {
+function tierFor(d: number, current: ZoomTier, scale: number): ZoomTier {
   let t: ZoomTier = 0;
   for (const k of [1, 2] as const) {
-    const limit = current >= k ? ENTER[k] * HYSTERESIS : ENTER[k];
+    const limit = (current >= k ? ENTER[k] * HYSTERESIS : ENTER[k]) * scale;
     if (d < limit) t = k;
   }
   return t;
 }
 
-/** Tracks camera-to-target distance and exposes a coarse zoom tier to labels. */
-export function ZoomProvider({ children }: { children: ReactNode }) {
+/**
+ * Tracks camera-to-target distance and exposes a coarse zoom tier to labels.
+ * `scale` shrinks the tier distances for smaller venues (1 = Cal Hacks, ~215 m wide).
+ */
+export function ZoomProvider({ children, scale = 1 }: { children: ReactNode; scale?: number }) {
   const controls = useThree((s) => s.controls) as { target?: Vector3 } | null;
   const [tier, setTier] = useState<ZoomTier>(0);
   const tierRef = useRef<ZoomTier>(0);
 
   useFrame(({ camera }) => {
-    const next = tierFor(camera.position.distanceTo(controls?.target ?? ORIGIN), tierRef.current);
+    const next = tierFor(camera.position.distanceTo(controls?.target ?? ORIGIN), tierRef.current, scale);
     if (next !== tierRef.current) {
       tierRef.current = next;
       setTier(next);

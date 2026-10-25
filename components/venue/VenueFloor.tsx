@@ -63,7 +63,7 @@ function paddedHull(points: XZ[], pad: number): XZ[] {
   return [...build(pts), ...build([...pts].reverse())];
 }
 
-function Slab({ poly, y, depth, color, opacity = 1 }: { poly: XZ[]; y: number; depth: number; color: string; opacity?: number }) {
+export function Slab({ poly, y, depth, color, opacity = 1 }: { poly: XZ[]; y: number; depth: number; color: string; opacity?: number }) {
   const geometry = useMemo(() => new THREE.ExtrudeGeometry(polyShape(poly), { depth, bevelEnabled: false }), [poly, depth]);
   useLayoutEffect(() => () => geometry.dispose(), [geometry]);
   return (
@@ -74,7 +74,7 @@ function Slab({ poly, y, depth, color, opacity = 1 }: { poly: XZ[]; y: number; d
 }
 
 /** Thin box along a wall/door segment. */
-function SegmentBox({ seg, y, height, thickness, color, opacity = 1 }: { seg: Segment; y: number; height: number; thickness: number; color: string; opacity?: number }) {
+export function SegmentBox({ seg, y, height, thickness, color, opacity = 1 }: { seg: Segment; y: number; height: number; thickness: number; color: string; opacity?: number }) {
   const dx = seg.b.x - seg.a.x;
   const dz = seg.b.z - seg.a.z;
   return (

@@ -4,14 +4,49 @@
     {
       "name": "web",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
     },
     {
       "name": "web-mock",
       "runtimeExecutable": "env",
-      "runtimeArgs": ["NEXT_PUBLIC_UI_MOCK=1", "npx", "next", "dev", "-p", "3002"],
+      "runtimeArgs": [
+        "NEXT_PUBLIC_UI_MOCK=1",
+        "npx",
+        "next",
+        "dev",
+        "-p",
+        "3002"
+      ],
       "port": 3002
+    },
+    {
+      "name": "venue-local",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "next",
+        "dev",
+        "-p",
+        "3100"
+      ],
+      "port": 3100
+    },
+    {
+      "name": "calhacks-readonly",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "NEXT_PUBLIC_CONVEX_URL=https://resolute-horse-290.convex.cloud",
+        "NEXT_PUBLIC_CONVEX_SITE_URL=https://resolute-horse-290.convex.site",
+        "npx",
+        "next",
+        "dev",
+        "-p",
+        "3200"
+      ],
+      "port": 3200
     }
   ]
 }

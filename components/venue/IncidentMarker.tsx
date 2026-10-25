@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import type { Group, Mesh, MeshBasicMaterial } from "three";
 import { Label } from "./Label";
-import { toWorld } from "./coords";
+import { useToWorld } from "./venueView";
 import { COLOR_HEX, STATUS_COLOR, type IncidentMarkerProps } from "./types";
 import { useNearZoom } from "./zoom";
 import { displayBrief } from "@/convex/lib/bitdeer";
@@ -36,6 +36,7 @@ export function IncidentMarker({ incident, selected, onSelect }: IncidentMarkerP
     }
   });
 
+  const toWorld = useToWorld();
   const [x, y, z] = toWorld(incident.at, incident.level);
   const s = hovered || selected ? 1.25 : 1;
 

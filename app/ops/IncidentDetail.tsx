@@ -6,6 +6,7 @@ import { formatDuration, label, timeAgo } from "@/components/ui/format";
 import { ChevronIcon } from "@/components/ui/icons";
 import { useIncident } from "@/components/ui/hooks";
 import { displayBrief } from "@/convex/lib/bitdeer";
+import { levelLabel, useVenueMeta } from "@/components/venue/venueView";
 
 type Props = {
   incidentId: Id<"incidents"> | null;
@@ -25,6 +26,7 @@ function Row({ term, children }: { term: string; children: React.ReactNode }) {
 /** Transcript, status, assignee, route. */
 export function IncidentDetail({ incidentId, staff, graph }: Props) {
   const incident = useIncident(incidentId);
+  const venueMeta = useVenueMeta();
 
   if (!incidentId || !incident) return null;
 
@@ -55,7 +57,7 @@ export function IncidentDetail({ incidentId, staff, graph }: Props) {
       )}
       <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-xs">
         <Row term="Location">
-          {zone?.name ?? "—"} <span className="text-faint">({incident.level === "mezz" ? "mezzanine" : "main floor"})</span>
+          {zone?.name ?? "—"} <span className="text-faint">({levelLabel(venueMeta, incident.level)})</span>
         </Row>
         <Row term="Assignee">
           {assignee ? (

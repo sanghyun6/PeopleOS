@@ -4,17 +4,17 @@ import { Line } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef, type ComponentRef } from "react";
 import { Vector3 } from "three";
-import { MEZZ_HEIGHT } from "@/convex/lib/venueData";
 import { ACCENT_HEX, type RouteLineProps } from "./types";
+import { useVenueView } from "./venueView";
 
 const LIFT = 0.6;
-const levelY = (level: "main" | "mezz") => (level === "mezz" ? MEZZ_HEIGHT : 0) + LIFT;
-
-/** drei <Line> through each edge path, rising to MEZZ_HEIGHT on stair edges (step 4/8). */
+/** drei <Line> through each edge path, rising to the upper floor height on stair edges (step 4/8). */
 export function RouteLine({ segments, color = ACCENT_HEX }: RouteLineProps) {
   const dashed = useRef<ComponentRef<typeof Line>>(null);
+  const { elevation } = useVenueView();
 
   const points = useMemo(() => {
+    const levelY = (level: "main" | "mezz") => elevation[level] + LIFT;
     const out: Vector3[] = [];
     for (const seg of segments) {
       const { path, fromLevel, toLevel } = seg;
@@ -31,7 +31,7 @@ export function RouteLine({ segments, color = ACCENT_HEX }: RouteLineProps) {
       });
     }
     return out;
-  }, [segments]);
+  }, [segments, elevation]);
 
   // Flow animation: march the dashes toward the destination.
   useFrame((_, dt) => {

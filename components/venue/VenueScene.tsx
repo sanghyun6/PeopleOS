@@ -1,25 +1,22 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { useCallback, useRef, useState } from "react";
-import { CameraRig, type CameraApi } from "./CameraRig";
-import { toWorld } from "./coords";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { CameraRig, frameFor, type CameraApi } from "./CameraRig";
 import { AreaLabels, Booths, HackerTables, MezzanineDeck, VenueFloor, VenueRooms } from "./VenueFloor";
+import { GenericVenue } from "./GenericVenue";
 import { IncidentMarker } from "./IncidentMarker";
 import { RouteLine } from "./RouteLine";
 import { StaffDot } from "./StaffDot";
 import { ACCENT_HEX, COLOR_HEX, isLevelVisible, type LevelView, type VenueSceneProps } from "./types";
+import { VenueViewProvider, useVenueMeta, venueViewFor } from "./venueView";
 import { ZoomProvider } from "./zoom";
-
-const LEVELS: { id: LevelView; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "main", label: "Main" },
-  { id: "mezz", label: "Mezzanine" },
-];
 
 /**
  * R3F venue: floor, rooms, tables, mezzanine, plus incident markers, staff dots and route lines.
  * Fills its parent (give the parent a height). Everything is optional so `<VenueScene />` still works.
+ * The built-in Cal Hacks model is drawn unless a loaded Venue Pack has no detailed model; then
+ * GenericVenue draws the pack's zones and places.
  */
 export default function VenueScene({
   incidents = [],
@@ -31,6 +28,10 @@ export default function VenueScene({
   children,
 }: VenueSceneProps) {
   const [view, setView] = useState<LevelView>(initialLevel);
+  const meta = useVenueMeta();
+  const venueView = useMemo(() => venueViewFor(meta ?? null), [meta]);
+  const frame = useMemo(() => (meta && !venueView.detailed ? frameFor(meta.outline) : undefined), [meta, venueView.detailed]);
+  const levels: { id: LevelView; label: string }[] = [{ id: "all", label: "All" }, ...venueView.floors.map((f) => ({ id: f.level, label: f.label }))];
   const camera = useRef<CameraApi>(null);
   const compass = useRef<HTMLSpanElement>(null);
   const selected = incidents.find((i) => i._id === selectedId);
@@ -47,13 +48,22 @@ export default function VenueScene({
         <ambientLight intensity={0.35} />
         <directionalLight position={[60, 140, 80]} intensity={1.1} />
         <directionalLight position={[-80, 60, -40]} intensity={0.25} color="#9fb2ff" />
-        <ZoomProvider>
-        <VenueFloor />
-        <VenueRooms />
-        <MezzanineDeck view={view} />
-        <AreaLabels view={view} />
-        <HackerTables view={view} />
-        <Booths view={view} />
+        {/* Wait for the venue (one round trip) so the camera frames the right building. */}
+        {meta !== undefined && (
+        <VenueViewProvider value={venueView}>
+        <ZoomProvider scale={frame ? Math.min(1, frame.halfW / 108) : 1}>
+        {venueView.detailed || !meta ? (
+          <>
+            <VenueFloor />
+            <VenueRooms />
+            <MezzanineDeck view={view} />
+            <AreaLabels view={view} />
+            <HackerTables view={view} />
+            <Booths view={view} />
+          </>
+        ) : (
+          <GenericVenue meta={meta} view={view} />
+        )}
 
         {incidents
           .filter((i) => isLevelVisible(view, i.level))
@@ -75,18 +85,22 @@ export default function VenueScene({
 
         <CameraRig
           apiRef={camera}
-          focus={selected ? toWorld(selected.at, selected.level) : null}
+          frame={frame}
+          focus={selected ? [selected.at.x, venueView.elevation[selected.level], selected.at.z] : null}
           focusKey={selectedId}
           onHeading={onHeading}
         />
+        </VenueViewProvider>
+        )}
       </Canvas>
 
+      {levels.length > 2 && (
       <div
         role="group"
         aria-label="Floor"
         className="absolute left-4 top-4 z-20 flex gap-1 rounded-xl bg-overlay p-1 text-xs ring-1 ring-inset ring-line backdrop-blur"
       >
-        {LEVELS.map((l) => (
+        {levels.map((l) => (
           <button
             key={l.id}
             type="button"
@@ -100,6 +114,7 @@ export default function VenueScene({
           </button>
         ))}
       </div>
+      )}
 
       <div
         role="group"

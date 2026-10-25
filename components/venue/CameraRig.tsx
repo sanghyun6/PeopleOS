@@ -5,7 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useImperativeHandle, useRef, type Ref } from "react";
 import * as THREE from "three";
 import { MOUSE, TOUCH } from "three";
-import { venue } from "@/convex/lib/venueData";
+import { venue, type XZ } from "@/convex/lib/venueData";
 
 const MIN_DISTANCE = 12;
 const MAX_DISTANCE = 420;
@@ -15,11 +15,25 @@ const HOME_TARGET = new THREE.Vector3(0, 0, 5);
 /** Camera distance after flying to a selected point (inside the "near" label tier). */
 const FOCUS_DISTANCE = 55;
 
-// Keep the orbit target over the building, with a little slack.
-const BOUNDS = venue.outline.reduce(
-  (b, p) => ({ minX: Math.min(b.minX, p.x), maxX: Math.max(b.maxX, p.x), minZ: Math.min(b.minZ, p.z), maxZ: Math.max(b.maxZ, p.z) }),
-  { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity },
-);
+const boundsOf = (outline: XZ[]) =>
+  outline.reduce(
+    (b, p) => ({ minX: Math.min(b.minX, p.x), maxX: Math.max(b.maxX, p.x), minZ: Math.min(b.minZ, p.z), maxZ: Math.max(b.maxZ, p.z) }),
+    { minX: Infinity, maxX: -Infinity, minZ: Infinity, maxZ: -Infinity },
+  );
+
+/** Where the camera starts and how far it may pan: the building bounds, home target, and the half extents to fit. */
+export type CameraFrame = ReturnType<typeof boundsOf> & { home: THREE.Vector3; halfW: number; halfD: number };
+
+// Keep the orbit target over the building, with a little slack. Fit the whole building (~215 m wide).
+const CAL_HACKS_FRAME: CameraFrame = { ...boundsOf(venue.outline), home: HOME_TARGET, halfW: 108, halfD: 62 };
+
+/** Frame for another venue's outline (Venue Pack). */
+export function frameFor(outline: XZ[]): CameraFrame {
+  const b = boundsOf(outline);
+  const home = new THREE.Vector3((b.minX + b.maxX) / 2, 0, (b.minZ + b.maxZ) / 2);
+  // Margin for the tilted view and upper floors, which sit closer to the camera.
+  return { ...b, home, halfW: (b.maxX - b.minX) * 0.65 + 8, halfD: (b.maxZ - b.minZ) * 0.65 + 8 };
+}
 
 export type CameraApi = {
   /** factor < 1 zooms in, > 1 zooms out. */
@@ -45,7 +59,9 @@ export function CameraRig({
   focus,
   focusKey,
   onHeading,
+  frame = CAL_HACKS_FRAME,
 }: {
+  frame?: CameraFrame;
   apiRef: Ref<CameraApi>;
   focus: [number, number, number] | null;
   focusKey: string | null;
@@ -62,13 +78,13 @@ export function CameraRig({
   const wheel = useRef({ pending: 0, anchor: new THREE.Vector3() });
   const homePolar = useRef(0.96);
 
-  // Fit the whole building (~215 m wide) once, at the canvas aspect.
+  // Fit the whole building once, at the canvas aspect.
   useEffect(() => {
     const persp = camera as THREE.PerspectiveCamera;
     const tanHalf = Math.tan((persp.fov * Math.PI) / 360);
-    const dist = Math.max(108 / (tanHalf * aspect), 62 / tanHalf);
-    camera.position.set(0, dist * 0.82, 5 + dist * 0.57);
-    camera.lookAt(HOME_TARGET);
+    const dist = Math.max(frame.halfW / (tanHalf * aspect), frame.halfD / tanHalf);
+    camera.position.set(frame.home.x, dist * 0.82, frame.home.z + dist * 0.57);
+    camera.lookAt(frame.home);
     homePolar.current = Math.atan2(0.57, 0.82);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -185,7 +201,7 @@ export function CameraRig({
 
   /** Camera position at `dist` from `target`, keeping the current heading; tilt clamped to a readable range. */
   const orbitPos = (target: THREE.Vector3, dist: number, polar?: number, azimuth?: number) => {
-    const s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls?.target ?? HOME_TARGET));
+    const s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls?.target ?? frame.home));
     s.radius = THREE.MathUtils.clamp(dist, MIN_DISTANCE, MAX_DISTANCE);
     if (polar !== undefined) s.phi = polar;
     if (azimuth !== undefined) s.theta = azimuth;
@@ -206,7 +222,7 @@ export function CameraRig({
     },
     flyTo: (p) => {
       const target = new THREE.Vector3(...p);
-      fly(orbitPos(target, Math.min(FOCUS_DISTANCE, camera.position.distanceTo(controls?.target ?? HOME_TARGET)), Math.min(0.9, MAX_POLAR)), target);
+      fly(orbitPos(target, Math.min(FOCUS_DISTANCE, camera.position.distanceTo(controls?.target ?? frame.home)), Math.min(0.9, MAX_POLAR)), target);
     },
   }));
 
@@ -253,8 +269,8 @@ export function CameraRig({
     } else {
       // Clamp panning to the building; move the camera with the target so it doesn't jerk.
       const t = controls.target;
-      const cx = THREE.MathUtils.clamp(t.x, BOUNDS.minX - 10, BOUNDS.maxX + 10);
-      const cz = THREE.MathUtils.clamp(t.z, BOUNDS.minZ - 10, BOUNDS.maxZ + 10);
+      const cx = THREE.MathUtils.clamp(t.x, frame.minX - 10, frame.maxX + 10);
+      const cz = THREE.MathUtils.clamp(t.z, frame.minZ - 10, frame.maxZ + 10);
       if (cx !== t.x || cz !== t.z) {
         camera.position.add(new THREE.Vector3(cx - t.x, 0, cz - t.z));
         t.set(cx, t.y, cz);
@@ -266,7 +282,7 @@ export function CameraRig({
   return (
     <OrbitControls
       makeDefault
-      target={HOME_TARGET.toArray()}
+      target={frame.home.toArray()}
       enableDamping
       dampingFactor={0.08}
       zoomToCursor
