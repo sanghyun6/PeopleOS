@@ -4,14 +4,14 @@ import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { useActiveAssignments, useGraph } from "@/components/ui/hooks";
-import type { RouteLineProps, StaffDotProps } from "@/components/venue/types";
+import { ACCENT_HEX, COLOR_HEX, type RouteLineProps, type StaffDotProps } from "@/components/venue/types";
 
 // three.js needs the browser.
 const VenueScene = dynamic(() => import("@/components/venue/VenueScene"), { ssr: false });
 
 const ROUTE_COLOR: Partial<Record<Doc<"assignments">["status"], string>> = {
-  offered: "#fbbf24", // waiting for the staff member to accept
-  accepted: "#38bdf8", // on the way
+  offered: COLOR_HEX.yellow, // waiting for the staff member to accept
+  accepted: ACCENT_HEX, // on the way
 };
 
 type Props = {

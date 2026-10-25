@@ -1,4 +1,5 @@
 import type { Doc } from "@/convex/_generated/dataModel";
+import { Avatar, STAFF_DOT_HEX } from "@/components/ui/badges";
 import { label } from "@/components/ui/format";
 
 type Props = {
@@ -6,8 +7,6 @@ type Props = {
   zones: Doc<"zones">[] | undefined;
   incidents?: Doc<"incidents">[];
 };
-
-const STATUS_DOT = { available: "bg-green-500", busy: "bg-yellow-500", off_duty: "bg-neutral-600" } as const;
 
 /** Staff roster: role, status, current zone, workload (step 7). */
 export function StaffPanel({ staff, zones, incidents }: Props) {
@@ -18,21 +17,36 @@ export function StaffPanel({ staff, zones, incidents }: Props) {
   }
   return (
     <section>
-      <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">Staff</h2>
-      {staff === undefined && <p className="text-sm text-neutral-500">Loading…</p>}
-      <ul className="space-y-1.5 text-sm">
-        {staff?.map((s) => (
-          <li key={s._id} className="flex items-center gap-2">
-            <span className={`size-2 shrink-0 rounded-full ${STATUS_DOT[s.status]}`} />
-            <span className="flex-1 truncate">
-              {s.name} <span className="text-neutral-500">· {label(s.role)}</span>
-            </span>
-            <span className="truncate text-xs text-neutral-500">
-              {s.status === "off_duty" ? "off duty" : (zoneName.get(s.zoneId) ?? "")}
-              {(workload.get(s._id) ?? 0) > 0 && ` · ${workload.get(s._id)} task${workload.get(s._id) === 1 ? "" : "s"}`}
-            </span>
-          </li>
-        ))}
+      <h2 className="mb-2 text-sm font-medium">Staff</h2>
+      {staff === undefined && <p className="text-sm text-muted">Loading…</p>}
+      <ul className="divide-y divide-line rounded-xl bg-surface ring-1 ring-inset ring-line">
+        {staff?.map((s) => {
+          const tasks = workload.get(s._id) ?? 0;
+          const off = s.status === "off_duty";
+          return (
+            <li key={s._id} className={`flex items-center gap-3 px-3 py-2 ${off ? "opacity-50" : ""}`}>
+              <span className="relative">
+                <Avatar staff={s} size={28} />
+                <span
+                  className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full ring-2 ring-surface"
+                  style={{ background: STAFF_DOT_HEX[s.status] }}
+                />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm">{s.name}</span>
+                <span className="block truncate text-xs capitalize text-faint">{label(s.role)}</span>
+              </span>
+              <span className="min-w-0 max-w-[45%] text-right">
+                <span className="block truncate text-xs text-muted">{off ? "Off duty" : (zoneName.get(s.zoneId) ?? "")}</span>
+                {tasks > 0 && (
+                  <span className="block text-[11px] font-medium text-amber tabular-nums">
+                    {tasks} task{tasks === 1 ? "" : "s"}
+                  </span>
+                )}
+              </span>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

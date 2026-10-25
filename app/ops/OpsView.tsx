@@ -19,19 +19,21 @@ export function OpsView({ embedded = false }: { embedded?: boolean }) {
   const [selectedId, setSelectedId] = useState<Id<"incidents"> | null>(null);
 
   return (
-    <div className={`flex ${embedded ? "h-full" : "h-screen"} flex-col bg-neutral-950 text-neutral-100`}>
+    <div className={`flex ${embedded ? "h-full" : "min-h-dvh md:h-dvh"} flex-col bg-ink text-fg`}>
       <MetricsBar zoneCount={graph?.zones.length} edgeCount={graph?.edges.length}>
         {!embedded && <SwitchUser />}
       </MetricsBar>
       <BlockageBanner />
-      <div className="flex min-h-0 flex-1">
-        <div className="relative min-w-0 flex-1">
+      <div className={`flex min-h-0 flex-1 ${embedded ? "" : "flex-col md:flex-row"}`}>
+        <div className={`relative min-w-0 flex-1 ${embedded ? "" : "min-h-[55vh] md:min-h-0"}`}>
           <VenueMap incidents={incidents} staff={staff} selectedId={selectedId} onSelect={setSelectedId} />
         </div>
         <aside
-          className={`flex ${embedded ? "w-80" : "w-96"} shrink-0 flex-col gap-4 overflow-y-auto border-l border-neutral-800 p-4`}
+          className={`flex shrink-0 flex-col gap-6 overflow-y-auto border-line p-4 ${
+            embedded ? "w-80 border-l" : "w-full border-t md:w-[400px] md:border-t-0 md:border-l"
+          }`}
         >
-          <IncidentList incidents={incidents} selectedId={selectedId} onSelect={setSelectedId} zones={graph?.zones} />
+          <IncidentList incidents={incidents} selectedId={selectedId} onSelect={setSelectedId} zones={graph?.zones} staff={staff} />
           <IncidentDetail incidentId={selectedId} staff={staff} graph={graph} />
           <StaffPanel staff={staff} zones={graph?.zones} incidents={incidents} />
         </aside>

@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { LIVE } from "@/components/ui/live";
 import { timeAgo } from "@/components/ui/format";
+import { BlockIcon, UndoIcon } from "@/components/ui/icons";
 
 /** Blockages that were applied automatically, each with an Undo (unblocks the edge and re-plans). */
 export function BlockageBanner() {
@@ -15,16 +16,22 @@ export function BlockageBanner() {
 
   if (!applied?.length) return null;
   return (
-    <ul className="space-y-1 border-b border-yellow-900 bg-yellow-950/60 px-4 py-2 text-sm">
+    <ul className="space-y-2 border-b border-line px-4 py-2 lg:px-6">
       {applied.map((b) => (
-        <li key={b._id} className="flex items-center justify-between gap-3">
-          <span className="text-yellow-100">
-            <strong className="font-semibold">Blockage applied:</strong> {b.label}, {b.reroutedCount}{" "}
-            {b.reroutedCount === 1 ? "task" : "tasks"} rerouted
-            <span className="ml-2 text-xs text-yellow-300/70" suppressHydrationWarning>
+        <li
+          key={b._id}
+          className="flex items-center gap-4 rounded-xl bg-amber/10 py-2 pr-2 pl-4 text-sm ring-1 ring-inset ring-amber/30"
+        >
+          <BlockIcon size={16} className="shrink-0 text-amber" />
+          <p className="min-w-0 flex-1 truncate">
+            <span className="font-medium text-amber">Path blocked: {b.label}.</span>{" "}
+            <span className="text-fg">
+              {b.reroutedCount} {b.reroutedCount === 1 ? "task" : "tasks"} rerouted
+            </span>
+            <span className="ml-2 text-xs text-muted" suppressHydrationWarning>
               {timeAgo(b._creationTime)}
             </span>
-          </span>
+          </p>
           <button
             disabled={pending === b._id}
             onClick={async () => {
@@ -35,8 +42,9 @@ export function BlockageBanner() {
                 setPending(null);
               }
             }}
-            className="shrink-0 rounded-md border border-yellow-600 px-3 py-1 text-xs font-semibold text-yellow-100 hover:bg-yellow-900 disabled:opacity-50"
+            className="inline-flex h-8 shrink-0 items-center gap-2 rounded-lg px-3 text-xs font-medium text-fg ring-1 ring-inset ring-line-strong transition hover:bg-raised disabled:opacity-50"
           >
+            <UndoIcon size={14} />
             Undo
           </button>
         </li>
