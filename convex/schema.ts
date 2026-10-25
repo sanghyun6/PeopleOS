@@ -104,4 +104,12 @@ export default defineSchema({
     .index("by_incident", ["incidentId"])
     .index("by_status", ["status"])
     .index("by_staff_status", ["staffId", "status"]),
+
+  // One row per venue_search call: how long retrieval took and which path answered.
+  retrievals: defineTable({
+    outcome: v.union(v.literal("found"), v.literal("no_match"), v.literal("fallback")),
+    latencyMs: v.number(),
+    cold: v.optional(v.boolean()), // Moss only: this call had to load the index first
+    callId: v.optional(v.string()),
+  }),
 });

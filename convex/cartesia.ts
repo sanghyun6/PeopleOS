@@ -15,6 +15,14 @@ import {
   type Priority,
 } from "./lib/validators";
 import type { ReportOutcome } from "./incidents";
+import eventKb from "../agent/event-kb.json";
+import {
+  MOSS_TIMEOUT_MS,
+  buildMessage,
+  keywordSearch,
+  type Fact,
+  type KbEntry,
+} from "../agent/venue-search";
 
 const json = (status: number, body: ToolResult) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -78,6 +86,7 @@ export function parseToolCall<N extends ToolName>(tool: N, body: unknown): ToolC
       from: requiredString(body, "from"),
       to: requiredString(body, "to"),
     }),
+    venue_search: () => ({ query: requiredString(body, "query") }),
     escalate_to_human: () => ({
       reason: requiredString(body, "reason"),
       location: optionalString(body, "location"),
@@ -202,4 +211,41 @@ export const escalateToHuman = toolHandler("escalate_to_human", async (ctx, { ar
 export const getDirections = toolHandler("get_directions", async (ctx, { args }): Promise<ToolResult> => {
   const result = await ctx.runQuery(internal.locations.directions, args);
   return { ok: result.outcome !== "unknown_location", outcome: result.outcome, message: result.message };
+});
+
+const withTimeout = <T,>(work: Promise<T>, ms: number): Promise<T> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`timed out after ${ms} ms`)), ms);
+    work.then(
+      (value) => (clearTimeout(timer), resolve(value)),
+      (error) => (clearTimeout(timer), reject(error)),
+    );
+  });
+
+/**
+ * venue_search -> Moss top 3 (2 s limit), else keyword match over agent/event-kb.json.
+ * Never fails: a slow or broken Moss only changes outcome to "fallback".
+ */
+export const venueSearch = toolHandler("venue_search", async (ctx, { args, callId }): Promise<ToolResult> => {
+  const started = Date.now();
+  let facts: Fact[];
+  let outcome: "found" | "no_match" | "fallback";
+  let cold: boolean | undefined;
+  try {
+    const result = await withTimeout(ctx.runAction(internal.moss.search, { query: args.query }), MOSS_TIMEOUT_MS);
+    facts = result.facts;
+    cold = result.cold;
+    outcome = facts.length > 0 ? "found" : "no_match";
+  } catch (error) {
+    console.error("[cartesia] venue_search: Moss failed, using keyword fallback:", error instanceof Error ? error.message : error);
+    facts = keywordSearch(eventKb as KbEntry[], args.query);
+    outcome = "fallback";
+  }
+  const latencyMs = Date.now() - started;
+  try {
+    await ctx.runMutation(internal.retrievals.record, { outcome, latencyMs, cold, callId });
+  } catch (error) {
+    console.error("[cartesia] venue_search: could not log retrieval", error);
+  }
+  return { ok: true, outcome, message: buildMessage(facts), latencyMs };
 });
