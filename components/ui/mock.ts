@@ -45,6 +45,7 @@ const incident = (n: number, p: Partial<Doc<"incidents">>): Doc<"incidents"> =>
 export const mockIncidents: Doc<"incidents">[] = [
   incident(1, {
     description: "Outlet at Table 142 is dead.",
+    staffBrief: "Table 142: outlet dead, bring a power strip",
     status: "acknowledged",
     reportCount: 2,
     assigneeId: id("s1"),

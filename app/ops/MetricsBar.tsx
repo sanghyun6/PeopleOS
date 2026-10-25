@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { formatDuration } from "@/components/ui/format";
-import { useRetrievalStats, useStats } from "@/components/ui/hooks";
+import { useBitdeerStats, useRetrievalStats, useStats } from "@/components/ui/hooks";
 
 function Card({ title, value, accent, hint }: { title: string; value: string; accent?: boolean; hint?: string }) {
   return (
@@ -17,6 +17,7 @@ function Card({ title, value, accent, hint }: { title: string; value: string; ac
 export function MetricsBar({ zoneCount, edgeCount, children }: { zoneCount?: number; edgeCount?: number; children?: ReactNode }) {
   const stats = useStats();
   const retrieval = useRetrievalStats();
+  const bitdeer = useBitdeerStats();
   return (
     <header className="flex flex-wrap items-center gap-4 border-b border-neutral-800 px-4 py-2 text-sm">
       <div>
@@ -39,6 +40,11 @@ export function MetricsBar({ zoneCount, edgeCount, children }: { zoneCount?: num
               ? `${retrieval.count} lookups, ${retrieval.fallbacks} fallbacks`
               : undefined
           }
+        />
+        <Card
+          title="Bitdeer AI"
+          value={bitdeer ? `${bitdeer.count} calls, ${bitdeer.avgMs === null ? "–" : `${bitdeer.avgMs} ms`}` : "…"}
+          hint={bitdeer && bitdeer.failed > 0 ? `${bitdeer.failed} failed (fell back)` : "avg latency of successful calls"}
         />
       </div>
     </header>

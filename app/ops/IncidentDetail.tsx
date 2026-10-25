@@ -4,6 +4,7 @@ import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { PriorityBadge, StatusPill } from "@/components/ui/badges";
 import { formatDuration, label, timeAgo } from "@/components/ui/format";
 import { useIncident } from "@/components/ui/hooks";
+import { displayBrief } from "@/convex/lib/bitdeer";
 
 type Props = {
   incidentId: Id<"incidents"> | null;
@@ -25,7 +26,8 @@ export function IncidentDetail({ incidentId, staff, graph }: Props) {
         <h2 className="font-semibold capitalize">{label(incident.category)}</h2>
         <PriorityBadge priority={incident.priority} />
       </div>
-      <p className="mt-1 text-neutral-300">{incident.description}</p>
+      <p className="mt-1 text-neutral-100">{displayBrief(incident)}</p>
+      {incident.staffBrief && <p className="text-xs text-neutral-500">Caller: {incident.description}</p>}
       <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs text-neutral-400">
         <dt>Status</dt>
         <dd><StatusPill status={incident.status} /></dd>

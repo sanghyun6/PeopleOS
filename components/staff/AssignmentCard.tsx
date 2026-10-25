@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { PriorityBadge } from "@/components/ui/badges";
 import { formatDuration, label, timeAgo } from "@/components/ui/format";
+import { displayBrief } from "@/convex/lib/bitdeer";
 
 export type AssignmentView = {
   assignment: Doc<"assignments">;
@@ -56,9 +57,8 @@ export function AssignmentCard({ assignment, actions }: { assignment: Assignment
         <PriorityBadge priority={incident.priority} />
       </div>
       <h2 className="text-2xl font-bold">{locationLabel}</h2>
-      <p className="mt-1 text-neutral-300">
-        <span className="capitalize">{label(incident.category)}</span> — {incident.description}
-      </p>
+      <p className="mt-1 text-lg font-medium text-neutral-100">{displayBrief(incident)}</p>
+      <p className="text-sm text-neutral-400 capitalize">{label(incident.category)}</p>
       <dl className="mt-3 space-y-1 text-sm text-neutral-400">
         {routeZoneNames.length > 0 && (
           <div className="flex gap-2">
